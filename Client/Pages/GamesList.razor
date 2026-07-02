@@ -87,11 +87,18 @@
     </div>
 }
 
-@* כפתור שעוזר לנו להציג את הפופ-אפ של ההוספה  *@
-@* <input type="button" value="משחק חדש" @onclick="(() => showAddPopup = true)" /> *@
+
 
 @* כפתור שעוזר לנו להציג את הפופ-אפ של ההוספה *@
-<MyButton ButtonStyle="primary" ButtonText="משחק חדש" OnClickAction="(() => showAddPopup = true)" />
+<MyButton ButtonStyle="primary" 
+          ButtonText="משחק חדש" 
+          OnClickAction="(() => showAddPopup = true)" />
+
+@* התנאי שמציג את הפופ-אפ  *@
+@if (showAddPopup)
+{
+    <AddGamePopup OnSave="SaveGame" OnCancel="(() => showAddPopup = false)" />
+}
 
 @* אנחנו קוראים לקומפוננטה של הפופ-אפ כאשר הערך הוא TRUE *@
 @if (showDeletePopup)
@@ -149,6 +156,15 @@
                 ShowError(error);
             }
         }
+    }
+    
+    
+    
+    // הפונקציה שמקבלת את המשחק החדש מהפופ-אפ
+    async Task SaveGame(GameToAddDto gameFromPopup)
+    {
+        //  נעלים את הפופ-אפ
+        showAddPopup = false;
     }
     //הפונקציה מקבלת את המשחק כפרמטר מהקומפוננטה
     async Task CreateGame(GameToAddDto gameFromPopup)

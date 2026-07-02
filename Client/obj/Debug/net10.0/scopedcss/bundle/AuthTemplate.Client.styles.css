@@ -556,7 +556,12 @@
     align-items: center; /* מיישר את האייקון בדיוק לאמצע הגובה של הטקסט */
     gap: 5px; /* מרווח בין הטקסט לאייקון */
 }
-   
+
+/* סידור כפתורי הטופס בשורה עם מרווח ביניהם */
+.form-buttons-container[b-gihezm0wsz] {
+    display: flex;
+    gap: 10px;
+}
 /* /Pages/GeneralSettings.razor.rz.scp.css */
 /* העוטף הראשי */
 .settings-page-wrapper[b-0gckienizp] {

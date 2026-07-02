@@ -5,7 +5,7 @@
     <section class="popup-content">
         <h3>שם המשחק:</h3>
         
-       @* הטופס של יצירת שם המשחק שמחובר לDTO של ההוספה *@
+        @* הטופס של יצירת שם המשחק שמחובר לDTO של ההוספה *@
         <EditForm Model="gameToAdd" OnValidSubmit="SubmitGame">
             <DataAnnotationsValidator />
             <p>
@@ -16,12 +16,22 @@
             <ValidationMessage For="@(() => gameToAdd.gameName)" />
 
             <br /><br />
-            @* כפתור אישור מפעיל את האון-ואליד סבמיט רק אם שם המשחק תקין *@
-            <input type="submit" value="אישור" style="background-color: #ff8b03; padding: 5px 15px; margin-left: 10px;" />
             
-            @* אם לוחצים על כפתור ביטול, חלונית הפופ-אפ תיסגר (בעזרת פונקציית CANCEL שקישרנו לכפתור) *@
-            <MyButton ButtonStyle="secondary" ButtonText="ביטול" OnClickAction="Cancel" />
-            </EditForm>
+            @*  אזור הכפתורים המעוצב בקומפוננטות שלך  *@
+            <div class="form-buttons-container">
+                
+                @* כפתור אישור  מפעיל את און-ואליד סבמיט רק אם שם המשחק תקין *@
+                <MyButton ButtonText="אישור" 
+                          ButtonStyle="primary" 
+                          IsSubmit="true" />
+                
+                @* כפתור ביטול מפעיל את הפונקציה Cancel *@
+                <MyButton ButtonText="ביטול" 
+                          ButtonStyle="secondary" 
+                          OnClickAction="Cancel" />
+            </div>
+
+        </EditForm>
     </section>
 </div>
 

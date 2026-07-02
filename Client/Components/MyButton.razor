@@ -1,8 +1,18 @@
 @* קומפוננטה שפתחנו לכפתורים *@
-@* הכפתור מקבל את העיצוב שלו לפי המשתנה שאנחנו מעבירים לו *@
-<button class="my-btn @ButtonStyle" @onclick="OnClickAction">
-    @ButtonText
-</button>
+@if (IsSubmit)
+{
+    @* כפתור טופס מסוג Submit - מפעיל את הוולידציות של הטופס לפני הפעלת הפונקציה *@
+    <button type="submit" class="my-btn @ButtonStyle">
+        @ButtonText
+    </button>
+}
+else
+{
+    @* כפתור רגיל מסוג Button - מפעיל את פונקציית הלחיצה שהעברנו לו *@
+    <button type="button" class="my-btn @ButtonStyle" @onclick="OnClickAction">
+        @ButtonText
+    </button>
+}
 
 @code {
     // הטקסט שמופיע על הכפתור
@@ -16,4 +26,8 @@
     // הפעמון שמפעיל את הפונקציה בעמוד הראשי כשלוחצים עליו
     [Parameter]
     public EventCallback OnClickAction { get; set; }
+    
+    // פרמטר שקובע אם הכפתור הוא כפתור שליחה של טופס. 
+    [Parameter]
+    public bool IsSubmit { get; set; } = false; 
 }
