@@ -347,9 +347,8 @@
         {
             @* אנחנו קוראים לקומפוננטה הכללית של המחיקה ומשתמשים ב-ChildContent להעברת הטקסט  *@
             <GenericDeletePopup OnUserConfirm="ConfirmQuestionDelete">
-                <h3 style="color: black;">בטוח שברצונך למחוק את השאלה?</h3>
-                <p>@questionToDelete.instruction</p>
-            </GenericDeletePopup>
+                <p>בטוח שברצונך למחוק את השאלה <strong>@questionToDelete.instruction</strong> עם <strong>@questionToDelete.Items.Count</strong> הפריטים שבה?</p>
+                </GenericDeletePopup>
         }
 
         @* תצוגת פופ-אפ הגדלת תמונה *@

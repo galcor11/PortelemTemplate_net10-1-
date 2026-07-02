@@ -21,8 +21,19 @@
     text-align: center;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     width: 450px;
-}
+    position: relative;
 
+}
+/*  העיצוב לאיקס  */
+.close-x {
+    position: absolute;
+    top: 15px;
+    right: 20px; /* ממקם אותו בצד ימין */
+    font-size: 20px;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
 /* עיצוב אזור הכותרת באמצעות Flexbox */
 .popup-header {
     display: flex;
