@@ -97,9 +97,10 @@
 @if (showDeletePopup)
 {
     <GenericDeletePopup OnUserConfirm="ExecuteDelete">
-        @* כל מה שנמצא כאן ייכנס אוטומטית ל-ChildContent שבתוך הקומפוננטה *@
+        @* כל מה שכתבנו כאן נכנס ל-ChildContent שבתוך הקומפוננטה *@
         <h2>אוי לא!</h2>
-        <h3>בטוח שברצונך למחוק את המשחק: @gameToDelete.gameName?</h3>
+        <h3>בטוח שברצונך למחוק את משחק <strong>@gameToDelete.gameName</strong> עם @gameToDelete.questionCount הפריטים שבו?</h3>
+
     </GenericDeletePopup>
 }
 

@@ -4,11 +4,28 @@
 <div class="popup-overlay">
     <section class="popup-content">
         
-        @* לכאן ייכנס התוכן הדינמי שנעביר מבחוץ בכל פעם *@
-        @ChildContent
+        @* אזור הכותרת *@
+        <div class="popup-header">
+            <img src="./SVG/Stunned.svg" alt="תולעת המוּמה" class="worm-icon" />
+            <h2>אוי לא!</h2>
+        </div>
         
-        <input type="button" @onclick="ConfirmDelete" value="מחיקה" style="background-color: lightcoral;" />
-        <input type="button" @onclick="CancelDelete" value="ביטול" style="background-color: lightgray;" />
+        @* לכאן ייכנס הטקסט הדינמי שנעביר מבחוץ בכל פעם *@
+        <div class="popup-body">
+            @ChildContent 
+        </div>
+        
+        @* אנחנו משתמשים בקומפוננטת הכפתורים  *@
+        <div class="popup-buttons">
+            <MyButton ButtonText="מחיקה" 
+                      ButtonStyle="primary" 
+                      OnClickAction="ConfirmDelete" />
+                      
+            <MyButton ButtonText="ביטול" 
+                      ButtonStyle="secondary" 
+                      OnClickAction="CancelDelete" />
+        </div>
+
     </section>
 </div>
 

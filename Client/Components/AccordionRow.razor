@@ -3,8 +3,16 @@
 @* שורת הכותרת של האקורדיון (תמיד מוצגת) *@
 <tr>
     <td>
-        <span class="accordion-toggle toggle-icon" @onclick="Toggle">
-            @(isOpen ? "▼" : "◀")
+        @* סגירה ופתיחה של החיצים *@
+        <span class="toggle-icon" @onclick="Toggle">
+            @if (isOpen)
+            {
+                <span>▼</span>
+            }
+            else
+            {
+                <span>◀</span>
+            }
         </span>
         
         @* הקומפוננטה לעריכת ההנחיה *@

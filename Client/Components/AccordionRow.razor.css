@@ -1,11 +1,32 @@
-/* עיצוב לאייקון הפתיחה/סגירה של האקורדיון */
-.accordion-toggle {
-    cursor: pointer;
-    margin-left: 5px;
+/* צבע רקע לשורת התוכן הראשית (הכותרת) */
+.accordion-main-row {
+    background-color: #E9FDD9;
+    transition: background-color 0.2s ease; /* מעבר צבע חלק */
 }
 
-/* עיצוב לתא שבו תוצג התולעת */
-.accordion-content-cell {
-    background-color: #f9f9f9;
-    padding: 15px;
+/*  צבע משתנה בHOVER  */
+.accordion-main-row:hover {
+    background-color: rgba(157, 242, 245, 0.5);
+}
+
+/* התא הגדול של האקורדיון שמתפרס על כל העמודות (מכיל את התולעת) */
+.accordion-cell {
+    padding: 25px 15px;
+    /* מעבר צבעים באלכסון */
+    background-color: #C5ECA5;
+    border-bottom: 1px solid #E2E8F0;
+    box-shadow: inset 0 4px 8px rgba(0,0,0,0.03);
+}
+
+/* עיצוב החץ של האקורדיון (הפתיחה/סגירה) */
+.toggle-icon {
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 8px;
+    color: #4a5c2d; 
+    transition: color 0.2s ease;
+}
+
+.toggle-icon:hover {
+    color: #000;
 }
