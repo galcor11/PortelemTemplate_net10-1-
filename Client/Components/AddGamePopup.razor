@@ -3,32 +3,35 @@
 
 <div class="popup-overlay">
     <section class="popup-content">
-        <h3>שם המשחק:</h3>
-        
+        @* איקס לסגירה שמפעיל את פונקציית הביטול *@
+        <span class="close-x" @onclick="Cancel">✖</span>
+        <h3><span class="required-asterisk">*</span> שם המשחק:</h3>
+
+
         @* הטופס של יצירת שם המשחק שמחובר לDTO של ההוספה *@
         <EditForm Model="gameToAdd" OnValidSubmit="SubmitGame">
-            <DataAnnotationsValidator />
+            <DataAnnotationsValidator/>
             <p>
                 @* תיבת הטקסט מקושרת לשם המשחק *@
-                <InputText @bind-Value="gameToAdd.gameName" />
+                <InputText @bind-Value="gameToAdd.gameName"/>
             </p>
             @* הודעת שגיאה *@
-            <ValidationMessage For="@(() => gameToAdd.gameName)" />
+            <ValidationMessage For="@(() => gameToAdd.gameName)"/>
 
-            <br /><br />
-            
+            <br/><br/>
+
             @*  אזור הכפתורים המעוצב בקומפוננטות שלך  *@
             <div class="form-buttons-container">
-                
+
                 @* כפתור אישור  מפעיל את און-ואליד סבמיט רק אם שם המשחק תקין *@
-                <MyButton ButtonText="אישור" 
-                          ButtonStyle="primary" 
-                          IsSubmit="true" />
-                
+                <MyButton ButtonText="אישור"
+                          ButtonStyle="primary"
+                          IsSubmit="true"/>
+
                 @* כפתור ביטול מפעיל את הפונקציה Cancel *@
-                <MyButton ButtonText="ביטול" 
-                          ButtonStyle="secondary" 
-                          OnClickAction="Cancel" />
+                <MyButton ButtonText="ביטול"
+                          ButtonStyle="secondary"
+                          OnClickAction="Cancel"/>
             </div>
 
         </EditForm>

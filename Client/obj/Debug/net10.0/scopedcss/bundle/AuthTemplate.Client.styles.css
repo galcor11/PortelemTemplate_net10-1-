@@ -47,14 +47,41 @@
 }
 /*עיצוב החלונית עצמה*/
 .popup-content[b-acy9pudik0] {
-    background-color: white;
+    background-color: #FFDCB3; 
     padding: 30px;
     border-radius: 15px;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: 350px;
+    position: relative;
 }
 
+/* עיצוב האיקס */
+.close-x[b-acy9pudik0] {
+    position: absolute;
+    top: 15px;
+    right: 20px; /* ממקם אותו בצד ימין */
+    font-size: 20px;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.close-x:hover[b-acy9pudik0] {
+    color: #000;
+}
+
+/* סידור כפתורי הטופס  */
+.form-buttons-container[b-acy9pudik0] {
+    display: flex;
+    gap: 10px;
+    justify-content: center; /* ממרכז את הכפתורים */
+}
+
+/* עיצוב לכוכבית של שדה חובה */
+.required-asterisk[b-acy9pudik0] {
+    color: red;
+}
 /* /Components/CustomInputText.razor.rz.scp.css */
 .default-input[b-ke5wxkj6ev] {
     border: none;
