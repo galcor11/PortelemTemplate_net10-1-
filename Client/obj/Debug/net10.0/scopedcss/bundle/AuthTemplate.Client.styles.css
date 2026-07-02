@@ -178,12 +178,12 @@
 
 .popup-header h2[b-tng6v7zfht] {
     margin: 0;
-    color: #4a5c2d; /* אפשר לשנות אם תרצי צבע אחר לכותרת */
+    color:#E24F4F; 
     font-size: 28px;
 }
 
 .worm-icon[b-tng6v7zfht] {
-    width: 60px; /* תתאימי את הגודל של ראש התולעת לפי הצורך */
+    width: 60px; 
     height: auto;
 }
 
