@@ -106,7 +106,7 @@
 
 /* עיצוב לאייקון פח האשפה - הופך אותו לאדום, משנה את סמן העכבר ומגדיל אותו */
 .delete-icon {
-    color: #ff4d4d; /* אדום קצת יותר רך ומודרני מ-'red' הרגיל */
+    color: #ff4d4d; 
     cursor: pointer;
     font-size: 20px;
     transition: transform 0.2s ease, color 0.2s ease;
@@ -120,7 +120,7 @@
     transform: scale(1.15); /* גדל קצת במעבר עכבר כדי לבלוט */
 }
 
-/* המכל שעוטף את כל הפריטים יחד - הוא זה שדואג לפריסה האופקית המושלמת */
+/* המכל שעוטף את כל הפריטים יחד  */
 .items-container-wrapper {
     display: flex;
     flex-direction: row;
@@ -253,7 +253,7 @@
     height: 87px;
     justify-content: center;
     align-items: center;
-    background-image: url('svg/silkyHead.svg');
+    background-image: url('./svg/silkyHead.svg');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

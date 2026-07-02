@@ -72,24 +72,19 @@ app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
-//Special Files
 var provider = new FileExtensionContentTypeProvider();
-provider.Mappings[".data"] = "applocation/json";
-provider.Mappings[".svg"] = "image/svg";
+provider.Mappings[".data"] = "application/json";
 app.UseStaticFiles(new StaticFileOptions
 {
     ContentTypeProvider = provider
 });
 
-//Brotli files
 app.UseStaticFiles(new StaticFileOptions
 {
     ServeUnknownFileTypes = true,
     OnPrepareResponse = ctx =>
     {
         var path = ctx.File.Name;
-
-
         if (path.EndsWith(".br", StringComparison.OrdinalIgnoreCase))
         {
             if (path.EndsWith(".js.br"))
@@ -104,13 +99,13 @@ app.UseStaticFiles(new StaticFileOptions
             {
                 ctx.Context.Response.ContentType = "application/octet-stream";
             }
-
             ctx.Context.Response.Headers.Append("Content-Encoding", "br");
         }
     }
 });
 
 app.UseRouting();
+
 
 //user management
 app.UseMiddleware<TokenBlacklistMiddleware>();

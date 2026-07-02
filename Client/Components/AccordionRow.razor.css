@@ -1,0 +1,11 @@
+/* עיצוב לאייקון הפתיחה/סגירה של האקורדיון */
+.accordion-toggle {
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+/* עיצוב לתא שבו תוצג התולעת */
+.accordion-content-cell {
+    background-color: #f9f9f9;
+    padding: 15px;
+}

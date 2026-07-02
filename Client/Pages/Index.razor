@@ -1,4 +1,14 @@
 ﻿@page "/"
+@page "/{code:int}"
+
+@if (loading)
+{
+    <p>המשחק נטען...</p>
+}
+
+<iframe width="1280" height="720" scrolling="no"
+        src=@($"Game/index.html?code={code}")
+                @onload="()=>loading=false"></iframe>
 
 <PageTitle>מְסַדְּרֵי המשי</PageTitle>
 
@@ -24,5 +34,8 @@
 
     [CascadingParameter]
     private User user { get; set; }
-    
+    [Parameter]
+    public int code { get; set; }
+
+    bool loading = true; 
 }

@@ -107,7 +107,7 @@
     border-color: #555 transparent transparent transparent;
 }
 
-/* מילוי לבן בתוך הזנב כדי שיראה כמו חלק מהבועה */
+/* מילוי לבן בתוך הזנב כדי שייראה כמו חלק מהבועה */
 .speech-bubble::before {
     content: '';
     position: absolute;

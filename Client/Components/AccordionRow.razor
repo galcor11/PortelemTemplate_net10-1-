@@ -1,0 +1,72 @@
+@using AuthTemplate.Shared.Models
+@* קומפוננטה שפתחנו לצורך השורות של האקורדיון *@
+@* שורת הכותרת של האקורדיון (תמיד מוצגת) *@
+<tr>
+    <td>
+        <span class="accordion-toggle toggle-icon" @onclick="Toggle">
+            @(isOpen ? "▼" : "◀")
+        </span>
+        
+        @* הקומפוננטה לעריכת ההנחיה *@
+        <EditableInstructionRow InstructionText="@Question.instruction" 
+                                OnInstructionSaved="SaveInstruction" />
+    </td>
+    <td>
+        @ItemsCount
+        @if (ItemsCount >= 4 && ItemsCount <= 8)
+        {
+            <span class="leaf-icon good-count"> 🌿 </span>
+        }
+        else
+        {
+            <span class="leaf-icon bad-count"> 🌿 </span>
+        }
+    </td>
+    <td class="center-text">
+        <button type="button" class="delete-icon" @onclick="DeleteQuestion">
+            🗑️
+        </button>
+    </td>
+</tr>
+
+@*  אזור התוכן הנפתח *@
+@if (isOpen)
+{
+    <tr>
+        <td colspan="3" class="accordion-content-cell">
+            @* לכאן נכניס את התוכן של התולעת *@
+            @ChildContent 
+        </td>
+    </tr>
+}
+
+@code {
+    // קבלת הנתונים מהעמוד הראשי
+    [Parameter] public Question Question { get; set; } 
+    [Parameter] public int ItemsCount { get; set; } 
+    
+    // "פעמונים" שמדווחים לעמוד הראשי על מחיקה ושמירה
+    [Parameter] public EventCallback<string> OnInstructionSaved { get; set; } 
+    [Parameter] public EventCallback<Question> OnDeleteClicked { get; set; } 
+
+    // הפרמטר המיוחד שמקבל תוכן HTML שלם לתוך הקומפוננטה 
+    [Parameter] public RenderFragment ChildContent { get; set; } 
+
+    //משתנה בוליאני שפתחנו כדי לשלוט על הפתיחה ועל הסגירה
+    bool isOpen = false; 
+
+    void Toggle()
+    {
+        isOpen = !isOpen;
+    }
+
+    async Task SaveInstruction(string newText)
+    {
+        await OnInstructionSaved.InvokeAsync(newText); 
+    }
+
+    async Task DeleteQuestion()
+    {
+        await OnDeleteClicked.InvokeAsync(Question); 
+    }
+}

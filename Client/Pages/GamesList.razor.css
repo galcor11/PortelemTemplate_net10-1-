@@ -141,7 +141,7 @@
     border-color: #555 transparent transparent transparent;
 }
 
-/* המשולש הפנימי הלבן (יוצר את פתח הבועה הנקי) */
+/* המשולש הפנימי הלבן  */
 .butterfly-bubble::before {
     content: '';
     position: absolute;

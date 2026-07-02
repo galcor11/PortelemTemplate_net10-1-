@@ -1,3 +1,15 @@
+/* /Components/AccordionRow.razor.rz.scp.css */
+/* עיצוב לאייקון הפתיחה/סגירה של האקורדיון */
+.accordion-toggle[b-e2or672p3z] {
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+/* עיצוב לתא שבו תוצג התולעת */
+.accordion-content-cell[b-e2or672p3z] {
+    background-color: #f9f9f9;
+    padding: 15px;
+}
 /* /Components/AddGamePopup.razor.rz.scp.css */
 /*עיצוב הרקע החצי שקוף של הפופ-אפ */
 .popup-overlay[b-acy9pudik0] {
@@ -453,7 +465,7 @@
     border-color: #555 transparent transparent transparent;
 }
 
-/* המשולש הפנימי הלבן (יוצר את פתח הבועה הנקי) */
+/* המשולש הפנימי הלבן  */
 .butterfly-bubble[b-gihezm0wsz]::before {
     content: '';
     position: absolute;
@@ -582,7 +594,7 @@
     border-color: #555 transparent transparent transparent;
 }
 
-/* מילוי לבן בתוך הזנב כדי שיראה כמו חלק מהבועה */
+/* מילוי לבן בתוך הזנב כדי שייראה כמו חלק מהבועה */
 .speech-bubble[b-0gckienizp]::before {
     content: '';
     position: absolute;
@@ -704,7 +716,7 @@
 
 /* עיצוב לאייקון פח האשפה - הופך אותו לאדום, משנה את סמן העכבר ומגדיל אותו */
 .delete-icon[b-0ine4pvf37] {
-    color: #ff4d4d; /* אדום קצת יותר רך ומודרני מ-'red' הרגיל */
+    color: #ff4d4d; 
     cursor: pointer;
     font-size: 20px;
     transition: transform 0.2s ease, color 0.2s ease;
@@ -718,7 +730,7 @@
     transform: scale(1.15); /* גדל קצת במעבר עכבר כדי לבלוט */
 }
 
-/* המכל שעוטף את כל הפריטים יחד - הוא זה שדואג לפריסה האופקית המושלמת */
+/* המכל שעוטף את כל הפריטים יחד  */
 .items-container-wrapper[b-0ine4pvf37] {
     display: flex;
     flex-direction: row;
@@ -851,7 +863,7 @@
     height: 87px;
     justify-content: center;
     align-items: center;
-    background-image: url('svg/silkyHead.svg');
+    background-image: url('./svg/silkyHead.svg');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
