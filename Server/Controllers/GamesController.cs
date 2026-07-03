@@ -10,19 +10,13 @@ namespace AuthTemplate.Server.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ServiceFilter(typeof(AuthCheck))] //בדיקה שהמשתמש מחובר
-    public class GamesController : ControllerBase
+    public class GamesController : BaseController
     {
         //קישור ל-DBREPOSITORY
         private readonly DbRepository _db;
-        public GamesController( DbRepository db) 
-        { 
-            _db = db;
-            // בתוך הקיימות השיטות אל לפנות מאפשר DBRepository
-        }
-        [HttpGet]
-        public async Task<ActionResult<int>> GetLoginUser(int authUserId)
+        public GamesController( DbRepository db) : base(db)
         {
-            return Ok(authUserId);
+            _db = db;
         }
         
         //שיטת קונטרולר שנועדה לשלוף את כל המשחקים של משתמש מסוים
@@ -74,7 +68,9 @@ namespace AuthTemplate.Server.Controllers
                 };
                 string insertGameQuery = "INSERT INTO Games (time, gameName, userID, canPublish, isPublish, hasPotion, gameCode) " +
                                          "VALUES (@TimePerItem, @GameName, @UserId, @CanPublish, @IsPublish, @HasPotion, @GameCode)";
+                //לא השתמשנו כאן בפונקציית העזר SAVECHANGES מכיוון שאין צורך לבדוק CANPUBLISH במקרה של הוספת משחק חדש
                 int newGameId = await _db.InsertReturnIdAsync(insertGameQuery, newGameParam);
+                
                 if (newGameId != 0)
                 {
                     //אם המשחק נוצר בהצלחה, נחשב את הקוד עבורו
@@ -85,7 +81,7 @@ namespace AuthTemplate.Server.Controllers
                         GameCode = gameCode
                     };
                     string updateCodeQuery = "UPDATE Games SET gameCode = @GameCode WHERE gameID=@ID";
-                    int isUpdate = await _db.SaveDataAsync(updateCodeQuery, updateParam);
+                    int isUpdate = await SaveChanges(newGameId,updateCodeQuery, updateParam);
                     if (isUpdate > 0)
                     {
                         //אם המשחק עודכן בהצלחה - נחזיר את הפרטים שלו לעורך
@@ -125,7 +121,8 @@ namespace AuthTemplate.Server.Controllers
                     //אם יש רצון לפרסם את המשחק
                     if (game.isPublish == true) {
                         //נבדוק באמצעות פונקציית עזר שניתן לפרסם אותו
-                        bool canPublish = await CanPublishFunc(game.gameID);
+                        // לא השתנה בעקבות הוספת BaseController בהתאם להנחיה מהמרצים
+                        bool canPublish = await CanPublishFunc(game.gameID); 
                         //אם לא ניתן לפרסם	
                         if (canPublish == false) {
                             //נחזיר הודעת שגיאה	
@@ -140,7 +137,7 @@ namespace AuthTemplate.Server.Controllers
                         ID = game.gameID
                     };
                     string updateQuery = "UPDATE Games SET isPublish=@IsPublish WHERE gameID=@ID";
-                    int isUpdate = await _db.SaveDataAsync(updateQuery, updateParam);
+                    int isUpdate = await SaveChanges(game.gameID, updateQuery, updateParam);
                     if (isUpdate == 1) {                   
                         return Ok();
                     }
@@ -171,7 +168,11 @@ namespace AuthTemplate.Server.Controllers
             };
 
             string deleteQuery = "DELETE FROM Games WHERE gameID = @ID";
-            int isDeleted = await _db.SaveDataAsync(deleteQuery, param);
+            
+            // כאן בכוונה לא נשתמש בפונקציה SaveChanges
+            // זאת כיוון שבמחיקת משחק אין סיבה לעדכן את canPublish
+            int isDeleted = await _db.SaveDataAsync(deleteQuery, param); 
+            
 
             //אם המחיקה הצליחה
             if (isDeleted > 0)
@@ -240,7 +241,7 @@ namespace AuthTemplate.Server.Controllers
             string query = "UPDATE Games SET gameName = @gameName, time = @time, hasPotion = @hasPotion WHERE gameID = @gameID AND UserId = @userId";
 
             // שמירת הנתונים באמצעות השיטה הייעודית ב-DbRepository שמחזירה את כמות הרשומות שהשתנו
-            int isUpdate = await _db.SaveDataAsync(query, param);
+            int isUpdate = await SaveChanges(id, query, param);
             // בדיקה אם רשומה אחת אכן עודכנה בהצלחה
             if (isUpdate == 1) 
             {
@@ -249,92 +250,6 @@ namespace AuthTemplate.Server.Controllers
 
             // הרשומה לא נמצאה או לא עודכנה
             return BadRequest("Update Failed");
-        }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        //פונקציית עזר לפרסום, היא פרטית ואי אפשר לבדוק אותה בפוסטמן
-        //שיטה שבודקת אם ניתן לפרסם את המשחק
-        //אם נמצא שלא ניתן לפרסם - נוודא שהמשחק גם לא מפורסם
-        private async Task<bool> CanPublishFunc(int gameId)
-        {
-            //במקרה שלנו - התנאי לפרסום משחק הוא לפחות שלוש שאלות
-            //יש לשנות את השיטה בהתאם לתנאי הפרסום עליהם החלטתם
-            int minQuestions = 3;
-            //אצלנו יש מינימום 4 פריטים בשאלה כדי לפרסם את המשחק ומקסימום 8 פריטים בשאלה. 
-            int minItemsPerQuestion = 4;
-            int maxItemsPerQuestion = 8;
-
-            //משתנה לשמירה של הסטטוס - האם ניתן לפרסום
-            bool canPublish = false;
-
-            object param = new{
-                ID = gameId
-            };
-
-            //שאילתה שבודקת כמה שאלות יש במשחק
-            string queryQuestionCount = "SELECT Count(questionID) FROM Questions WHERE gameID=@ID";
-            var recordQuestionCount = await _db.GetRecordsAsync<int>(queryQuestionCount, param);
-            int numberOfQuestions = recordQuestionCount.FirstOrDefault();
-
-            //נשמור משתנה ריק שיכיל את שאילתת העדכון בהתאם למספר השאלות
-            string updateQuery;
-            //אם יש מספיק שאלות במשחק
-            if (numberOfQuestions >= minQuestions) 
-            {
-                // אנחנו שולפים את המזהים של השאלות ששייכות למשחק הזה
-                string queryGetQuestions = "SELECT questionID FROM Questions WHERE gameID=@ID";
-                var questionIds = await _db.GetRecordsAsync<int>(queryGetQuestions, param);
-    
-                // נקודת המוצא היא שניתן לפרסם, אלא אם הלולאה תמצא שאלה לא תקינה
-                canPublish = true;
-
-                // לולאה שעוברת שאלה-שאלה ובודקת את הפריטים 
-                foreach (int qId in questionIds)
-                {
-                    // אובייקט פרמטרים שמכיל לנו את המזהה של השאלה הנוכחית בלולאה
-                    object itemParam = new { QID = qId };
-        
-                    // ספירת הפריטים ששייכים אך ורק לשאלה הספציפית הזו
-                    string queryItemCount = "SELECT Count(answerID) FROM Items WHERE questionID=@QID";
-                    var recordItemCount = await _db.GetRecordsAsync<int>(queryItemCount, itemParam);
-                    int itemsInThisQuestion = recordItemCount.FirstOrDefault(); // משתנה שמכיל בתוכו את מספר הפריטים שיש בשאלה
-
-                    // אנחנו בודקים אם כמות הפריטים חורגת מהטווח (פחות מהמינימום או יותר מהמקסימום שהגדרנו)
-                    if (itemsInThisQuestion < minItemsPerQuestion || itemsInThisQuestion > maxItemsPerQuestion)
-                    {
-                        canPublish = false; // המשחק נפסל לפרסום
-                        break; //יציאה מהלולאה
-                    }
-                }
-            }
-            // אנחנו מעדכנים את מצב הפרסום בטבלת המשחקים בהתאם לתוצאה 
-            if (canPublish == true) 
-            {
-                updateQuery = "UPDATE Games SET canPublish=true WHERE gameID=@ID";
-            }
-            else
-            {
-                updateQuery = "UPDATE Games SET isPublish=false, canPublish=false WHERE gameID=@ID";
-            }
-
-            //מעדכנים את בסיס הנתונים
-            int isUpdate = await _db.SaveDataAsync(updateQuery, param);
-            
-            //נחזיר משתנה בוליאני שאומר אם ניתן לפרסם את המשחק או לא
-            return canPublish;
         }
         
     }
