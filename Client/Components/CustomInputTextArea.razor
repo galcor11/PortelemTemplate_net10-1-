@@ -1,10 +1,12 @@
 @inherits Microsoft.AspNetCore.Components.Forms.InputTextArea
 @* אותה קומפוננטה כמו CustomInputText רק בתור אזור טקסט (textarea) *@
+@* העוטף מקבל את המחלקה מבחוץ (למשל צורת התות) והמונה יושב בתוכו למטה *@
 
-<textarea @attributes="@AdditionalAttributes" class="@CssClass default-input @inputClass" @bind="@CurrentValueAsString" @bind:event="oninput" @onkeyup="countChars" maxlength="@maxLength"></textarea>
-@* ספירת תווים *@
-<br/>
-<span>@length.ToString()/@maxLength.ToString()</span>
+<div class="textarea-with-counter @CssClass">
+    <textarea @attributes="@AdditionalAttributes" class="" @bind="@CurrentValueAsString" @bind:event="oninput" @onkeyup="countChars" maxlength="@maxLength"></textarea>
+    @* ספירת תווים (מקסימום/נוכחי כדי שיקרא נכון בעברית). הצבע משתנה רק על הטקסט של המונה *@
+    <span class="char-counter @inputClass">@maxLength.ToString()/@length.ToString()</span>
+</div>
 
 
 @code {

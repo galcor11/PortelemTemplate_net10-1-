@@ -1,25 +1,46 @@
-.default-input {
+/* עוטף את אזור הטקסט כדי שאפשר יהיה למקם את המונה בתוכו */
+.textarea-with-counter {
+    position: relative;
+    display: inline-flex;
+}
+
+/* אזור הטקסט ממלא את העוטף, בלי עיצוב משלו (העיצוב מגיע מהמחלקה שעוברת לעוטף) */
+.textarea-with-counter textarea {
+    width: 100%;
+    height: 100%;
     border: none;
-    padding: 5px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    outline: 5px solid lightgray;
-    outline-offset: -1px;
-    transition: all ease-in-out .2s;
+    background: transparent;
+    resize: none;
+    outline: none;
+    overflow: hidden; /* בלי פס גלילה */
+    font: inherit;
+    font-weight: inherit;
+    text-align: inherit;
+    box-sizing: border-box;
 }
 
-.default-input:focus-visible{
-    outline: 5px solid blue;
-}
-.default-input.good-input:focus {
-    outline: 5px solid green !important;
+/* המונה יושב בתוך התיבה, בפינה התחתונה, עם רקע קטן כדי שיישאר קריא מעל טקסט ארוך */
+.char-counter {
+    position: absolute;
+    bottom: 3px;
+    left: 8px;
+    font-size: 11px;
+    color: gray;
+    pointer-events: none;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 3px;
+    padding: 0 3px;
 }
 
-.default-input.warnning-input:focus {
-    outline: 5px solid orange !important;
+/* רק צבע הטקסט של המונה משתנה, לא המסגרת */
+.char-counter.good-input {
+    color: green;
 }
 
-.default-input.danger-input:focus {
-    outline: 5px solid red !important;
+.char-counter.warnning-input {
+    color: orange;
+}
+
+.char-counter.danger-input {
+    color: red;
 }

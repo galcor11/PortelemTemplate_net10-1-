@@ -17,6 +17,15 @@
     display: flex;
     align-items: center;
     gap: 5px;
+    position: relative; /* עוגן למונה התווים במצב עריכה */
+}
+
+/* המונה צף מתחת לתגית ולא תופס מקום, כדי שהעריכה לא תדחוף את גוף התולעת */
+::deep .char-counter {
+    position: absolute;
+    top: 100%;
+    right: 6px;
+    font-size: 10px;
 }
 
 /* עיצוב לתיבת העריכה הקטנה (::deep כי התיבה נמצאת בתוך קומפוננטת הבת CustomInputText) */
@@ -25,6 +34,9 @@
     text-align: center;
     border-radius: 4px;
     border: 1px solid #ccc;
+    /* מבטלים את המרווחים והמתאר של default-input כדי שהתגית הקטנה לא תישבר */
+    margin: 0 !important;
+    outline: none !important;
 }
 
 /* עיצוב לכפתורים */

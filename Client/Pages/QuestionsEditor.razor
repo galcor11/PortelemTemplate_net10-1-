@@ -523,12 +523,16 @@ else
                 gameData.Questions = new List<Question>();
             }
 
-            //  הוספת השאלה החדשה לרשימה 
+            //  הוספת השאלה החדשה לרשימה
             gameData.Questions.Add(createdQuestion);
 
             //  סגירת שורת ההוספה והעלמת הודעות שגיאה
             isAddingQuestion = false;
             errorMsg = "";
+
+            // פותחים מייד את האקורדיון של השאלה החדשה כדי שאפשר יהיה להוסיף לה פריטים
+            openQuestionId = createdQuestion.questionID;
+            currentStrawberryItem = new SilkyItem();
         }
         else
         {

@@ -293,9 +293,13 @@
     transform: translate(14px,-8px);
 }
 
-/* התאמה ספציפית למצב טקסט (הפקד של בלייזור) */
-::deep textarea.inner-strawberry-input {
-    padding: 16px 5px;
+/* התאמה ספציפית למצב טקסט (אזור הטקסט שבתוך העוטף של הקומפוננטה) */
+::deep .inner-strawberry-input textarea {
+    /* פחות ריפוד למעלה ושמירת מקום למונה למטה כדי שלא ידרוס את הטקסט */
+    padding: 6px 5px 16px;
+    /* גופן קטן יותר כדי ש-30 תווים ייכנסו לתיבה בלי לגלוש על המונה */
+    font-size: 13px;
+    line-height: 1.25;
 }
 
 /* התאמה ספציפית למצב תמונה (תגית ה-P) */
@@ -458,8 +462,8 @@
     border-radius: 4px; /* מעגל קצת את מסגרת הפוקוס */
 }
 
-/* חיווי ברור בעת הקלדה בתוך התות */
-::deep .inner-strawberry-input:focus {
+/* חיווי ברור בעת הקלדה בתוך התות (focus-within כי הפוקוס על אזור הטקסט הפנימי) */
+::deep .inner-strawberry-input:focus-within {
     outline: none; /* מסירים את הדיפולט של הדפדפן */
     border: 2px solid #005FCC !important; /* מסגרת כחולה עבה */
     box-shadow: 0 0 0 4px rgba(0, 95, 204, 0.2); /* הילה כחולה מסביב למראה רך */
@@ -497,6 +501,7 @@
 ::deep .instruction-input {
     width: 100%; /* מתפרס על כל התא - רספונסיבי */
     max-width: 300px; /* חוסם את ההתרחבות במסכּים גדולים כדי להתאים ל-20 תווים */
+    margin: 0 !important; /* מבטל את המרווחים של default-input כדי לא לשבור את השורה */
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
