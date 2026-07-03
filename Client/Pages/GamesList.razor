@@ -8,8 +8,19 @@
 <div class="falling-leaves-bg"></div>
 
 <h1> המשחקים שלי</h1>
-@if (MyGamesList != null)
+@* כדי למנוע מצב של הצגת התמונה של מצב טבלה ריקה ברגע של הטעינה הוספנו משתנה isLoading *@
+@if (isLoading) 
 {
+    <span>הדף נטען... </span>
+}
+else if (MyGamesList == null || MyGamesList.Count == 0)
+{
+    //במקרה שהרשימה ריקה, כלומר מכילה אפס משחקים או NULL
+    <div class="empty-silky">
+        <img src="./SVG/silkyOnLeaf.svg" alt="תולעת ישֵנה על עלה" class="empty-silky-image" />
+    </div>
+}
+else{
     <div class="table-wrapper">
         <div class="butterfly-bubble">
             בא לי תותים<br /> 
@@ -88,7 +99,6 @@
 }
 
 
-
 @* כפתור שעוזר לנו להציג את הפופ-אפ של ההוספה *@
 <MyButton ButtonStyle="primary" 
           ButtonText="משחק חדש" 
@@ -124,19 +134,24 @@
 @code {
     // מופע של הDTO שיקושר לתיבת הטקסט
     GameToAddDto gameToAdd = new GameToAddDto(){ time = 60 };
-// משתנה בוליאני בשביל תצוגת הפופ-אפ
+    
+    // משתנה בוליאני בשביל תצוגת הפופ-אפ
     bool showAddPopup = false; 
-        //משתנים בשביל המחיקה
-        bool showDeletePopup = false; 
-        GameToTableDto gameToDelete; 
+    
+    //משתנים בשביל המחיקה
+    bool showDeletePopup = false; 
+    GameToTableDto gameToDelete; 
         
     [CascadingParameter]
     private User user { get; set; }
     
-// פתיחת מופע חדש של המחלקה
+    // פתיחת מופע חדש של המחלקה
     List<GameToTableDto> MyGamesList;
     string msg = ""; 
     int userId = 0;
+
+    bool isLoading = true;
+    
         //לאחר התחברות המשתמש
     protected override async Task OnParametersSetAsync()
     {
@@ -155,10 +170,9 @@
                 string error = gameResponse.Content.ReadAsStringAsync().Result;
                 ShowError(error);
             }
+            isLoading = false;
         }
     }
-    
-    
     
     // הפונקציה שמקבלת את המשחק החדש מהפופ-אפ
     async Task SaveGame(GameToAddDto gameFromPopup)
@@ -192,7 +206,6 @@
             string error = newGameRes.Content.ReadAsStringAsync().Result;
             //קוראים לפונקציה אם יש שגיאה
             ShowError(error);
-            
         }
     }
     
@@ -239,9 +252,6 @@
                 //אם הסטטוס אינו תקין, המשתנה המחרוזתי מכיל את התוכן של השגיאה. 
                 msg = deleteResponse.Content.ReadAsStringAsync().Result; 
             }
-
-
-
         }
     }
     
@@ -288,7 +298,7 @@
         switch (error)
         {
             case "No games for this user":
-                msg = "עדין לא יצרת משחקים... זה הזמן ליצור את הראשון :)";
+                msg = "עדיין לא יצרת משחקים... זה הזמן ליצור את הראשון :)";
                 break;
             case "user is not authenticated":
                 msg = "ארעה בעיה בעת אימות המשתמש";

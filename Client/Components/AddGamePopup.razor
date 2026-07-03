@@ -13,7 +13,7 @@
             <DataAnnotationsValidator/>
             <p>
                 @* תיבת הטקסט מקושרת לשם המשחק *@
-                <InputText @bind-Value="gameToAdd.gameName"/>
+                <CustomInputText  @bind-Value="gameToAdd.gameName" maxLength="20" minLength="1"/>
             </p>
             @* הודעת שגיאה *@
             <ValidationMessage For="@(() => gameToAdd.gameName)"/>
@@ -24,10 +24,28 @@
             <div class="form-buttons-container">
 
                 @* כפתור אישור  מפעיל את און-ואליד סבמיט רק אם שם המשחק תקין *@
-                <MyButton ButtonText="אישור"
-                          ButtonStyle="primary"
-                          IsSubmit="true"/>
-
+                @if (gameToAdd.gameName != null)
+                {
+                    @if (gameToAdd.gameName.Length < 1 || String.IsNullOrWhiteSpace(gameToAdd.gameName))
+                    {
+                        <MyButton ButtonText="אישור"
+                                  ButtonStyle="disabled"
+                                  IsSubmit="true"/>
+                    }
+                    else
+                    {
+                        <MyButton ButtonText="אישור"
+                                  ButtonStyle="primary"
+                                  IsSubmit="true"/>
+                    }
+                }
+                else
+                {
+                    <MyButton ButtonText="אישור"
+                              ButtonStyle="disabled"
+                              />
+                }
+                
                 @* כפתור ביטול מפעיל את הפונקציה Cancel *@
                 <MyButton ButtonText="ביטול"
                           ButtonStyle="secondary"

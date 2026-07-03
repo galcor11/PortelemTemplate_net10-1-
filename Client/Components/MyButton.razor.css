@@ -30,17 +30,29 @@
 /* --- הכפתור המשני --- */
 .my-btn.secondary {
     background-color: white;
-    color: #ff7300;
-    border: 2px solid #ff7300;
+    color: #fd8a03;
+    border: none;
 
     /* הצללה  בצבע כתום בהיר/פסטלי */
-    box-shadow: 0px 4px 0px #ffe3cc;
+    box-shadow: 0px 5px 0px #fd8a03;
 }
 
 /* אפקט הלחיצה של הכפתור המשני */
 .my-btn.secondary:active {
     /* מוריד את הכפתור קצת למטה בזמן הלחיצה */
-    transform: translateY(4px);
+    transform: translateY(5px);
     /* מעלים את ההצללה הבהירה כשהוא שקוע */
     box-shadow: 0px 0px 0px #ffe3cc;
 }
+
+/* --- הכפתור במצב מושבת --- */
+.my-btn.disabled {
+    background-color: #B7B7B7;
+    color: white;
+    border: none; /* הסרנו את המסגרת כדי שההצללה תעשה את כל העבודה */
+    
+    box-shadow: 0px 5px 0px #96928E;
+
+    cursor: not-allowed;
+}
+

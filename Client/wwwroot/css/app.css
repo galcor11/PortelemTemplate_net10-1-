@@ -8,8 +8,14 @@ html, body {
     font-family: 'Alef', sans-serif;
     direction: rtl;
     text-align: right;
-    background-color: #E8FCFF; 
+}
 
+html {
+    background-color: #E8FCFF;
+}
+
+body {
+    background-color: transparent;
 }
 
 h1:focus {

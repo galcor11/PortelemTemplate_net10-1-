@@ -2,6 +2,7 @@
 
 <input @attributes="@AdditionalAttributes" class="@CssClass default-input @inputClass" @bind="@CurrentValueAsString"  @bind:event="oninput" @onkeyup="countChars" maxlength="@maxLength" />
 @* ספירת תווים *@
+<br/>
 <span>@length.ToString()/@maxLength.ToString()</span>
 
 
