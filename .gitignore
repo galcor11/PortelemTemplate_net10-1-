@@ -1,0 +1,97 @@
+# ---- Build output ----
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Dd]ebug/
+[Rr]elease/
+[Dd]ebugPublic/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+[Ll]ogs/
+publish/
+[Pp]ublish[Pp]rofiles/
+
+# NOTE: broad 'build/' / 'bld/' rules intentionally omitted — core.ignorecase=true
+# on Windows makes them match the served Unity WebGL payload at
+# Client/wwwroot/Game/Build/. bin/ and obj/ already cover .NET build output.
+
+# ---- Visual Studio ----
+.vs/
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+*.userprefs
+*.rsuser
+*.suo
+*.dbmdl
+*.jfm
+
+# ---- Rider / JetBrains ----
+.idea/
+*.sln.iml
+
+# ---- ReSharper / DotSettings user layer ----
+*.DotSettings.user
+_ReSharper*/
+
+# ---- NuGet ----
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+.nuget/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ---- Test / coverage ----
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+coverage*.info
+
+# ---- MSBuild / IDE artifacts ----
+*.tlog
+*.log
+*.binlog
+*.ilk
+*.meta
+*.iobj
+*.ipdb
+*.pdb
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.cache
+*.VC.db
+*.VC.VC.opendb
+
+# ---- OS junk ----
+.DS_Store
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+
+# ---- Node (if any front-end tooling added) ----
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# ---- Secrets (uncomment if you add local-only secrets) ----
+# appsettings.*.local.json
+# *.pfx
+# *.key
+
+# ---- Never ignore served content (guards against broad rules above) ----
+!Client/wwwroot/Game/
+!Client/wwwroot/Game/**
+!Server/wwwroot/uploadedFiles/
+!Server/wwwroot/uploadedFiles/**
