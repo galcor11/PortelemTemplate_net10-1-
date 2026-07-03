@@ -4,8 +4,8 @@
     align-items: center;
 }
 
-/* תיבת הטקסט של העריכה */
-.edit-input {
+/* תיבת הטקסט של העריכה (::deep כי התיבה נמצאת בתוך קומפוננטת הבת CustomInputText) */
+::deep .edit-input {
     margin-left: 10px;
     padding: 5px;
     border-radius: 5px;

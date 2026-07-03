@@ -1,6 +1,7 @@
-@inherits Microsoft.AspNetCore.Components.Forms.InputText
+@inherits Microsoft.AspNetCore.Components.Forms.InputTextArea
+@* אותה קומפוננטה כמו CustomInputText רק בתור אזור טקסט (textarea) *@
 
-<input @attributes="@AdditionalAttributes" class="@CssClass default-input @inputClass" @bind="@CurrentValueAsString"  @bind:event="oninput" @onkeyup="countChars" maxlength="@maxLength" />
+<textarea @attributes="@AdditionalAttributes" class="@CssClass default-input @inputClass" @bind="@CurrentValueAsString" @bind:event="oninput" @onkeyup="countChars" maxlength="@maxLength"></textarea>
 @* ספירת תווים *@
 <br/>
 <span>@length.ToString()/@maxLength.ToString()</span>
@@ -20,7 +21,7 @@
     string inputClass = "";
     // משתנה שיכיל את אורך המחרוזת
     int length = 0;
-    
+
     // מעדכן את הספירה גם כשהתיבה נפתחת עם טקסט קיים (מצב עריכה)
     protected override void OnParametersSet()
     {
@@ -40,15 +41,10 @@
             {
                 inputClass = "warnning-input";
             }
-            else 
+            else
             {
                 inputClass = "danger-input";
             }
         }
     }
-
-    
-    
-    
-    
 }

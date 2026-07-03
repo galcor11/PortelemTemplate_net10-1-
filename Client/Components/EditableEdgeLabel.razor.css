@@ -19,8 +19,8 @@
     gap: 5px;
 }
 
-/* עיצוב לתיבת העריכה הקטנה */
-.edge-edit-input {
+/* עיצוב לתיבת העריכה הקטנה (::deep כי התיבה נמצאת בתוך קומפוננטת הבת CustomInputText) */
+::deep .edge-edit-input {
     width: 90px;
     text-align: center;
     border-radius: 4px;

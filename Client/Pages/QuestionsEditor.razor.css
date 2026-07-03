@@ -493,8 +493,8 @@
     background-color: #f9f9f9;
 }
 
-/* עיצוב שדה הקלט של ההנחיה */
-.instruction-input {
+/* עיצוב שדה הקלט של ההנחיה (::deep כי התיבה נמצאת בתוך קומפוננטת הבת CustomInputText) */
+::deep .instruction-input {
     width: 100%; /* מתפרס על כל התא - רספונסיבי */
     max-width: 300px; /* חוסם את ההתרחבות במסכּים גדולים כדי להתאים ל-20 תווים */
     padding: 5px;
