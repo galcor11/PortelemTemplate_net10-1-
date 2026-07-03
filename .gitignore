@@ -34,6 +34,7 @@ publish/
 # ---- Rider / JetBrains ----
 .idea/
 *.sln.iml
+launchSettings.json
 
 # ---- ReSharper / DotSettings user layer ----
 *.DotSettings.user

@@ -89,20 +89,19 @@
 
 
 .falling-leaves-bg {
-    /* מיקום שמקבע את הדיב על כל המסך */
-    position: fixed ;
-    top: 0 ;
-    left: 0 ;
-    width: 100vw;  /* 100% מרוחב המסך */
-    height: 100vh ; /* 100% מגובה המסך */
-
-    /* שכבת הרקע */
-    z-index: -1; /* שולח את העלים אל מאחורי הטבלה, הכפתורים והטקסט */
-
-    /* הגדרות התבנית */
-    background-image: url('svg/leaf.svg'); /* נתיב העלה שלך */
-    background-repeat: repeat; /* משכפל את העלה לכל עבר */
-    background-size:500px; /* קובע את הגודל של כל עלה בתוך הפאטרן */
+    /* מיקום קבוע שמצמיד את השכבה לחלון הדפדפן כולו, ללא תלות בגלילה או בזום */
+    position: fixed;
+    /* inset מכסה את כל ארבעת הצדדים בבת אחת, בלי 100vw שגורם לגלילה אופקית בגלל רוחב פס הגלילה */
+    inset: 0;
+    /* מאחורי כל התוכן; עובד רק כי צבע הרקע הכללי הוגדר על html ולא על body */
+    z-index: -1;
+    /* עלה בודד שהדפדפן משכפל לכל הכיוונים */
+    background-image: url('svg/PatternLeaf.svg');
+    background-repeat: repeat;
+    /* גודל אריח שלם בפיקסלים (ללא שברים) כדי למנוע תפרים בין האריחים בזומים שונים */
+    background-size: 120px 120px;
+    /*שקיפות*/
+    opacity: 0.35
 }
 
 
@@ -164,4 +163,18 @@
 .form-buttons-container {
     display: flex;
     gap: 10px;
+}
+
+/*המכל שעוטף את התולעת הישנה במצב ריק*/
+.empty-silky{
+    position: absolute;
+    top: 50%; 
+    left: 30px;
+    transform: translateY(-50%);
+}
+ /*עיצוב התולעת הישֵנה*/
+.empty-silky img{
+    width: 960px;
+    height: 518px;
+    aspect-ratio: 139/75;
 }

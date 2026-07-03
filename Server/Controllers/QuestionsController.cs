@@ -20,15 +20,6 @@ namespace AuthTemplate.Server.Controllers
         {
             _db = db;
         }
-
-        public async Task<int> GetGameIDFromquestionID(int questionID)
-        {
-            object param = new { questionID = questionID };
-            string query = "SELECT gameID FROM Questions WHERE questionID = @questionID";
-            var result = await _db.GetRecordsAsync<int>(query, param);
-            int gameID = result.FirstOrDefault();
-            return gameID;
-        }
         
         //שיטת GET שנועדה לשלוף נתונים מטבלת השאלות
         [HttpGet("getQuestions/{gameID}")]
@@ -138,14 +129,14 @@ namespace AuthTemplate.Server.Controllers
         }
 
         //שיטת פוסט שנועדה לעדכן פריט בודד
-           [HttpPost("updateItem/{itemId}")]
-        public async Task<IActionResult> UpdateSilkyItem(int authUserId, int itemId, SilkyItemToUpdate itemToUpdate)
+        [HttpPost("updateItem/{ItemID}")]
+        public async Task<IActionResult> UpdateSilkyItem(int authUserId, int ItemID, SilkyItemToUpdate itemToUpdate)
         {
             if (authUserId > 0)
             {
                 // בדיקות בעלות
                 // אנחנו שולפים את ה-questionID שאליו שייך הפריט
-                object iParam = new { Id = itemId };
+                object iParam = new { Id = ItemID };
                 string getQuestionQuery = "SELECT questionID FROM Items WHERE answerID = @Id";
                 var questionRecords = await _db.GetRecordsAsync<int>(getQuestionQuery, iParam);
                 int questionID = questionRecords.FirstOrDefault();
@@ -174,7 +165,7 @@ namespace AuthTemplate.Server.Controllers
                                 Content = itemToUpdate.content,
                                 IsImage = itemToUpdate.isImage,
                                 OrderIndex = itemToUpdate.orderIndex, 
-                                Id = itemId
+                                Id = ItemID
                             };
 
                             string updateQuery = "UPDATE Items SET content=@Content, isImage=@IsImage, orderIndex=@OrderIndex WHERE answerID=@Id";
@@ -303,13 +294,20 @@ namespace AuthTemplate.Server.Controllers
             //אובייקט הפרמטרים
             object param = new { id = questionID };
 
+            // שאילתה למציאת gameID עבור עדכון canPublish דרך SaveChanges()
+            // TODO: לשקול אם צריך לעשות את זה בכלל או שצריך שיהיו פה בדיקות isOwner אשר גם ככה דורשות gameID בדרך
+            object gameIDparam = new { questionID = questionID };
+            string gameIDquery = "SELECT gameID FROM Questions WHERE questionID = @questionID";
+            var result = await _db.GetRecordsAsync<int>(gameIDquery, gameIDparam);
+            int gameID = result.FirstOrDefault();
+            
            //שאילתת SQL למחיקה
             string query = "DELETE FROM Questions WHERE questionID=@id";
             
             // הפעלת השאילתה מול בסיס הנתונים 
-            int gameID = await GetGameIDFromquestionID(questionID);
             int isDeleted = await SaveChanges(gameID, query, param);
-        //בדיקה אם המחיקה הצליחה     
+            
+            //בדיקה אם המחיקה הצליחה     
             if (isDeleted > 0)
             {
                 return Ok();
@@ -319,16 +317,16 @@ namespace AuthTemplate.Server.Controllers
         }
 
         // שיטת מחיקה שתפקידה למחוק פריט בודד מגוף התולעת מתוך טבלת הפריטים שבבסיס הנתונים 
-        [HttpDelete("deleteItem/{itemId}")]
-        public async Task<IActionResult> DeleteItem(int authUserId, int itemId)
+        [HttpDelete("deleteItem/{ItemID}")]
+        public async Task<IActionResult> DeleteItem(int authUserId, int ItemID)
         {
             // בדיקה שהמשתמש מחובר למערכת
             if (authUserId > 0)
             {
                 //  אנחנו שולפים את ה-questionID של הפריט כדי לדעת לאיזו שאלה הוא שייך 
-                object itemOwnerParam = new { ItemId = itemId };
-                string getQuestionQuery = "SELECT questionID FROM Items WHERE answerID = @ItemId"; 
-                var questionRecords = await _db.GetRecordsAsync<int>(getQuestionQuery, itemOwnerParam);
+                object itemParam = new { ItemID = ItemID };
+                string getQuestionQuery = "SELECT questionID FROM Items WHERE answerID = @ItemID"; 
+                var questionRecords = await _db.GetRecordsAsync<int>(getQuestionQuery, itemParam);
                 int questionID = questionRecords.FirstOrDefault();
 
                 // אם הפריט נמצא ויש לו שאלה מקושרת
@@ -352,11 +350,12 @@ namespace AuthTemplate.Server.Controllers
                         // אם המשחק אכן שייך למשתמש
                         if (isOwner > 0)
                         {
-                            // אובייקט הפרמטרים למחיקה
-                            object itemParam = new { ItemId = itemId };
-
+                            string getOrderIndex = "SELECT orderIndex FROM Items WHERE answerID = @ItemID";
+                            var deletedOrderIndexResult = await _db.GetRecordsAsync<int>(getOrderIndex, itemParam);
+                            int deletedOrderIndex = deletedOrderIndexResult.FirstOrDefault();
+                            
                             // שאילתת SQL שמוחקת לנו את הפריט הספציפי מטבלת Items 
-                            string deleteQuery = "DELETE FROM Items WHERE answerID=@ItemId"; 
+                            string deleteQuery = "DELETE FROM Items WHERE answerID=@ItemID"; 
                 
                             // ביצוע הפעולה מול בסיס הנתונים ושמירת מספר השורות שהושפעו
                             int isDeleted = await SaveChanges(gameID, deleteQuery, itemParam);
@@ -364,7 +363,14 @@ namespace AuthTemplate.Server.Controllers
                             // בדיקה אם המחיקה הצליחה 
                             if (isDeleted > 0)
                             {
-                                return Ok(); 
+                                object updateItemsParam = new { questionID = questionID, deletedOrderIndex = deletedOrderIndex };
+                                string updateItemsQuery = "UPDATE Items SET orderIndex = orderIndex - 1 WHERE questionID = @questionID AND orderIndex > @deletedOrderIndex";
+                                int updateItemsSuccess = await SaveChanges(gameID, updateItemsQuery, updateItemsParam);
+                                
+                                if (updateItemsSuccess > 0)
+                                    return Ok(); 
+                                
+                                return BadRequest("Delete Successful - Item's order index was not updated");
                             }
                 
                             return BadRequest("Delete Failed"); 
