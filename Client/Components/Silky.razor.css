@@ -1,3 +1,4 @@
+/*עיצוב ראש התולעת*/
 .silky-head {
     display: flex;
     width: 87px;
@@ -12,8 +13,6 @@
     margin-right: 0px;
     z-index: 2;
 }
-
-
 
 .segment-wrapper {
     display: flex;
