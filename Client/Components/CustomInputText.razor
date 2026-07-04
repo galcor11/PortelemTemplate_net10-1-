@@ -12,11 +12,14 @@
     [Parameter]
     public int minLength { get; set; } = 1;
     // פרמטר לקבלת אורך מחרוזת שממנו המונה נצבע כתום (אזהרת התקרבות למקסימום)
+    // אם לא הועבר ערך, ברירת המחדל היא שלושה תווים לפני המקסימום
     [Parameter]
-    public int midLength { get; set; } = 17;
+    public int? midLength { get; set; }
     // פרמטר לקבלת אורך מחרוזת מקסימלי
     [Parameter]
     public int maxLength { get; set; } = 20;
+    // הערך האפקטיבי של סף האזהרה - מה שהועבר בפרמטר, או המקסימום פחות 3
+    int effectiveMidLength => midLength ?? maxLength - 3;
     // משתנה שיכיל את שם המחלקה של המונה - ירוק כשהאורך תקין, אדום כשלא
     string counterClass = "";
     // משתנה שיכיל את אורך המחרוזת
@@ -33,11 +36,11 @@
         if (CurrentValueAsString != null)
         {
             length = CurrentValueAsString.Length;
-            if (length >= minLength && length < midLength)
+            if (length >= minLength && length < effectiveMidLength)
             {
                 counterClass = "good-counter";
             }
-            else if (length >= midLength && length < maxLength)
+            else if (length >= effectiveMidLength && length < maxLength)
             {
                 counterClass = "warning-counter";
             }

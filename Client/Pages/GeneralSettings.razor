@@ -19,7 +19,7 @@
         @if (isEditingName == true)
         {
             @* מצב עריכה: תיבת טקסט שמקושרת לשם, וכפתור אישור *@
-            <CustomInputText @bind-Value="gameSettings.gameName" maxLength="20" minLength="1" />
+            <CustomInputText @bind-Value="gameSettings.gameName" maxLength="20" midLength="17" minLength="1" />
             <input type="button" value="✔️" @onclick="(() => isEditingName = false)" style="background: none; border: none; cursor: pointer;" />
         }
         else

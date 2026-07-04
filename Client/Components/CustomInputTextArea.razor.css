@@ -15,7 +15,7 @@
     overflow: hidden; /* בלי פס גלילה */
     font: inherit;
     font-weight: inherit;
-    text-align: inherit;
+    text-align: right; /* יישור הטקסט לימין בהתאם לכיוון העברית */
     box-sizing: border-box;
 }
 

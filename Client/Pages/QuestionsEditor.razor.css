@@ -216,7 +216,7 @@
 
 /* העיצוב המשותף לשני הפקדים */
 ::deep .inner-strawberry-input {
-    text-align: center;
+    text-align: right; /* יישור הטקסט לימין בהתאם לכיוון העברית */
     border: 1px solid #ccc;
     font-weight: bold;
     border-radius: 8px !important;
@@ -332,8 +332,6 @@
     width: 95%; /* רספונסיביות - תופס כמעט את כל רוחב העמוד  */
     max-width: 1200px; /* מונע מהטבלה להימתח מדי במסכּים רחבים */
     margin: 0 auto; /* ממרכז את הקונטיינר באמצע העמוד */
-    border: 1px solid #e0e0e0; /* מסגרת עדינה מסביב לכל האזור */
-    border-radius: 8px;
 }
 
 /* הגלילה מוגדרת על גוף הטבלה בלבד, כך שפס הגלילה מתחיל מתחת לשורת הכותרת */

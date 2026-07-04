@@ -1,7 +1,8 @@
 @page "/QuestionsEditor/{gameID:int}"
-<p>עריכת השאלות</p>
+<h1>עריכת שאלות</h1>
 <!-- ניהול משתמשים - רק יוזר מחובר יכול להיכנס -->
 @attribute [Authorize]
+@using System.Linq
 @using AuthTemplate.Shared.Models
 @inject HttpClient Http
 @* הוספנו את זה בשביל סייר הקבצים וכפתור נסתר *@
@@ -11,7 +12,7 @@
 @* בדיקה שיש שאלות להצגה, כלומר שהרשימה איננה ריקה *@
 @if (gameData != null)
 {
-    <h1>@gameData.gameName</h1>
+    <h2>@gameData.gameName</h2>
     <div class="table-scroll-container">
         <table class="questions-table">
             <thead>
@@ -31,7 +32,7 @@
                     <div class="input-action-wrapper">
                         @* תיבת טקסט המקושרת למודל ומיישמת הגבלת תווים *@
                         <CustomInputText class="instruction-input" @bind-Value="questionToAdd.instruction"
-                                         maxLength="20" minLength="1" placeholder="הקלידו הנחיה (עד 20 תווים)..."/>
+                                         maxLength="20" midLength="17" minLength="1" placeholder="הקלידו הנחיה (עד 20 תווים)..."/>
 
                         @* שימוש בקומפוננטה לשני הכפתורים שלנו *@
                         <MyButton ButtonStyle="primary"
@@ -97,8 +98,8 @@
         }
 
 
-        @* לולאת FOREACH שעוברת לנו על כל שאלה ברשימת השאלות *@
-        @foreach (Question question in gameData.Questions)
+        @* לולאת FOREACH שעוברת לנו על כל שאלה ברשימת השאלות במיון הפוך כך שהחדשה ביותר למעלה *@
+        @foreach (Question question in Enumerable.Reverse(gameData.Questions))
         {
             int itemsCount = question.Items.Count;
             @*אנחנו משתמשים בקומפוננטה שיצרנו לאקורדיון*@
@@ -108,10 +109,11 @@
                 IsOpen="@(openQuestionId == question.questionID)"
                 OnToggle="ToggleAccordion"
                 OnDeleteClicked="DeleteQuestionClicked"
-                OnInstructionSaved="@((newText) => SaveInstructionRow(newText, question))">
+                OnInstructionSaved="@((newText) => SaveInstructionRow(newText, question))"
+                OnInstructionEditToggled="@((isEditing) => editingInstructionId = isEditing ? question.questionID : 0)">
 
-                @* אזור ה-ChildContent *@
-                <div class="items-container">
+                @* אזור ה-ChildContent - מקבל את מצב ההשבתה (כמו בהוספת שאלה חדשה) בזמן עריכת ההנחיה *@
+                <div class="items-container @(editingInstructionId == question.questionID ? "disabled-area" : "")">
                     @* השתמשנו באירועים של בלייזור שגילינו בחקירה עצמית *@
                     <div class="strawberry-container" @onmouseover="() => isHoveringAddItem = true"
                          @onmouseout="() => isHoveringAddItem = false">
@@ -147,7 +149,7 @@
                                 <div class="strawberry-input-wrapper">
                                     <CustomInputTextArea @bind-Value="currentStrawberryItem.content"
                                                          placeholder="הקלידו כאן..."
-                                                         class="inner-strawberry-input" maxLength="30" minLength="1"/>
+                                                         class="inner-strawberry-input" maxLength="30" midLength="27" minLength="1"/>
                                 </div>
                                 <ValidationMessage For="@(() => currentStrawberryItem.content)"/>
                             }
@@ -221,16 +223,14 @@
         <p style="color:red;">שגיאה: @errorMsg</p>
     }
     
-    @* הכפתור המשני שפותח את חלונית ההוספה *@
-    @if (isAddingQuestion == false)
-    {
-        <div class="add-button-wrapper">
-            @* קוראים לקומפוננטה ומעבירים לה את כל הפרמטרים *@
-            <MyButton ButtonStyle="secondary"
-                      ButtonText="+ ליצור שאלה"
-                      OnClickAction="StartAddingQuestion"/>
-        </div>
-    }
+    @* הכפתור המשני שפותח את חלונית ההוספה - מושבת בזמן הוספת שאלה *@
+    <div class="add-button-wrapper">
+        @* קוראים לקומפוננטה ומעבירים לה את כל הפרמטרים *@
+        <MyButton ButtonStyle="secondary"
+                  ButtonText="+ ליצור שאלה"
+                  IsDisabled="isAddingQuestion"
+                  OnClickAction="StartAddingQuestion"/>
+    </div>
 
     @if (showQuestionDeletePopup)
     {
@@ -300,6 +300,10 @@ else
 
 // משתנה לשמירת ה-ID של השאלה הפתוחה כרגע. 0 אומר שהכול סגור.
     int openQuestionId = 0;
+
+    // מזהה השאלה שההנחיה שלה נמצאת כרגע בעריכה. 0 אומר שאף הנחיה לא בעריכה.
+    // בזמן עריכה שאר השאלה מושבתת (אותו עיצוב כמו בהוספת שאלה חדשה) כדי לא להציף את המשתמש
+    int editingInstructionId = 0;
 
     // משתני עזר לפופ-אפ 
     bool showDeletePopup = false;
@@ -381,12 +385,17 @@ else
                 gameData.Questions = new List<Question>();
             }
 
-            //  הוספת השאלה החדשה לרשימה 
+            //  הוספת השאלה החדשה לרשימה
             gameData.Questions.Add(createdQuestion);
 
             //  סגירת שורת ההוספה והעלמת הודעות שגיאה
             isAddingQuestion = false;
             errorMsg = "";
+
+            // פותחים את האקורדיון של השאלה החדשה כדי שהתולעת תישאר פתוחה כמו בתצוגת הדמה
+            openQuestionId = createdQuestion.questionID;
+            // מאפסים את התות לקראת הפריט הראשון (כמו בפתיחת אקורדיון רגילה)
+            currentStrawberryItem = new SilkyItem();
         }
         else
         {

@@ -56,9 +56,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    text-align: center;
+    text-align: right; /* יישור הטקסט לימין בהתאם לכיוון העברית */
     white-space: normal;
-    word-wrap: break-word;
+    overflow-wrap: anywhere; /* שובר מילים ארוכות רק כשהן חורגות מרוחב הגופיף, כדי שלא תהיה גלישה */
     line-height: 1.1;
     padding: 5px 10px;
     font-weight: bold;

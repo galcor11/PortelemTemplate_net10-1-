@@ -29,28 +29,34 @@
     public string InstructionText { get; set; } // ההנחיה הנוכחית שמגיעה מהקונטרולר
 
     [Parameter]
-    public EventCallback<string> OnInstructionSaved { get; set; } // פעמון ששולח את הטקסט החדש החוצה 
+    public EventCallback<string> OnInstructionSaved { get; set; } // פעמון ששולח את הטקסט החדש החוצה
+
+    [Parameter]
+    public EventCallback<bool> OnEditModeChanged { get; set; } // פעמון שמדווח החוצה על כניסה/יציאה ממצב עריכה
 
     bool isEditMode = false;
     string tempText = ""; // משתנה זמני לעריכה, כדי שלא נדרוס את הטקסט המקורי אם המשתמש לוחץ "ביטול"
 
     // מעבר למצב עריכה
-    void EnterEditMode()
+    async Task EnterEditMode()
     {
         tempText = InstructionText; // מעתיקים את הטקסט הקיים לתוך תיבת העריכה
         isEditMode = true;
+        await OnEditModeChanged.InvokeAsync(true); // מדווחים החוצה שנכנסנו לעריכה
     }
 
     // ביטול עריכה
-    void Cancel()
+    async Task Cancel()
     {
         isEditMode = false;
+        await OnEditModeChanged.InvokeAsync(false); // מדווחים החוצה שיצאנו מעריכה
     }
 
     // אישור עריכה
     async Task Save()
     {
         isEditMode = false;
-        await OnInstructionSaved.InvokeAsync(tempText); // צלצול בפעמון ושליחת הטקסט הֶחדש לעמוד הראשי 
+        await OnEditModeChanged.InvokeAsync(false); // מדווחים החוצה שיצאנו מעריכה
+        await OnInstructionSaved.InvokeAsync(tempText); // צלצול בפעמון ושליחת הטקסט הֶחדש לעמוד הראשי
     }
 }

@@ -99,3 +99,5 @@ yarn-error.log*
 
 # ---- Never ignore the project database (shared test data lives in git) ----
 !Server/FinalProjectDB.db
+
+CLAUDE.md

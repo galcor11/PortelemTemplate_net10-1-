@@ -25,10 +25,11 @@
 
 .default-input {
     border: none;
-    padding: 5px;
+    padding: 5px 8px;
     margin-top: 20px;
     margin-bottom: 10px;
     border-radius: 5px;
     outline: 1px solid black;
     outline-offset: -1px;
+    text-align: right; /* יישור הטקסט לימין בהתאם לכיוון העברית */
 }
