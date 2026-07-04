@@ -365,12 +365,11 @@ namespace AuthTemplate.Server.Controllers
                             {
                                 object updateItemsParam = new { questionID = questionID, deletedOrderIndex = deletedOrderIndex };
                                 string updateItemsQuery = "UPDATE Items SET orderIndex = orderIndex - 1 WHERE questionID = @questionID AND orderIndex > @deletedOrderIndex";
-                                int updateItemsSuccess = await SaveChanges(gameID, updateItemsQuery, updateItemsParam);
-                                
-                                if (updateItemsSuccess > 0)
-                                    return Ok(); 
-                                
-                                return BadRequest("Delete Successful - Item's order index was not updated");
+                                // סידור הפריטים הבאים לאחר מחיקה לא ישנה את הסטטוס של תקינות פרסום המשחק לעולם ולכן נשתמש בSaveDataAsync ולא בSaveChanges
+                                await _db.SaveDataAsync(updateItemsQuery, updateItemsParam);
+                                // int updateItemsSuccess > 0 אין צורך בבדיקה אם 
+                                // זאת כיוון שבמחיקת פריט אחרון אכן אין פריטים שאמורים להתעדכן ואמור לחזור 0. החלטנו לא לסבך את הפונקציה עם עוד שליפה של הסה"כ פריטים בשאלה בשביל בדיקה מפורשת שתבדוק אם הפריט הנמחק הוא אחרון ולכן אנחנו עושים את SaveDataAsync בלי בדיקה נוספת
+                                return Ok(); 
                             }
                 
                             return BadRequest("Delete Failed"); 
