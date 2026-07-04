@@ -485,43 +485,62 @@
 }
 
 
-/* המכל שעוטף את הטבלה ויוצר את הגלילה */
+/* המכל שעוטף את הטבלה - משמש רק כמסגרת, הגלילה עצמה נמצאת בתוך גוף הטבלה */
 .table-scroll-container {
     width: 95%; /* רספונסיביות - תופס כמעט את כל רוחב העמוד  */
     max-width: 1200px; /* מונע מהטבלה להימתח מדי במסכּים רחבים */
-    max-height: 60vh; /* גובה יחסי רספונסיבי התופס כ-60% מגובה המסך */
-    overflow-y: auto; /* מוסיף פס גלילה אנכי רק כשהתוכן חורג מהגובה */
-    direction: ltr; /* מעביר את פס הגלילה לצד ימין */
     margin: 0 auto; /* ממרכז את הקונטיינר באמצע העמוד */
     border: 1px solid #e0e0e0; /* מסגרת עדינה מסביב לכל האזור */
     border-radius: 8px;
 }
 
-/*  מחזיר את הטבלה הפנימית לעברית (בגלל שהפכנו את המכל לאנגלית) */
-.table-scroll-container .questions-table {
-    direction: rtl;
+/* הגלילה מוגדרת על גוף הטבלה בלבד, כך שפס הגלילה מתחיל מתחת לשורת הכותרת */
+.questions-table tbody {
+    display: block; /* מאפשר לתת לגוף הטבלה גובה משלו בנפרד מהכותרת */
+    max-height: 60vh; /* גובה יחסי רספונסיבי התופס כ-60% מגובה המסך */
+    overflow-y: auto; /* מוסיף פס גלילה אנכי רק כשהתוכן חורג מהגובה */
+    direction: ltr; /* מעביר את פס הגלילה לצד ימין */
+}
+
+/* הכותרת וכל שורה בגוף מתנהגות כטבלה עצמאית ברוחב מלא, כדי שהעמודות יישארו מיושרות */
+/* ::deep נדרש כי שורות האקורדיון נוצרות בתוך הקומפוננטה AccordionRow */
+.questions-table thead,
+.questions-table tbody ::deep tr {
+    display: table;
     width: 100%;
+    table-layout: fixed; /* חלוקת רוחב אחידה של העמודות בכל השורות */
+}
+
+/* מחזיר את כיוון הטקסט בשורות לעברית (כי גוף הטבלה הפך לאנגלית בשביל פס הגלילה) */
+.questions-table tbody ::deep tr {
+    direction: rtl;
+}
+
+/* ריווח בכותרת שמפצה על הרוחב שפס הגלילה תופס בגוף, כדי שהעמודות יתיישרו */
+.questions-table thead {
+    padding-right: 10px;
+    background-color: #C5ECA5; /* צבע הכותרת גם באזור הריווח, כדי שלא יישאר פס לבן */
 }
 
 /*  עיצוב פס הגלילה עצמו */
 /* העובי של פס הגלילה */
-.table-scroll-container::-webkit-scrollbar {
+.questions-table tbody::-webkit-scrollbar {
     width: 10px;
 }
 
-/* הרקע של פס הגלילה */
-.table-scroll-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
+/* הרקע של פס הגלילה - באותו ירוק של שורות התוכן */
+.questions-table tbody::-webkit-scrollbar-track {
+    background: #E9FDD9;
     border-radius: 4px;
 }
 
 /* המילוי של פס הגלילה */
-.table-scroll-container::-webkit-scrollbar-thumb {
-    background: #ff8c00; /* כתום תואם לכפתור הראשי */
+.questions-table tbody::-webkit-scrollbar-thumb {
+    background: #fd8a03; /* כתום תואם לכפתור הראשי */
     border-radius: 4px;
 }
 
 /* אפקט בעת ריחוף עם העכבר על פס הגלילה */
-.table-scroll-container::-webkit-scrollbar-thumb:hover {
+.questions-table tbody::-webkit-scrollbar-thumb:hover {
     background: #e67e22;
 }
