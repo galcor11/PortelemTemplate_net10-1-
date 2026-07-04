@@ -1,11 +1,11 @@
 @using AuthTemplate.Shared.Models
 @* קומפוננטה שפתחנו לצורך השורות של האקורדיון *@
 @* שורת הכותרת של האקורדיון (תמיד מוצגת) *@
-<tr>
+<tr class="accordion-main-row">
     <td>
         @* סגירה ופתיחה של החיצים *@
         <span class="toggle-icon" @onclick="Toggle">
-            @if (isOpen)
+            @if (IsOpen)
             {
                 <span>▼</span>
             }
@@ -38,10 +38,10 @@
 </tr>
 
 @*  אזור התוכן הנפתח *@
-@if (isOpen)
+@if (IsOpen)
 {
     <tr>
-        <td colspan="3" class="accordion-content-cell">
+        <td colspan="3" class="accordion-cell">
             @* לכאן נכניס את התוכן של התולעת *@
             @ChildContent 
         </td>
@@ -59,22 +59,26 @@
 
     // הפרמטר המיוחד שמקבל תוכן HTML שלם לתוך הקומפוננטה 
     [Parameter] public RenderFragment ChildContent { get; set; } 
+    //פעמון שנועד לדווח על לחיצה על סגירה או פתיחה
+    [Parameter] public EventCallback<int> OnToggle { get; set; }
+    //פרמטר בוליאני שעוזר לנו לנהל את הסגירה ואת הפתיחה של האקורדיון
+    [Parameter] public bool IsOpen { get; set; }
 
-    //משתנה בוליאני שפתחנו כדי לשלוט על הפתיחה ועל הסגירה
-    bool isOpen = false; 
-
-    void Toggle()
-    {
-        isOpen = !isOpen;
-    }
-
+    // הפונקציה מקבלת את הטקסט המעודכן של ההנחיה, ומפעילה את הפעמון כדע להעביר את הטקסט הֶחדש לעמוד
     async Task SaveInstruction(string newText)
     {
         await OnInstructionSaved.InvokeAsync(newText); 
     }
 
+    //הפונקציה אחראית להפעיל את הפעמון כדי לדווח לעמוד שלחצו על הפח למחיקה.
     async Task DeleteQuestion()
     {
         await OnDeleteClicked.InvokeAsync(Question); 
+    }
+    
+    async Task Toggle()
+    {
+        //אנחנו קוראים לעמוד הראשי ומעבירים לו את מזהה השאלה
+        await OnToggle.InvokeAsync(Question.questionID);
     }
 }
