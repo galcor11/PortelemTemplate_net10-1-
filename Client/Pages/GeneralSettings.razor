@@ -36,7 +36,7 @@
         <div class="setting-card">
             @* הכותרת והטולטיפ *@
             <div class="title-with-tooltip">
-                <TooltipIcon ExplanationText="זה הזמן המוקצב לכל אחת מהשאלות שבמשחק" />
+                <TooltipIcon ExplanationText="הזמן המוקצב לכל אחת מהשאלות שבמשחק" />
                 <h2 class="card-title">זמן מענה לשאלה</h2>
             </div>
         
@@ -57,57 +57,44 @@
             </div>
         </div>
 
-        @* כרטיס 2: שיקוי הצלה *@
-        @* הוספנו את המחלקה potion-card-flex כדי שהטוגל והכותרת יישבו באותה שורה *@
+         @* כרטיס 2: שיקוי הצלה *@
         <div class="setting-card potion-card-flex">
             
-                @* הכותרת והטולטיפ  *@
-                <div class="title-with-tooltip" style="margin-bottom: 0;">
-                    <TooltipIcon ExplanationText="בסימון 'כן' השחקן יוכל להיפסל פעמיים ועדיין להמשיך במשחק" />
-                    <h2 class="card-title">שיקוי הצלה</h2>
-                </div>  
+            @* אזור הכותרת הכולל קריאה לקומפוננטת טולטיפ והעברת טקסט ההסבר אליה כפרמטר *@
+            <div class="title-with-tooltip" style="margin-bottom: 0;">
+                <TooltipIcon ExplanationText="בסימון 'כן' השחקן יוכל להיפסל פעמיים ועדיין להמשיך במשחק" />
+                <h2 class="card-title">שיקוי הצלה</h2>
+            </div>  
+            
+            @* מכל הטוגל *@
+            <div class="potion-toggle-container">
                 
-                @* מכל הטוגל - מבוסס על משפטי התניה שלמדנו בקורס לשליטה בתצוגה *@
-                <div class="potion-toggle-container">
-                    @* צ'קבוקס מוסתר שקשור בקשירה דו-כיוונית למשתנה הבוליאני בבסיס הנתונים *@
-                    <input type="checkbox" id="potion-switch" @bind="gameSettings.hasPotion" class="hidden-checkbox" />
+                @* 
+                   במקום להשתמש במשפטי @if/else שמוחקים ויוצרים מחדש את ה-HTML (מה שפוגע באנימציות ה-CSS),
+                   אנו משאירים את ה-HTML קבוע ומשתמשים בקריאה לפונקציות C# שמחזירות את שם המחלקה הדינמית (Class).
+                *@
+                <div class="potion-label">
                     
-                    <label for="potion-switch" class="potion-label">
+                    @* אזור בחירת ה"כן" (ממוקם ראשון בקוד כדי שיופיע בצד ימין - RTL). 
+                       שימוש בפונקציית חץ באירוע הלחיצה כדי להגדיר במפורש את המשתנה הבוליאני ל-true *@
+                    <div class="@GetYesClass()" @onclick="() => gameSettings.hasPotion = true">
+                        <img src="./svg/potion.svg" class="potion-img" aria-label="שיקוי הצלה מלא" alt=""/>
+                        <span>כן</span>
+                    </div>
+                
+                    @* פקד הסליידר (המתג). מקבל את מחלקת האנימציה שלו (slider-on) מתוך הפונקציה. 
+                       מכיוון שהאלמנט לא נמחק מה-DOM, אנימציית המעבר (Transition) תעבוד בצורה חלקה *@
+                    <div class="@GetSliderClass()" @onclick="() => gameSettings.hasPotion = !gameSettings.hasPotion"></div>
+                
+                    @* אזור בחירת ה"לא". 
+                       שימוש בפונקציית חץ באירוע הלחיצה כדי להגדיר במפורש את המשתנה הבוליאני ל-false *@
+                    <div class="@GetNoClass()" @onclick="() => gameSettings.hasPotion = false">
+                        <img src="./svg/emptyPotion.svg" class="potion-img" aria-label="שיקוי הצלה רֵיק" alt=""/>
+                        <span>לא</span>
+                    </div>
 
-                        @if (gameSettings.hasPotion == true)
-                        {
-                            @* מצב שבו השחקן מקבל שיקוי: צד ה"כן" מקבל את מחלקת active *@
-                            <div class="potion-option active">
-                                <img src="./svg/potion.svg" class="potion-img" aria-label="שיקוי הצלה מלא" alt=""/>
-                                <span>כן</span>
-                            </div>
-                        
-                            <div class="slider"></div>
-                        
-                            <div class="potion-option">
-                                <img src="./svg/emptyPotion.svg" class="potion-img" aria-label="שיקוי הצלה רֵיק" alt=""/>
-                                <span>לא</span>
-                            </div>
-                        }
-                        else
-                        {
-                            @* מצב שבו השחקן לא מקבל שיקוי: צד ה"לא" מקבל את מחלקת active *@
-                            @* גם כאן סדר הופעת האלמנטים נשמר (כן מימין, לא משמאל) *@
-                            <div class="potion-option">
-                                <img src="./svg/potion.svg" class="potion-img" aria-label="שיקוי הצלה מלא" alt=""/>
-                                <span>כן</span>
-                            </div>
-                        
-                            <div class="slider"></div>
-                        
-                            <div class="potion-option active">
-                                <img src="./svg/emptyPotion.svg" class="potion-img" aria-label="שיקוי הצלה רֵיק" alt=""/>
-                                <span>לא</span>
-                            </div>
-                        }
-
-                    </label>
                 </div>
+            </div>
         </div>
 
     </div>
@@ -155,6 +142,36 @@ else
         {
             gameSettings = response.Content.ReadFromJsonAsync<GameToAddDto>().Result;
         }
+    }
+    
+    // פונקציה שמחזירה את מחלקת העיצוב לסליידר
+    string GetSliderClass()
+    {
+        if (gameSettings.hasPotion == true) 
+        {
+            return "slider slider-on";
+        }
+        return "slider";
+    }
+
+    // פונקציה שמחזירה את מחלקת העיצוב לצד של ה"כן"
+    string GetYesClass()
+    {
+        if (gameSettings.hasPotion == true) 
+        {
+            return "potion-option active";
+        }
+        return "potion-option";
+    }
+
+    // פונקציה שמחזירה את מחלקת העיצוב לצד של ה"לא"
+    string GetNoClass()
+    {
+        if (gameSettings.hasPotion == false) 
+        {
+            return "potion-option active";
+        }
+        return "potion-option";
     }
     
     string msg = "";

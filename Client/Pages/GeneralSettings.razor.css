@@ -122,12 +122,6 @@
 }
 
 
-
-/* מסתיר את הצ'קבוקס המקורי */
-.hidden-checkbox {
-    display: none;
-}
-
 /* המכל הראשי של הטוגל */
 .potion-label {
     display: flex;
@@ -167,6 +161,7 @@
     border-radius: 20px;
     position: relative;
     transition: 0.4s;
+    cursor: pointer;
 }
 
 .slider::before {
@@ -181,17 +176,24 @@
     transition: 0.4s;
 }
 
-/* כשהטוגל מסומן יש צבע ירוק והעיגול זז */
-#potion-switch:checked + .potion-label .slider {
+/* כשהטוגל מסומן באמצעות המחלקה הדינמית - צבע ירוק */
+.slider.slider-on {
     background-color: #228B22;
 }
 
-#potion-switch:checked + .potion-label .slider::before {
+/* המחלקה הדינמית מזיזה את העיגול הפנימי */
+.slider.slider-on::before {
     transform: translateX(25px);
 }
 /* הופך את הכרטיסייה של השיקוי לשורה אחת */
 .potion-card-flex {
     display: flex;
     align-items: center; /* ממרכז את הכותרת והטוגל יחד לגובה */
-    justify-content: space-between; /* דוחף את הכותרת לימין ואת הטוגל לשמאל */
+    /* מחקנו מכאן את ה-justify-content שדחף לשמאל */
+}
+
+/* ממרכז את מכל הטוגל והשיקויים לאמצע הכרטיס */
+.potion-toggle-container {
+    margin-right: auto;
+    margin-left: auto;
 }
