@@ -120,3 +120,72 @@
     border-color: white transparent transparent transparent;
     z-index: 1;
 }
+
+
+
+/* מסתיר את הצ'קבוקס המקורי */
+.hidden-checkbox {
+    display: none;
+}
+
+/* המכל הראשי של הטוגל */
+.potion-label {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 15px;
+    width: fit-content;
+}
+
+/* עיצוב השיקויים */
+.potion-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0.5; /* אפרפר כשלא נבחר */
+    transition: opacity 0.3s;
+}
+
+/* כשהשיקוי נבחר - הופך לברור */
+.potion-option.active {
+    opacity: 1;
+}
+
+.potion-img {
+    width: 40px;
+    height: auto;
+}
+
+/* הטוגל באמצע */
+.slider {
+    width: 50px;
+    height: 25px;
+    background-color: #ccc;
+    border-radius: 20px;
+    position: relative;
+    transition: 0.4s;
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 3.5px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+}
+
+/* כשהצ'קבוקס מסומן - צבע ירוק והזזת העיגול */
+#potion-switch:checked + .potion-label .slider {
+    background-color: #228B22;
+}
+
+#potion-switch:checked + .potion-label .slider::before {
+    transform: translateX(25px);
+}

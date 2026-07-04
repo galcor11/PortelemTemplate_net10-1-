@@ -34,7 +34,6 @@
 
         @* כרטיס 1: זמן מענה *@
         <div class="setting-card">
-            
             @* הכותרת והטולטיפ *@
             <div class="title-with-tooltip">
                 <TooltipIcon ExplanationText="זה הזמן המוקצב לכל אחת מהשאלות שבמשחק" />
@@ -50,7 +49,6 @@
                        class="time-input"
                        />
                 <span>שניות</span>
-
                 @* צ'קבוקס ללא הגבלה *@
                 <div class="checkbox-wrapper">
                     <input type="checkbox" id="unlimited" @bind="isUnlimitedTime" />
@@ -66,11 +64,42 @@
                     <TooltipIcon ExplanationText="בסימון 'כן' השחקן יוכל להיפסל פעמיים ועדיין להמשיך במשחק" />
                     <h2 class="card-title">שיקוי הצלה</h2>
                 </div>  
-                
-                @* צ'קבוקס שמקושר ישירות לשדה של השיקוי בבסיס הנתונים *@
-                <input type="checkbox" id="potion" @bind="gameSettings.hasPotion" class="potion-checkbox"/>
-                <label for="potion">השחקן יקבל שיקוי הצלה במשחק</label>
-            
+                @*  מכל הטוגל  *@
+                <div class="potion-toggle-container">
+                    <input type="checkbox" id="potion-switch" @bind="gameSettings.hasPotion" class="hidden-checkbox" />
+                    <label for="potion-switch" class="potion-label">
+
+                        @{
+                            // פותחים משתני עזר ריקים
+                            string emptyPotionClass = "";
+                            string fullPotionClass = "";
+
+                            // נותנים ערך למשתנים בהתאם לבוליאני שלנו
+                            if (gameSettings.hasPotion == true)
+                            {
+                                fullPotionClass = "active";
+                            }
+                            else
+                            {
+                                emptyPotionClass = "active";
+                            }
+                        }
+
+                        @* אנחנו שותלים את משתני העזר בתוך התגיות *@
+                        <div class="potion-option @emptyPotionClass">
+                            <img src="./svg/emptyPotion.svg" class="potion-img" aria-label="שיקוי הצלה רֵיק" alt=""/>
+                            <span>לא</span>
+                        </div>
+                    
+                        <div class="slider"></div>
+                    
+                        <div class="potion-option @fullPotionClass">
+                            <img src="./svg/potion.svg" class="potion-img" aria-label="שיקוי הצלה מלא" alt=""/>
+                            <span>כן</span>
+                        </div>
+
+                    </label>
+                </div>
         </div>
 
     </div>
