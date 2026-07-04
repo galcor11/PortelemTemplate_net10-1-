@@ -13,7 +13,7 @@
             <DataAnnotationsValidator/>
             <p>
                 @* תיבת הטקסט מקושרת לשם המשחק *@
-                <CustomInputText  @bind-Value="gameToAdd.gameName" maxLength="20" minLength="1"/>
+                <CustomInputText  @bind-Value="gameToAdd.gameName" maxLength="20" midLength="17" minLength="1"/>
             </p>
             @* הודעת שגיאה *@
             <ValidationMessage For="@(() => gameToAdd.gameName)"/>

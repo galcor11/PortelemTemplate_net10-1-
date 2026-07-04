@@ -6,10 +6,6 @@
     <p>המשחק נטען...</p>
 }
 
-<iframe width="1280" height="720" scrolling="no"
-        src=@($"Game/index.html?code={code}")
-                @onload="()=>loading=false"></iframe>
-
 <PageTitle>מְסַדְּרֵי המשי</PageTitle>
 
 <!-- ניהול משתמשים - תצוגה שונה לפי משתמש -->
@@ -29,6 +25,8 @@
     </NotAuthorized>
 </AuthorizeView>
 
+<iframe width="1280" height="720" scrolling="no"
+        src=@($"Game/index.html?code={code}") @onload="()=>loading=false"></iframe>
 
 @code {
 

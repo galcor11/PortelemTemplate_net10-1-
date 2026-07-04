@@ -5,7 +5,7 @@
 <div class="textarea-with-counter @CssClass">
     <textarea @attributes="@AdditionalAttributes" class="" @bind="@CurrentValueAsString" @bind:event="oninput" @onkeyup="countChars" maxlength="@maxLength"></textarea>
     @* ספירת תווים (מקסימום/נוכחי כדי שיקרא נכון בעברית). הצבע משתנה רק על הטקסט של המונה *@
-    <span class="char-counter @inputClass">@maxLength.ToString()/@length.ToString()</span>
+    <span class="char-counter @counterClass">@maxLength.ToString()/@length.ToString()</span>
 </div>
 
 
@@ -13,14 +13,14 @@
     // פרמטר לקבלת אורך מחרוזת מינימלי
     [Parameter]
     public int minLength { get; set; } = 1;
-    // פרמטר לקבלת אורך מחרוזת להצגת אזהרה
+    // פרמטר לקבלת אורך מחרוזת שממנו המונה נצבע כתום (אזהרת התקרבות למקסימום)
     [Parameter]
-    public int midLength { get; set; } = 10;
+    public int midLength { get; set; } = 17;
     // פרמטר לקבלת אורך מחרוזת מקסימלי
     [Parameter]
     public int maxLength { get; set; } = 20;
-    // משתנה שיכיל את שם המחלקה הרלוונטי במידה ואורך המחרוזת תקין, דורש אזהרה או לא תקין
-    string inputClass = "";
+    // משתנה שיכיל את שם המחלקה של המונה - ירוק כשהאורך תקין, אדום כשלא
+    string counterClass = "";
     // משתנה שיכיל את אורך המחרוזת
     int length = 0;
 
@@ -37,15 +37,15 @@
             length = CurrentValueAsString.Length;
             if (length >= minLength && length < midLength)
             {
-                inputClass = "good-input";
+                counterClass = "good-counter";
             }
-            else if (length >= midLength && length <= maxLength)
+            else if (length >= midLength && length < maxLength)
             {
-                inputClass = "warnning-input";
+                counterClass = "warning-counter";
             }
             else
             {
-                inputClass = "danger-input";
+                counterClass = "danger-counter";
             }
         }
     }

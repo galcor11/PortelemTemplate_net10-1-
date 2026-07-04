@@ -2,14 +2,14 @@
 @if (IsSubmit)
 {
     @* כפתור טופס מסוג Submit - מפעיל את הוולידציות של הטופס לפני הפעלת הפונקציה *@
-    <button type="submit" class="my-btn @ButtonStyle">
+    <button type="submit" class="my-btn @(IsDisabled ? "disabled" : ButtonStyle)" disabled="@IsDisabled">
         @ButtonText
     </button>
 }
 else
 {
     @* כפתור רגיל מסוג Button - מפעיל את פונקציית הלחיצה שהעברנו לו *@
-    <button type="button" class="my-btn @ButtonStyle" @onclick="OnClickAction">
+    <button type="button" class="my-btn @(IsDisabled ? "disabled" : ButtonStyle)" disabled="@IsDisabled" @onclick="OnClickAction">
         @ButtonText
     </button>
 }
@@ -27,7 +27,11 @@ else
     [Parameter]
     public EventCallback OnClickAction { get; set; }
     
-    // פרמטר שקובע אם הכפתור הוא כפתור שליחה של טופס. 
+    // פרמטר שקובע אם הכפתור הוא כפתור שליחה של טופס.
     [Parameter]
-    public bool IsSubmit { get; set; } = false; 
+    public bool IsSubmit { get; set; } = false;
+
+    // פרמטר שקובע אם הכפתור מושבת (לא לחיץ ובעיצוב אפור)
+    [Parameter]
+    public bool IsDisabled { get; set; } = false;
 }

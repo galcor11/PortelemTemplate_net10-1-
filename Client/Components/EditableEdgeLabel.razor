@@ -4,7 +4,7 @@
         @if (isEditing)
         {
             <!-- מצב עריכה: תיבת טקסט קטנה וכפתור שמירה -->
-            <CustomInputText @bind-Value="tempText" class="edge-edit-input" maxLength="10" minLength="1" />
+            <CustomInputText @bind-Value="tempText" class="edge-edit-input" maxLength="10" midLength="7" minLength="1" />
             <button type="button" class="icon-btn" title="שמור" @onclick="SaveLabel">✔️</button>
         }
         else

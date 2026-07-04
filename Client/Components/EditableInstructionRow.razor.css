@@ -2,11 +2,12 @@
 .instruction-row-container {
     display: flex;
     align-items: center;
+    gap: 15px; /* מרווח בין התיבה לכפתורים ובין הכפתורים לעצמם */
 }
 
 /* תיבת הטקסט של העריכה (::deep כי התיבה נמצאת בתוך קומפוננטת הבת CustomInputText) */
 ::deep .edit-input {
-    margin: 0 0 0 10px !important; /* מבטל את המרווחים של default-input כדי שהשורה תישאר מיושרת */
+    margin: 0 !important; /* מבטל את המרווחים של default-input, הריווח מגיע מה-gap של השורה */
     padding: 5px;
     border-radius: 5px;
     border: 1px solid #ccc;
