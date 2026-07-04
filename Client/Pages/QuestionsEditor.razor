@@ -80,7 +80,7 @@
                                                    DefaultText="ראשון"
                                                    OnLabelSaved="@((newText) => questionToAdd.startLabel = newText)"/>
                             </div>
-                            <img src="SVG/strokeBody.svg" class="placeholder-segment" alt=""/>
+                            <img src="./svg/strokeBody.svg" class="placeholder-segment" alt=""/>
                         </div>
                         <div class="segment-wrapper">
                             <div class="label-container">
@@ -89,7 +89,7 @@
                                                    DefaultText="אחרון"
                                                    OnLabelSaved="@((newText) => questionToAdd.endLabel = newText)"/>
                             </div>
-                            <img src="SVG/strokeBody.svg" class="placeholder-segment" alt=""/>
+                            <img src="./svg/strokeBody.svg" class="placeholder-segment" alt=""/>
                         </div>
                     </div>
                 </td>
@@ -115,101 +115,105 @@
                     @* השתמשנו באירועים של בלייזור שגילינו בחקירה עצמית *@
                     <div class="strawberry-container" @onmouseover="() => isHoveringAddItem = true"
                          @onmouseout="() => isHoveringAddItem = false">
-
-                        @* אנחנו בודקים אם כמות הפריטים הגיעה לשמונה וגם אם אנחנו במצב הוספה *@
-                        @if (currentStrawberryItem.answerID == 0)
-                        {
-                            if (question.Items.Count < 8)
+                        @* אזור הכותרת עם הטולטיפ *@
+                        <div class="title-with-tooltip centered-tooltip-title">
+                            @* הקומפוננטה של הטולטיפ*@
+                            <TooltipIcon ExplanationText="יש למלא 8-4 תותים לשאלה תַּקינה לפרסום"/>
+                            @* אנחנו בודקים אם כמות הפריטים הגיעה לשמונה וגם אם אנחנו במצב הוספה *@
+                            @if (currentStrawberryItem.answerID == 0)
                             {
-                                <h3>הוספת פריט</h3>
+                                if (question.Items.Count < 8)
+                                {
+                                    <h3>הוספת פריט</h3>
+                                }
+                                else
+                                {
+                                    <h3> הגעת למקסימום פריטים</h3>
+                                }
                             }
                             else
                             {
-                                <h3> הגעת למקסימום פריטים</h3>
+                                <h3>עריכת פריט</h3>
                             }
-                        }
-                        else
-                        {
-                            <h3>עריכת פריט</h3>
-                        }
 
+                        </div>
+                            <!-- פתיחת הטופס והגדרת הפונקציה שתפעל בשליחה -->
+                            <EditForm Model="currentStrawberryItem"
+                                      OnValidSubmit="() => HandleStrawberrySubmit(question)">
 
-                        <!-- פתיחת הטופס והגדרת הפונקציה שתפעל בשליחה -->
-                        <EditForm Model="currentStrawberryItem"
-                                  OnValidSubmit="() => HandleStrawberrySubmit(question)">
+                                <!--  הפעלת ולידציות -->
+                                <DataAnnotationsValidator/>
+                                <!-- תנאי שקובע מה יוצג בהתאם לטוגל -->
+                                @if (currentStrawberryItem.isImage == false)
+                                {
+                                    @* מצב טקסט: תיבת הטקסט במרכז התות *@
+                                    <div class="strawberry-input-wrapper">
+                                        <CustomInputTextArea @bind-Value="currentStrawberryItem.content"
+                                                             placeholder="הקלידו כאן..."
+                                                             class="inner-strawberry-input" maxLength="30" minLength="1"/>
+                                    </div>
+                                    <ValidationMessage For="@(() => currentStrawberryItem.content)"/>
+                                }
+                                else
+                                {
+                                    @* מצב תמונה: התות משמש בתור כפתור שפותח את סייר הקבצים *@
+                                    <div class="strawberry-input-wrapper clickable-wrapper"
+                                         @onclick="TriggerFileInput">
+                                        @* בודקים אם המשתנה שלנו קיבל שם של תמונה מהשרת *@
+                                        @if (string.IsNullOrEmpty(currentStrawberryItem.content))
+                                        {
+                                            @* אם אין עדיין תמונה, אנחנו מציגים את טקסט ברירת המחדל *@
+                                            <p class="inner-strawberry-input upload-text">לחצו להעלאת תמונה</p>
+                                        }
+                                        else
+                                        {
+                                            @* אם יש תמונה, אנחנו מציגים אותה על התות *@
+                                            <img src="uploadedFiles/@currentStrawberryItem.content"
+                                                 class="strawberry-preview-img"/>
+                                        }
+                                    </div>
 
-                            <!--  הפעלת ולידציות -->
-                            <DataAnnotationsValidator/>
-                            <!-- תנאי שקובע מה יוצג בהתאם לטוגל -->
-                            @if (currentStrawberryItem.isImage == false)
-                            {
-                                @* מצב טקסט: תיבת הטקסט במרכז התות *@
-                                <div class="strawberry-input-wrapper">
-                                    <CustomInputTextArea @bind-Value="currentStrawberryItem.content"
-                                                         placeholder="הקלידו כאן..."
-                                                         class="inner-strawberry-input" maxLength="30" minLength="1"/>
+                                    @* פקד מוסתר להעלאת הקובץ האמיתי  *@
+                                    <InputFile id="FileInputID" OnChange="UploadFile" hidden/>
+                                }
+
+                                <!-- אזור הטוגל המעוצב -->
+                                <div class="toggle-container">
+                                    <label class="toggle-switch">
+                                        <InputCheckbox @bind-Value="currentStrawberryItem.isImage"
+                                                       @onclick="ClearContent" class="toggle-checkbox"/>
+
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <span class="toggle-label">תמונה</span>
                                 </div>
-                                <ValidationMessage For="@(() => currentStrawberryItem.content)"/>
-                            }
-                            else
-                            {
-                                @* מצב תמונה: התות משמש בתור כפתור שפותח את סייר הקבצים *@
-                                <div class="strawberry-input-wrapper clickable-wrapper"
-                                     @onclick="TriggerFileInput">
-                                    @* בודקים אם המשתנה שלנו קיבל שם של תמונה מהשרת *@
-                                    @if (string.IsNullOrEmpty(currentStrawberryItem.content))
-                                    {
-                                        @* אם אין עדיין תמונה, אנחנו מציגים את טקסט ברירת המחדל *@
-                                        <p class="inner-strawberry-input upload-text">לחצו להעלאת תמונה</p>
-                                    }
-                                    else
-                                    {
-                                        @* אם יש תמונה, אנחנו מציגים אותה על התות *@
-                                        <img src="uploadedFiles/@currentStrawberryItem.content"
-                                             class="strawberry-preview-img"/>
-                                    }
-                                </div>
+                                <!-- כפתור ה-SUBMIT של התות שמשנה את הטקסט שלו -->
+                                @if (currentStrawberryItem.answerID > 0)
+                                {
+                                    <button type="submit">שמירת שינויים</button>
+                                }
+                                else
+                                {
+                                    <button type="submit">אישור</button>
+                                }
+                        
 
-                                @* פקד מוסתר להעלאת הקובץ האמיתי  *@
-                                <InputFile id="FileInputID" OnChange="UploadFile" hidden/>
-                            }
+                            </EditForm>
+                        </div>
 
-                            <!-- אזור הטוגל המעוצב -->
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <InputCheckbox @bind-Value="currentStrawberryItem.isImage"
-                                                   @onclick="ClearContent" class="toggle-checkbox"/>
+                        @* אנחנו משתמשים בקומפוננטה שפתחנו והנקייה שלנו לתולעת *@
+                        <Silky CurrentQuestion="question"
+                               CurrentStrawberryItem="currentStrawberryItem"
+                               IsHoveringAddItem="isHoveringAddItem"
+                               OnEditItemClicked="EditItem"
+                               OnDeleteItemClicked="DeleteItemFromSilky"
+                               OnImagePreviewClicked="OpenImagePreview"
+                               OnStartLabelSaved="@((newText) => SaveStartLabel(newText, question))"
+                               OnEndLabelSaved="@((newText) => SaveEndLabel(newText, question))"
+                               OnMoveRightClicked="@((item) => MoveRight(item, question.Items))"
+                               OnMoveLeftClicked="@((item) => MoveLeft(item, question.Items))"/>
 
-                                    <span class="toggle-slider"></span>
-                                </label>
-                                <span class="toggle-label">תמונה</span>
-                            </div>
-                            <!-- כפתור ה-SUBMIT של התות שמשנה את הטקסט שלו -->
-                            @if (currentStrawberryItem.answerID > 0)
-                            {
-                                <button type="submit">שמירת שינויים</button>
-                            }
-                            else
-                            {
-                                <button type="submit">אישור</button>
-                            }
-
-                        </EditForm>
                     </div>
-                    
-                    @* אנחנו משתמשים בקומפוננטה שפתחנו והנקייה שלנו לתולעת *@
-                    <Silky CurrentQuestion="question" 
-                           CurrentStrawberryItem="currentStrawberryItem"
-                           IsHoveringAddItem="isHoveringAddItem"
-                           OnEditItemClicked="EditItem" 
-                           OnDeleteItemClicked="DeleteItemFromSilky"
-                           OnImagePreviewClicked="OpenImagePreview"
-                           OnStartLabelSaved="@((newText) => SaveStartLabel(newText, question))"
-                           OnEndLabelSaved="@((newText) => SaveEndLabel(newText, question))"
-                           OnMoveRightClicked="@((item) => MoveRight(item, question.Items))"
-                           OnMoveLeftClicked="@((item) => MoveLeft(item, question.Items))" />
-
-        </div>
         </AccordionRow>
     } @* סגירת הלולאה של ה-foreach *@
 

@@ -386,3 +386,16 @@
 .questions-table tbody::-webkit-scrollbar-thumb:hover {
     background: #e67e22;
 }
+
+/* ממקם את הטולטיפ והכותרת במרכז אזור הוספת הפריט ודוחף מעט כלפי מטה */
+.centered-tooltip-title {
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+/* מונע מכותרות h3 בתוך אזור הטולטיפ לשבור שורה */
+.title-with-tooltip h3 {
+    margin: 0;
+    width: auto;
+    white-space: nowrap;
+}
