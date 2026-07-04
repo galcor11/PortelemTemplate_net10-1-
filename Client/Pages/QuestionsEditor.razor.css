@@ -133,6 +133,8 @@
     margin-left: 30px;
     width: fit-content;
     background-color: rgba(255, 255, 255, 0.4);
+    /*  התכונה מאפשרת לטולטיפ לצאת מגבולות התיבה בלי להיחתך */
+    overflow: visible;
 }
 
 /* סידור האזור של המתג והטקסט לידו */

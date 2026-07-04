@@ -28,7 +28,7 @@
 
     /* מיקום הטולטיפ בדיוק מעל האייקון */
     position: absolute;
-    z-index: 1;
+    z-index: 999;
     bottom: 130%;
     left: 50%;
     transform: translateX(-50%); /* ממרכז את הבועה לאייקון */
