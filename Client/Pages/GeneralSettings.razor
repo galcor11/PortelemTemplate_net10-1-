@@ -58,45 +58,53 @@
         </div>
 
         @* כרטיס 2: שיקוי הצלה *@
-        <div class="setting-card">
+        @* הוספנו את המחלקה potion-card-flex כדי שהטוגל והכותרת יישבו באותה שורה *@
+        <div class="setting-card potion-card-flex">
+            
                 @* הכותרת והטולטיפ  *@
-                <div class="title-with-tooltip">
+                <div class="title-with-tooltip" style="margin-bottom: 0;">
                     <TooltipIcon ExplanationText="בסימון 'כן' השחקן יוכל להיפסל פעמיים ועדיין להמשיך במשחק" />
                     <h2 class="card-title">שיקוי הצלה</h2>
                 </div>  
-                @*  מכל הטוגל  *@
+                
+                @* מכל הטוגל - מבוסס על משפטי התניה שלמדנו בקורס לשליטה בתצוגה *@
                 <div class="potion-toggle-container">
+                    @* צ'קבוקס מוסתר שקשור בקשירה דו-כיוונית למשתנה הבוליאני בבסיס הנתונים *@
                     <input type="checkbox" id="potion-switch" @bind="gameSettings.hasPotion" class="hidden-checkbox" />
+                    
                     <label for="potion-switch" class="potion-label">
 
-                        @{
-                            // פותחים משתני עזר ריקים
-                            string emptyPotionClass = "";
-                            string fullPotionClass = "";
-
-                            // נותנים ערך למשתנים בהתאם לבוליאני שלנו
-                            if (gameSettings.hasPotion == true)
-                            {
-                                fullPotionClass = "active";
-                            }
-                            else
-                            {
-                                emptyPotionClass = "active";
-                            }
+                        @if (gameSettings.hasPotion == true)
+                        {
+                            @* מצב שבו השחקן מקבל שיקוי: צד ה"כן" מקבל את מחלקת active *@
+                            <div class="potion-option active">
+                                <img src="./svg/potion.svg" class="potion-img" aria-label="שיקוי הצלה מלא" alt=""/>
+                                <span>כן</span>
+                            </div>
+                        
+                            <div class="slider"></div>
+                        
+                            <div class="potion-option">
+                                <img src="./svg/emptyPotion.svg" class="potion-img" aria-label="שיקוי הצלה רֵיק" alt=""/>
+                                <span>לא</span>
+                            </div>
                         }
-
-                        @* אנחנו שותלים את משתני העזר בתוך התגיות *@
-                        <div class="potion-option @emptyPotionClass">
-                            <img src="./svg/emptyPotion.svg" class="potion-img" aria-label="שיקוי הצלה רֵיק" alt=""/>
-                            <span>לא</span>
-                        </div>
-                    
-                        <div class="slider"></div>
-                    
-                        <div class="potion-option @fullPotionClass">
-                            <img src="./svg/potion.svg" class="potion-img" aria-label="שיקוי הצלה מלא" alt=""/>
-                            <span>כן</span>
-                        </div>
+                        else
+                        {
+                            @* מצב שבו השחקן לא מקבל שיקוי: צד ה"לא" מקבל את מחלקת active *@
+                            @* גם כאן סדר הופעת האלמנטים נשמר (כן מימין, לא משמאל) *@
+                            <div class="potion-option">
+                                <img src="./svg/potion.svg" class="potion-img" aria-label="שיקוי הצלה מלא" alt=""/>
+                                <span>כן</span>
+                            </div>
+                        
+                            <div class="slider"></div>
+                        
+                            <div class="potion-option active">
+                                <img src="./svg/emptyPotion.svg" class="potion-img" aria-label="שיקוי הצלה רֵיק" alt=""/>
+                                <span>לא</span>
+                            </div>
+                        }
 
                     </label>
                 </div>

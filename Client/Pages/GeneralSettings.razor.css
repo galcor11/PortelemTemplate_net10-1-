@@ -149,7 +149,7 @@
     transition: opacity 0.3s;
 }
 
-/* כשהשיקוי נבחר - הופך לברור */
+/* כשהשיקוי נבחר, הופך לברור */
 .potion-option.active {
     opacity: 1;
 }
@@ -159,7 +159,7 @@
     height: auto;
 }
 
-/* הטוגל באמצע */
+/* הטוגל שבאמצע */
 .slider {
     width: 50px;
     height: 25px;
@@ -181,11 +181,17 @@
     transition: 0.4s;
 }
 
-/* כשהצ'קבוקס מסומן - צבע ירוק והזזת העיגול */
+/* כשהטוגל מסומן יש צבע ירוק והעיגול זז */
 #potion-switch:checked + .potion-label .slider {
     background-color: #228B22;
 }
 
 #potion-switch:checked + .potion-label .slider::before {
     transform: translateX(25px);
+}
+/* הופך את הכרטיסייה של השיקוי לשורה אחת */
+.potion-card-flex {
+    display: flex;
+    align-items: center; /* ממרכז את הכותרת והטוגל יחד לגובה */
+    justify-content: space-between; /* דוחף את הכותרת לימין ואת הטוגל לשמאל */
 }
