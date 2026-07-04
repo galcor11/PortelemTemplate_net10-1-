@@ -101,3 +101,5 @@ yarn-error.log*
 !Server/FinalProjectDB.db
 
 CLAUDE.md
+gemini.md
+docs/handoff.md

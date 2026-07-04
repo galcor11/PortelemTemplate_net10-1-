@@ -8,22 +8,7 @@
 
 <PageTitle>מְסַדְּרֵי המשי</PageTitle>
 
-<!-- ניהול משתמשים - תצוגה שונה לפי משתמש -->
-
-<AuthorizeView>
-    <!-- ניהול משתמשים - משתמש מחובר -->
-    <Authorized>
-        @if (user != null)
-        {
-            <h1>היי @user.FirstName @user.LastName</h1>
-        }
-    </Authorized>
-        <!-- ניהול משתמשים - משתמש לא מחובר -->
-    <NotAuthorized>
-        <h1>אין משתמש מחובר</h1>
-        <p>אפשר להציג פה תוכן כללי.</p>
-    </NotAuthorized>
-</AuthorizeView>
+@* מחקנו את החלק שקשור לתצוגה שונה לפי משתמשים כי לא רלוונטי בהצגת משחק *@
 
 <iframe width="1280" height="720" scrolling="no"
         src=@($"Game/index.html?code={code}") @onload="()=>loading=false"></iframe>

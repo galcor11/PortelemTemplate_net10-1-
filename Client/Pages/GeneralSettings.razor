@@ -1,15 +1,12 @@
-@page "/GeneralSettings/{gameID:int}"
-<!-- ניהול משתמשים - רק יוזר מחובר יכול להיכנס -->
-@attribute [Authorize]
+@* קומפוננטת ההגדרות הכלליות - מוצגת בתור טאב בתוך העמוד המארח GameEditor *@
+@* ההרשאות, קישור החזרה והטאבים נמצאים בעמוד המארח *@
 @inject HttpClient Http
 @using AuthTemplate.Shared.Models;
 @inject NavigationManager Nav;
 
 @* המכל הראשי שמכיל את הדשא *@
 <div class="settings-page-wrapper">
-   
-    
-<a href="./GamesList">בחזרה למשחקים שלי</a>
+
 <h1>⚙️הגדרות כלליות️</h1>
 
 @if (gameSettings != null)
@@ -97,12 +94,15 @@ else
 
 @code
 {
-    //הפרמטר שמוזרק בנתיב
+    //הפרמטר שמתקבל מהעמוד המארח
     [Parameter]
-    public int gameID { get; set; } 
+    public int gameID { get; set; }
+
+    // פעמון שמדווח לעמוד המארח על שמירה מוצלחת של ההגדרות
+    [Parameter] public EventCallback OnSettingsSaved { get; set; }
     
     // מופע של ה-DTO שמכיל את נתוני המשחק 
-    GameToAddDto gameSettings;
+    [Parameter] public GameToAddDto gameSettings { get; set; }
     
     // משתנה בוליאני שעוזר לנו לבדוק אם אנחנו במצב עריכה או בתצוגה רגילה
     bool isEditingName = false;
@@ -112,11 +112,18 @@ else
     // עם טעינת העמוד
     protected override async Task OnInitializedAsync()
     {
-        // קריאה לקונטרולר שיביא את המשחק הספציפי
-        var response = await Http.GetAsync("api/Games/byId/" + gameID.ToString());
-        if (response.IsSuccessStatusCode == true)
+        if (gameSettings == null)
         {
-            gameSettings = response.Content.ReadFromJsonAsync<GameToAddDto>().Result;
+            // קריאה לקונטרולר שיביא את המשחק הספציפי
+            var response = await Http.GetAsync("api/Games/byId/" + gameID.ToString());
+            if (response.IsSuccessStatusCode == true)
+            {
+                gameSettings = response.Content.ReadFromJsonAsync<GameToAddDto>().Result;
+            }
+        }
+        if (gameSettings != null)
+        {
+            isUnlimitedTime = (gameSettings.time == 1000);
         }
     }
     
@@ -134,8 +141,8 @@ else
 //בדיקה אם העדכון הצליח        
         if (updateResponse.IsSuccessStatusCode == true)
         {
-            msg = "השינויים נשמרו בהצלחה!";
-            Nav.NavigateTo("./QuestionsEditor/" + gameID.ToString());
+            // מדווחים לעמוד המארח - הוא יציג את ההודעה בתחתית ויעבור לטאב עריכת השאלות
+            await OnSettingsSaved.InvokeAsync();
         }
         else 
         {

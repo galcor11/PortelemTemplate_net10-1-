@@ -1,7 +1,5 @@
-@page "/QuestionsEditor/{gameID:int}"
-<h1>עריכת שאלות</h1>
-<!-- ניהול משתמשים - רק יוזר מחובר יכול להיכנס -->
-@attribute [Authorize]
+@* קומפוננטת עריכת השאלות - מוצגת בתור טאב בתוך העמוד המארח GameEditor *@
+@* ההרשאות (Authorize) נאכפות בעמוד המארח, והכותרת עברה לשם *@
 @using System.Linq
 @using AuthTemplate.Shared.Models
 @inject HttpClient Http
@@ -187,13 +185,16 @@
                                 <span class="toggle-label">תמונה</span>
                             </div>
                             <!-- כפתור ה-SUBMIT של התות שמשנה את הטקסט שלו -->
+                            <!-- הכפתור אפור וחסום כשאין תוכן תקין, וכתום כשאפשר לאשר -->
                             @if (currentStrawberryItem.answerID > 0)
                             {
-                                <button type="submit">שמירת שינויים</button>
+                                <button type="submit" class="strawberry-submit"
+                                        disabled="@isStrawberryDisabled">שמירת שינויים</button>
                             }
                             else
                             {
-                                <button type="submit">אישור</button>
+                                <button type="submit" class="strawberry-submit"
+                                        disabled="@isStrawberryDisabled">אישור</button>
                             }
 
                         </EditForm>
@@ -273,8 +274,11 @@ else
 
     long maxFileSize = 4194304;
 
-    //הפרמטר שמתקבל מהנתיב (מזהה המשחק)
+    //הפרמטר שמתקבל מהעמוד המארח (מזהה המשחק)
     [Parameter] public int gameID { get; set; }
+
+    // פעמון שמדווח לעמוד המארח על שמירה מוצלחת, כדי שיציג "השינויים נשמרו בהצלחה"
+    [Parameter] public EventCallback OnChangesSaved { get; set; }
 
     //משתנה בוליאני הוספנו כדי לדעת אם העכבר נמצא בHOVER מעל הוספת פריט
     bool isHoveringAddItem = false;
@@ -294,7 +298,7 @@ else
     QuestionToAdd questionToAdd = new QuestionToAdd();
 
     //מופע של מחלקה שנועד לשמור את רשימת השאלות ואת שם המשחק מהקונטרולר   
-    GameEditDto gameData;
+    [Parameter] public GameEditDto gameData { get; set; }
     string successMsg = "";
     string errorMsg = "";
 
@@ -396,6 +400,9 @@ else
             openQuestionId = createdQuestion.questionID;
             // מאפסים את התות לקראת הפריט הראשון (כמו בפתיחת אקורדיון רגילה)
             currentStrawberryItem = new SilkyItem();
+
+            // מדווחים לעמוד המארח על שמירה מוצלחת
+            await OnChangesSaved.InvokeAsync();
         }
         else
         {
@@ -423,6 +430,9 @@ else
             {
                 // אנחנו מסירים את השאלה מהרשימה כדי שהתצוגה תתעדכן
                 gameData.Questions.Remove(questionToDelete);
+
+                // מדווחים לעמוד המארח על שמירה מוצלחת
+                await OnChangesSaved.InvokeAsync();
 
                 //שימוש בטוסט שלנו
                 errorMsg = "";
@@ -513,6 +523,9 @@ else
                 }
             }
 
+            // מדווחים לעמוד המארח על שמירה מוצלחת
+            await OnChangesSaved.InvokeAsync();
+
             //עדכון הטוסט (גילינו בחקירה עצמית)
             errorMsg = "";
             showToast = true; // מדליקים את הטוסט
@@ -553,30 +566,44 @@ else
     //עם טעינת העמוד
     protected override async Task OnInitializedAsync()
     {
-        // אנחנו מאתחלים את אובייקט השאלה החדשה עם ה-ID של המשחק מהנתיב
-        //אנחנו קוראים לשיטה בקונטולר של עריכת השאלות ומשרשרים את gameID בנתיב
-        var response = await Http.GetAsync("api/Questions/getQuestions/" + gameID);
-        //בדיקה אם סטטוס התשובה תקין
-        if (response.IsSuccessStatusCode == true)
+        if (gameData == null)
         {
-            // אנחנו ממירים את ה-JSON שחזר ושומרים במופע שלנו
-            gameData = response.Content.ReadFromJsonAsync<GameEditDto>().Result;
-
-            // מבחינה אפיונית נרצה להציג לעורך של משחק בלי שאלות את האופציה להוסיף שאלה אך לא לעורך של משחק עם שאלות
-            if (gameData.Questions.Count <= 0)
+            // אנחנו מאתחלים את אובייקט השאלה החדשה עם ה-ID של המשחק מהנתיב
+            //אנחנו קוראים לשיטה בקונטולר של עריכת השאלות ומשרשרים את gameID בנתיב
+            var response = await Http.GetAsync("api/Questions/getQuestions/" + gameID);
+            //בדיקה אם סטטוס התשובה תקין
+            if (response.IsSuccessStatusCode == true)
             {
-                StartAddingQuestion();
+                // אנחנו ממירים את ה-JSON שחזר ושומרים במופע שלנו
+                gameData = response.Content.ReadFromJsonAsync<GameEditDto>().Result;
+
+                // מבחינה אפיונית נרצה להציג לעורך של משחק בלי שאלות את האופציה להוסיף שאלה אך לא לעורך של משחק עם שאלות
+                if (gameData.Questions.Count <= 0)
+                {
+                    StartAddingQuestion();
+                }
+            }
+            else
+            {
+                //המשתנה ERRORMSG מכיל בתוכו את התוכן המחרוזתי של השגיאה
+                errorMsg = response.Content.ReadAsStringAsync().Result;
             }
         }
         else
         {
-            //המשתנה ERRORMSG מכיל בתוכו את התוכן המחרוזתי של השגיאה
-            errorMsg = response.Content.ReadAsStringAsync().Result;
+            // מבחינה אפיונית נרצה להציג לעורך של משחק בלי שאלות את האופציה להוסיף שאלה אך לא לעורך של משחק עם שאלות
+            if (gameData.Questions.Count <= 0 && !isAddingQuestion)
+            {
+                StartAddingQuestion();
+            }
         }
     }
 
 // מופע של התות לקליטת הנתונים
     SilkyItem currentStrawberryItem = new SilkyItem();
+
+    // הכפתור של התות מושבת כשאין תוכן אמיתי - רווחים בלבד לא נחשבים (כמו באפליקציית הייחוס)
+    bool isStrawberryDisabled => string.IsNullOrWhiteSpace(currentStrawberryItem.content);
 
     // הפונקציה שמופעלת בלחיצה על התות ופותחת את סייר הקבצים
     async Task TriggerFileInput()
@@ -642,7 +669,9 @@ else
 
             //אנחנו מאתחלים את המופע
             currentStrawberryItem = new SilkyItem();
-            // כאן תהיה הודעת "נשמר בהצלחה"
+
+            // מדווחים לעמוד המארח על שמירה מוצלחת
+            await OnChangesSaved.InvokeAsync();
         }
         else
         {
@@ -703,6 +732,8 @@ else
         else
         {
             successMsg = "הקצה נשמר בהצלחה!";
+            // מדווחים לעמוד המארח על שמירה מוצלחת
+            await OnChangesSaved.InvokeAsync();
         }
     }
 
@@ -734,6 +765,9 @@ else
 
             //  אנחנו מאפסים את התות לקראת הפריט הבא
             currentStrawberryItem = new SilkyItem();
+
+            // מדווחים לעמוד המארח על שמירה מוצלחת
+            await OnChangesSaved.InvokeAsync();
         }
         else
         {
@@ -803,6 +837,8 @@ else
         else
         {
             errorMsg = "";
+            // מדווחים לעמוד המארח על שמירה מוצלחת (נקרא פעמיים בהחלפה - הכיתוב פשוט מתרענן)
+            await OnChangesSaved.InvokeAsync();
         }
     }
 

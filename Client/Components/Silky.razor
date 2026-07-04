@@ -94,6 +94,16 @@
 @* לולאת for שפתחנו בשביל להציג את הפלייסהוֹלְדרים הריקים *@
 @for (int p = 0; p < (2 - CurrentQuestion.Items.Count); p++)
 {
+    // הפלייסהולדר הריק הראשון הוא המקום שאליו ייכנס הפריט הבא -
+    // הוא מודגש כשהעורך מרחף על התות או כשהוקלד בו תוכן אמיתי (לא רווחים בלבד)
+    string nextSlotClass = "";
+    if (p == 0 && (IsHoveringAddItem == true ||
+        (CurrentStrawberryItem != null && CurrentStrawberryItem.answerID == 0
+         && string.IsNullOrWhiteSpace(CurrentStrawberryItem.content) == false)))
+    {
+        nextSlotClass = "next-slot-highlight";
+    }
+
     <div class="segment-wrapper">
         <div class="label-container">
             @* מופיע מעל הפלייסהולדר הראשון רק אם אין בכלל פריטים אמיתיים *@
@@ -112,7 +122,7 @@
                                    OnLabelSaved="@((newText) => OnEndLabelSaved.InvokeAsync(newText))"/>
             }
         </div>
-        <img src="SVG/strokeBody.svg" class="placeholder-segment" alt=""/>
+        <img src="SVG/strokeBody.svg" class="placeholder-segment @nextSlotClass" alt=""/>
     </div>
 }
 

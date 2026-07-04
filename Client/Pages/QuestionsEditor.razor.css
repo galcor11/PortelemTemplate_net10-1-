@@ -337,9 +337,8 @@
 /* הגלילה מוגדרת על גוף הטבלה בלבד, כך שפס הגלילה מתחיל מתחת לשורת הכותרת */
 .questions-table tbody {
     display: block; /* מאפשר לתת לגוף הטבלה גובה משלו בנפרד מהכותרת */
-    max-height: 60vh; /* גובה יחסי רספונסיבי התופס כ-60% מגובה המסך */
+    max-height: 48vh; /* גובה יחסי רספונסיבי למניעת גלילת העמוד */
     overflow-y: auto; /* מוסיף פס גלילה אנכי רק כשהתוכן חורג מהגובה */
-    scrollbar-gutter: stable; /* שומר את רוחב הפס תמיד, כך שהרוחב קבוע והפס מופיע רק בגלילה */
     direction: ltr; /* מעביר את פס הגלילה לצד ימין */
     background-color: #E9FDD9; /* ממלא את אזור הפס בירוק של השורות גם כשאין גלילה */
 }
@@ -385,4 +384,74 @@
 /* אפקט בעת ריחוף עם העכבר על פס הגלילה */
 .questions-table tbody::-webkit-scrollbar-thumb:hover {
     background: #e67e22;
+}
+
+/* כפתור האישור של התות - עיצוב אחיד לשני המצבים עם מעבר חלק */
+.strawberry-submit {
+    border: none;
+    border-radius: 6px;
+    padding: 8px 22px;
+    font-weight: bold;
+    font-size: 15px;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    /* מצב פעיל - כתום כמו הכפתור הראשי */
+    background-color: #fd8a03;
+    color: white;
+    box-shadow: 0px 4px 0px #cc5c00;
+    cursor: pointer;
+}
+
+/* ריחוף על הכפתור הפעיל - כתום כהה יותר */
+.strawberry-submit:hover:not(:disabled) {
+    background-color: #e67e22;
+}
+
+/* לחיצה - הכפתור "שוקע" כמו הכפתור הראשי */
+.strawberry-submit:active:not(:disabled) {
+    transform: translateY(4px);
+    box-shadow: 0px 0px 0px #cc5c00;
+}
+
+/* מצב מושבת - אפור עם סמן עכבר חסום (עיגול חסום) כמו באפליקציית הייחוס */
+.strawberry-submit:disabled {
+    background-color: #B7B7B7;
+    color: white;
+    box-shadow: 0px 4px 0px #96928E;
+    cursor: not-allowed;
+}
+
+/* עיצוב תולעת הדמה בשורת הוספת שאלה - העתק של המבנה מ-Silky.razor.css,
+   כי בידוד ה-CSS של בלייזור לא מחיל את הכללים של הקומפוננטה על העמוד הזה */
+.segment-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: flex-start;
+}
+
+.label-container {
+    min-height: 32px; /* שומר על גובה אחיד גם כשאין תגית */
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.silky-head {
+    display: flex;
+    width: 87px;
+    height: 87px;
+    justify-content: center;
+    align-items: center;
+    background-image: url('./svg/silkyHead.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 2;
+}
+
+.placeholder-segment {
+    width: 100px;
+    height: auto;
+    margin-left: 5px;
+    opacity: 0.4; /* אותו מצב מנוחה כמו בתולעת האמיתית */
 }
