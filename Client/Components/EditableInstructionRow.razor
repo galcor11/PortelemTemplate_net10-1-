@@ -10,7 +10,7 @@
     else
     {
         @* מצב עריכה: תיבת טקסט + כפתורי אישור/ביטול *@
-        <input type="text" @bind="tempText" class="edit-input" />
+        <CustomInputText @bind-Value="tempText" class="edit-input" maxLength="20" minLength="1" />
 
         @* כפתור אישור ראשי *@
         <MyButton ButtonText="אישור" 

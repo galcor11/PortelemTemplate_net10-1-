@@ -30,8 +30,8 @@
                 <td colspan="3">
                     <div class="input-action-wrapper">
                         @* תיבת טקסט המקושרת למודל ומיישמת הגבלת תווים *@
-                        <input type="text" class="instruction-input" @bind="questionToAdd.instruction"
-                               maxlength="20" placeholder="הקלידו הנחיה (עד 20 תווים)..."/>
+                        <CustomInputText class="instruction-input" @bind-Value="questionToAdd.instruction"
+                                         maxLength="20" minLength="1" placeholder="הקלידו הנחיה (עד 20 תווים)..."/>
 
                         @* שימוש בקומפוננטה לשני הכפתורים שלנו *@
                         <MyButton ButtonStyle="primary"
@@ -145,9 +145,9 @@
                             {
                                 @* מצב טקסט: תיבת הטקסט במרכז התות *@
                                 <div class="strawberry-input-wrapper">
-                                    <InputTextArea @bind-Value="currentStrawberryItem.content"
-                                                   placeholder="הקלידו כאן..."
-                                                   class="inner-strawberry-input" maxlength="30"/>
+                                    <CustomInputTextArea @bind-Value="currentStrawberryItem.content"
+                                                         placeholder="הקלידו כאן..."
+                                                         class="inner-strawberry-input" maxLength="30" minLength="1"/>
                                 </div>
                                 <ValidationMessage For="@(() => currentStrawberryItem.content)"/>
                             }
@@ -208,7 +208,7 @@
                            OnEndLabelSaved="@((newText) => SaveEndLabel(newText, question))"
                            OnMoveRightClicked="@((item) => MoveRight(item, question.Items))"
                            OnMoveLeftClicked="@((item) => MoveLeft(item, question.Items))" />
-              
+
         </div>
         </AccordionRow>
     } @* סגירת הלולאה של ה-foreach *@

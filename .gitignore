@@ -96,3 +96,6 @@ yarn-error.log*
 !Client/wwwroot/Game/**
 !Server/wwwroot/uploadedFiles/
 !Server/wwwroot/uploadedFiles/**
+
+# ---- Never ignore the project database (shared test data lives in git) ----
+!Server/FinalProjectDB.db

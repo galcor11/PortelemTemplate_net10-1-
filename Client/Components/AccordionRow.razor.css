@@ -2,6 +2,7 @@
 .accordion-main-row {
     background-color: #E9FDD9;
     transition: background-color 0.2s ease; /* מעבר צבע חלק */
+    cursor: pointer; /* סמן של "יד לחיצה" לשורת הכותרת (נגישות/שימושיות) */
 }
 
 /*  צבע משתנה בHOVER  */
@@ -44,4 +45,32 @@
 .delete-icon:hover {
     color: #CC0000;
     transform: scale(1.15);
+}
+
+/* הגדרת הגודל של אימוג'י העלה */
+.leaf-icon {
+    font-size: 20px;
+}
+
+/* צבע ירוק שמופעל כשיש כמות תקינה של פריטים (4 עד 8) */
+.good-count {
+    color: green;
+}
+
+/* צבע אפור שמופעל כשיש כמות לא תקינה של פריטים */
+.bad-count {
+    color: gray;
+}
+
+/* מחלקת עזר למרכוז טקסט (למשל לעמודה של כפתור המחיקה) */
+.center-text {
+    text-align: center;
+}
+
+/* פוקוס נגיש למקלדת (Tab) עבור האייקונים הלחיצים - תקן WCAG 2.1 */
+.toggle-icon:focus-visible,
+.delete-icon:focus-visible {
+    outline: 3px solid #005FCC; /* כחול כהה עם ניגודיות תקנית */
+    outline-offset: 4px; /* מרחיק את המסגרת מהאלמנט */
+    border-radius: 4px; /* מעגל קצת את מסגרת הפוקוס */
 }

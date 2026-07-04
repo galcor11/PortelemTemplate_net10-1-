@@ -62,37 +62,13 @@
 }
 
 
-/* עיצוב החץ של האקורדיון (הפתיחה/סגירה) */
-.toggle-icon {
-    cursor: pointer;
-    font-weight: bold;
-    margin-left: 8px;
-    color: #4a5c2d; /* צבע כהה ומשתלב במקום שחור נוקשה */
-    transition: color 0.2s ease;
-}
-.toggle-icon:hover {
-    color: #000;
-}
-
-
-/* הגדרת הגודל של אימוג'י העלה */
-.leaf-icon {
-    font-size: 20px;
-}
-
-/* צבע ירוק שמופעל כשיש כמות תקינה של פריטים (4 עד 8) */
-.good-count {
-    color: green;
-}
-
-/* צבע אפור שמופעל כשיש כמות לא תקינה של פריטים */
-.bad-count {
-    color: gray;
-}
-
-/* מחלקת עזר למרכוז טקסט (למשל לעמודה של כפתור המחיקה) */
-.center-text {
-    text-align: center;
+/* התא הגדול של שורת הדמה בהוספת שאלה (מתפרס על כל העמודות) */
+.accordion-cell {
+    padding: 25px 15px;
+    /* מעבר צבעים רך באלכסון */
+    background-color: #C5ECA5;
+    border-bottom: 1px solid #E2E8F0;
+    box-shadow: inset 0 4px 8px rgba(0,0,0,0.03);
 }
 
 /* המכל שעוטף את כל הפריטים יחד  */
@@ -255,9 +231,13 @@
     transform: translate(14px,-8px);
 }
 
-/* התאמה ספציפית למצב טקסט (הפקד של בלייזור) */
-::deep textarea.inner-strawberry-input {
-    padding: 16px 5px;
+/* התאמה ספציפית למצב טקסט (אזור הטקסט שבתוך העוטף של הקומפוננטה) */
+::deep .inner-strawberry-input textarea {
+    /* פחות ריפוד למעלה ושמירת מקום למונה למטה כדי שלא ידרוס את הטקסט */
+    padding: 6px 5px 16px;
+    /* גופן קטן יותר כדי ש-30 תווים ייכנסו לתיבה בלי לגלוש על המונה */
+    font-size: 13px;
+    line-height: 1.25;
 }
 
 /* התאמה ספציפית למצב תמונה (תגית ה-P) */
@@ -278,6 +258,7 @@
     transform: translate(14px, -8px);
 }
 
+
 /* 
    תוספות נגישות לעמידה בתקן WCAG 2.1
    */
@@ -293,8 +274,8 @@
     border-radius: 4px; /* מעגל קצת את מסגרת הפוקוס */
 }
 
-/* חיווי ברור בעת הקלדה בתוך התות */
-::deep .inner-strawberry-input:focus {
+/* חיווי ברור בעת הקלדה בתוך התות (focus-within כי הפוקוס על אזור הטקסט הפנימי) */
+::deep .inner-strawberry-input:focus-within {
     outline: none; /* מסירים את הדיפולט של הדפדפן */
     border: 2px solid #005FCC !important; /* מסגרת כחולה עבה */
     box-shadow: 0 0 0 4px rgba(0, 95, 204, 0.2); /* הילה כחולה מסביב למראה רך */
@@ -312,10 +293,11 @@
     background-color: #f9f9f9;
 }
 
-/* עיצוב שדה הקלט של ההנחיה */
-.instruction-input {
+/* עיצוב שדה הקלט של ההנחיה (::deep כי התיבה נמצאת בתוך קומפוננטת הבת CustomInputText) */
+::deep .instruction-input {
     width: 100%; /* מתפרס על כל התא - רספונסיבי */
     max-width: 300px; /* חוסם את ההתרחבות במסכּים גדולים כדי להתאים ל-20 תווים */
+    margin: 0 !important; /* מבטל את המרווחים של default-input כדי לא לשבור את השורה */
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -345,43 +327,62 @@
 }
 
 
-/* המכל שעוטף את הטבלה ויוצר את הגלילה */
+/* המכל שעוטף את הטבלה - משמש רק כמסגרת, הגלילה עצמה נמצאת בתוך גוף הטבלה */
 .table-scroll-container {
     width: 95%; /* רספונסיביות - תופס כמעט את כל רוחב העמוד  */
     max-width: 1200px; /* מונע מהטבלה להימתח מדי במסכּים רחבים */
-    max-height: 60vh; /* גובה יחסי רספונסיבי התופס כ-60% מגובה המסך */
-    overflow-y: auto; /* מוסיף פס גלילה אנכי רק כשהתוכן חורג מהגובה */
-    direction: ltr; /* מעביר את פס הגלילה לצד ימין */
     margin: 0 auto; /* ממרכז את הקונטיינר באמצע העמוד */
     border: 1px solid #e0e0e0; /* מסגרת עדינה מסביב לכל האזור */
     border-radius: 8px;
 }
 
-/*  מחזיר את הטבלה הפנימית לעברית (בגלל שהפכנו את המכל לאנגלית) */
-.table-scroll-container .questions-table {
-    direction: rtl;
+/* הגלילה מוגדרת על גוף הטבלה בלבד, כך שפס הגלילה מתחיל מתחת לשורת הכותרת */
+.questions-table tbody {
+    display: block; /* מאפשר לתת לגוף הטבלה גובה משלו בנפרד מהכותרת */
+    max-height: 60vh; /* גובה יחסי רספונסיבי התופס כ-60% מגובה המסך */
+    overflow-y: auto; /* מוסיף פס גלילה אנכי רק כשהתוכן חורג מהגובה */
+    direction: ltr; /* מעביר את פס הגלילה לצד ימין */
+}
+
+/* הכותרת וכל שורה בגוף מתנהגות כטבלה עצמאית ברוחב מלא, כדי שהעמודות יישארו מיושרות */
+/* ::deep נדרש כי שורות האקורדיון נוצרות בתוך הקומפוננטה AccordionRow */
+.questions-table thead,
+.questions-table tbody ::deep tr {
+    display: table;
     width: 100%;
+    table-layout: fixed; /* חלוקת רוחב אחידה של העמודות בכל השורות */
+}
+
+/* מחזיר את כיוון הטקסט בשורות לעברית (כי גוף הטבלה הפך לאנגלית בשביל פס הגלילה) */
+.questions-table tbody ::deep tr {
+    direction: rtl;
+}
+
+/* ריווח בכותרת שמפצה על הרוחב שפס הגלילה תופס בגוף, כדי שהעמודות יתיישרו */
+.questions-table thead {
+    padding-right: 10px;
+    background-color: #C5ECA5; /* צבע הכותרת גם באזור הריווח, כדי שלא יישאר פס לבן */
 }
 
 /*  עיצוב פס הגלילה עצמו */
 /* העובי של פס הגלילה */
-.table-scroll-container::-webkit-scrollbar {
+.questions-table tbody::-webkit-scrollbar {
     width: 10px;
 }
 
-/* הרקע של פס הגלילה */
-.table-scroll-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
+/* הרקע של פס הגלילה - באותו ירוק של שורות התוכן */
+.questions-table tbody::-webkit-scrollbar-track {
+    background: #E9FDD9;
     border-radius: 4px;
 }
 
 /* המילוי של פס הגלילה */
-.table-scroll-container::-webkit-scrollbar-thumb {
-    background: #ff8c00; /* כתום תואם לכפתור הראשי */
+.questions-table tbody::-webkit-scrollbar-thumb {
+    background: #fd8a03; /* כתום תואם לכפתור הראשי */
     border-radius: 4px;
 }
 
 /* אפקט בעת ריחוף עם העכבר על פס הגלילה */
-.table-scroll-container::-webkit-scrollbar-thumb:hover {
+.questions-table tbody::-webkit-scrollbar-thumb:hover {
     background: #e67e22;
 }

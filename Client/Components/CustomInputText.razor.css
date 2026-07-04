@@ -1,3 +1,16 @@
+/* עוטף את התיבה והמונה בעמודה כדי שהמונה יישב מתחת לתיבה בלי לשבור את השורה */
+.input-with-counter {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* טקסט המונה הקטן שמתחת לתיבה */
+.char-counter {
+    font-size: 12px;
+    color: gray;
+}
+
 .default-input {
     border: none;
     padding: 5px;
