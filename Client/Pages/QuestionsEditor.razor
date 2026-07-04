@@ -197,131 +197,137 @@
                         </EditForm>
                     </div>
                     
-                @*  גוף התולעת והפלייסהולדרים  *@
-                <div class="segment-wrapper">
-                    <div class="label-container"></div>
-                    <div class="silky-head"></div>
-                </div>
+                    @* אנחנו משתמשים בקומפוננטה שפתחנו והנקייה שלנו לתולעת *@
+                    <Silky CurrentQuestion="question" 
+                           CurrentStrawberryItem="currentStrawberryItem"
+                           IsHoveringAddItem="isHoveringAddItem"
+                           OnEditItemClicked="EditItem" 
+                           OnDeleteItemClicked="DeleteItemFromSilky"
+                           OnImagePreviewClicked="OpenImagePreview"
+                           OnStartLabelSaved="@((newText) => SaveStartLabel(newText, question))"
+                           OnEndLabelSaved="@((newText) => SaveEndLabel(newText, question))"
+                           OnMoveRightClicked="@((item) => MoveRight(item, question.Items))"
+                           OnMoveLeftClicked="@((item) => MoveLeft(item, question.Items))" />
                 @* לולאת FOR שמייצרת את גוף התולעת *@
-                @for (int i = 0; i < itemsCount; i++)
-                {
-                    @* משתנה עזר שפתחנו כדי לשמור את הפריט הנוכחי *@
-                    var currentItemForAction = question.Items[i];
-                    // אנחנו בודקים אם הפריט הנוכחי הוא זה שנמצא בעריכת התות כדי לתת לו מתאר כתום
-                    string editStrokeClass = "";
-                    @if (currentStrawberryItem != null && currentStrawberryItem.answerID == currentItemForAction.answerID && currentStrawberryItem.answerID > 0)
-                    {
-                        editStrokeClass = "active-edit-stroke";
-                    }
-
-                    <div class="segment-wrapper">
-                        @* עוטפים את הקופסה והחיצים בעמודה כדי שיישבו זה מתחת לזה *@
-                        <div class="label-container">
-                            @* מופיע מעל הפריט האמיתי הראשון  *@
-                            @if (i == 0)
-                            {
-                                // אנחנו משתמשים בקומפוננטה של הקצוות, וכן נעזרים בפונקציית עזר בשם SaveStartLabel כדי שיהיה אפשר לערוך ולשמור שינויים
-                                <EditableEdgeLabel LabelText="@question.startLabel"
-                                                   DefaultText="ראשון"
-                                                   OnLabelSaved="@((newText) => SaveStartLabel(newText, question))"/>
-                            }
-
-                            @* מופיע מעל הפריט האמיתי האחרון *@
-                            @if (i == itemsCount - 1 && itemsCount >= 2)
-                            {
-                                <EditableEdgeLabel LabelText="@question.endLabel"
-                                                   DefaultText="אחרון"
-                                                   OnLabelSaved="@((newText) => SaveEndLabel(newText, question))"/>
-                            }
-
-                        </div>
-                        <div class="item-box @editStrokeClass">
-
-                            <div class="action-icons-overlay">
-                                @* עוטפים את זכוכית המגדלת בתנאי - תופיע רק אם הפריט הוא תמונה *@
-                                @if (question.Items[i].isImage == true)
-                                {
-                                    <img src="./svg/zoomIcon.svg" class="action-icon zoom-icon"
-                                         alt="הגדלה"
-                                         @onclick="() => OpenImagePreview(currentItemForAction.content)"/>
-                                }
-
-                                <img src="./svg/editIcon.svg" class="action-icon edit-icon" alt="עריכה"
-                                     @onclick="() => EditItem(currentItemForAction)"/>
-                                <img src="./svg/deleteIcon.svg" class="action-icon delete-icon"
-                                     alt="מחיקה"
-                                     @onclick="() => DeleteItemFromSilky(currentItemForAction)"/>
-
-                            </div>
-
-                            @if (question.Items[i].isImage == false)
-                            {
-                                @question.Items[i].content
-                            }
-                            else
-                            {
-                                @* אם התוכן הוא תמונה, אנחנו מציגים את התמונה מתוך התיקייה *@
-                                <img src="uploadedFiles/@question.Items[i].content" class="worm-image"
-                                     alt=""/>
-                            }
-                        </div>
-
-                        @* אזור החיצים שיושב מתחת לקופסה בשורה נפרדת *@
-                        <div class="arrows-wrapper">
-                            @* חץ ימינה - מקרב לראש התולעת (מקטין אינדקס). מופיע רק אם זה לא הפריט הראשון  *@
-                            @if (i > 0)
-                            {
-                                <button type="button" class="arrow-btn"
-                                        @onclick="() => MoveRight(currentItemForAction, question.Items)">
-                                    ➡
-                                </button>
-                            }
-
-                            @* חץ שמאלה - מרחיק מראש התולעת (מגדיל אינדקס). מופיע רק אם זה לא הפריט האחרון *@
-                            @if (i < itemsCount - 1)
-                            {
-                                <button type="button" class="arrow-btn"
-                                        @onclick="() => MoveLeft(currentItemForAction, question.Items)">
-                                    ⬅
-                                </button>
-                            }
-                        </div>
-                    </div>
-                }
-
-                @* לולאת for שפתחנו בשביל להציג את הפלייסהוֹלְדרים *@
-                @for (int p = 0; p < (2 - question.Items.Count); p++)
-                {
-                    <div class="segment-wrapper">
-                        <div class="label-container">
-                            @* מופיע מעל הפלייסהולדר הראשון רק אם אין בכלל פריטים אמיתיים  *@
-                            @if (question.Items.Count == 0 && p == 0)
-                            {
-                                <EditableEdgeLabel LabelText="@question.startLabel"
-                                                   DefaultText="ראשון"
-                                                   OnLabelSaved="@((newText) => question.startLabel = newText)"/>
-                            }
-
-                            @*  תמיד יופיע מעל הפלייסהולדר האחרון כי הוא חותם את התולעת  *@
-                            @if (p == (2 - question.Items.Count) - 1)
-                            {
-                                <EditableEdgeLabel LabelText="@question.endLabel"
-                                                   DefaultText="אחרון"
-                                                   OnLabelSaved="@((newText) => question.endLabel = newText)"/>
-                            }
-                        </div>
-                        <img src="SVG/strokeBody.svg" class="placeholder-segment" alt=""/>
-                    </div>
-                }
-                @* הפלייסהוֹלדר שמופיע אם העכבר ב-HOVER על הוספת פריט *@
-                @* הוא מופיע רק כשהעורך ב-HOVER וגם כאשר שני הפלייסהולדרים כבר התמלאו *@
-                @if (isHoveringAddItem == true && question.Items.Count >= 2 && question.Items.Count < 8)
-                {
-                    <div class="segment-wrapper">
-                        <div class="label-container"></div>
-                        <img src="SVG/strokeBody.svg" class="placeholder-segment floating-preview" alt=""/>
-                    </div>
-                }
+        @*         @for (int i = 0; i < itemsCount; i++) *@
+        @*         { *@
+        @*             $1$ משתנה עזר שפתחנו כדי לשמור את הפריט הנוכחי #1# *@
+        @*             var currentItemForAction = question.Items[i]; *@
+        @*             // אנחנו בודקים אם הפריט הנוכחי הוא זה שנמצא בעריכת התות כדי לתת לו מתאר כתום *@
+        @*             string editStrokeClass = ""; *@
+        @*             @if (currentStrawberryItem != null && currentStrawberryItem.answerID == currentItemForAction.answerID && currentStrawberryItem.answerID > 0) *@
+        @*             { *@
+        @*                 editStrokeClass = "active-edit-stroke"; *@
+        @*             } *@
+        @* *@
+        @*             <div class="segment-wrapper"> *@
+        @*                 $1$ עוטפים את הקופסה והחיצים בעמודה כדי שיישבו זה מתחת לזה #1# *@
+        @*                 <div class="label-container"> *@
+        @*                     $1$ מופיע מעל הפריט האמיתי הראשון  #1# *@
+        @*                     @if (i == 0) *@
+        @*                     { *@
+        @*                         // אנחנו משתמשים בקומפוננטה של הקצוות, וכן נעזרים בפונקציית עזר בשם SaveStartLabel כדי שיהיה אפשר לערוך ולשמור שינויים *@
+        @*                         <EditableEdgeLabel LabelText="@question.startLabel" *@
+        @*                                            DefaultText="ראשון" *@
+        @*                                            OnLabelSaved="@((newText) => SaveStartLabel(newText, question))"/> *@
+        @*                     } *@
+        @* *@
+        @*                     $1$ מופיע מעל הפריט האמיתי האחרון #1# *@
+        @*                     @if (i == itemsCount - 1 && itemsCount >= 2) *@
+        @*                     { *@
+        @*                         <EditableEdgeLabel LabelText="@question.endLabel" *@
+        @*                                            DefaultText="אחרון" *@
+        @*                                            OnLabelSaved="@((newText) => SaveEndLabel(newText, question))"/> *@
+        @*                     } *@
+        @* *@
+        @*                 </div> *@
+        @*                 <div class="item-box @editStrokeClass"> *@
+        @* *@
+        @*                     <div class="action-icons-overlay"> *@
+        @*                         $1$ עוטפים את זכוכית המגדלת בתנאי - תופיע רק אם הפריט הוא תמונה #1# *@
+        @*                         @if (question.Items[i].isImage == true) *@
+        @*                         { *@
+        @*                             <img src="./svg/zoomIcon.svg" class="action-icon zoom-icon" *@
+        @*                                  alt="הגדלה" *@
+        @*                                  @onclick="() => OpenImagePreview(currentItemForAction.content)"/> *@
+        @*                         } *@
+        @* *@
+        @*                         <img src="./svg/editIcon.svg" class="action-icon edit-icon" alt="עריכה" *@
+        @*                              @onclick="() => EditItem(currentItemForAction)"/> *@
+        @*                         <img src="./svg/deleteIcon.svg" class="action-icon delete-icon" *@
+        @*                              alt="מחיקה" *@
+        @*                              @onclick="() => DeleteItemFromSilky(currentItemForAction)"/> *@
+        @* *@
+        @*                     </div> *@
+        @* *@
+        @*                     @if (question.Items[i].isImage == false) *@
+        @*                     { *@
+        @*                         @question.Items[i].content *@
+        @*                     } *@
+        @*                     else *@
+        @*                     { *@
+        @*                         $1$ אם התוכן הוא תמונה, אנחנו מציגים את התמונה מתוך התיקייה #1# *@
+        @*                         <img src="uploadedFiles/@question.Items[i].content" class="worm-image" *@
+        @*                              alt=""/> *@
+        @*                     } *@
+        @*                 </div> *@
+        @* *@
+        @*                 $1$ אזור החיצים שיושב מתחת לקופסה בשורה נפרדת #1# *@
+        @*                 <div class="arrows-wrapper"> *@
+        @*                     $1$ חץ ימינה - מקרב לראש התולעת (מקטין אינדקס). מופיע רק אם זה לא הפריט הראשון  #1# *@
+        @*                     @if (i > 0) *@
+        @*                     { *@
+        @*                         <button type="button" class="arrow-btn" *@
+        @*                                 @onclick="() => MoveRight(currentItemForAction, question.Items)"> *@
+        @*                             ➡ *@
+        @*                         </button> *@
+        @*                     } *@
+        @* *@
+        @*                     $1$ חץ שמאלה - מרחיק מראש התולעת (מגדיל אינדקס). מופיע רק אם זה לא הפריט האחרון #1# *@
+        @*                     @if (i < itemsCount - 1) *@
+        @*                     { *@
+        @*                         <button type="button" class="arrow-btn" *@
+        @*                                 @onclick="() => MoveLeft(currentItemForAction, question.Items)"> *@
+        @*                             ⬅ *@
+        @*                         </button> *@
+        @*                     } *@
+        @*                 </div> *@
+        @*             </div> *@
+        @*         } *@
+        @* *@
+        @*         $1$ לולאת for שפתחנו בשביל להציג את הפלייסהוֹלְדרים #1# *@
+        @*         @for (int p = 0; p < (2 - question.Items.Count); p++) *@
+        @*         { *@
+        @*             <div class="segment-wrapper"> *@
+        @*                 <div class="label-container"> *@
+        @*                     $1$ מופיע מעל הפלייסהולדר הראשון רק אם אין בכלל פריטים אמיתיים  #1# *@
+        @*                     @if (question.Items.Count == 0 && p == 0) *@
+        @*                     { *@
+        @*                         <EditableEdgeLabel LabelText="@question.startLabel" *@
+        @*                                            DefaultText="ראשון" *@
+        @*                                            OnLabelSaved="@((newText) => question.startLabel = newText)"/> *@
+        @*                     } *@
+        @* *@
+        @*                     $1$  תמיד יופיע מעל הפלייסהולדר האחרון כי הוא חותם את התולעת  #1# *@
+        @*                     @if (p == (2 - question.Items.Count) - 1) *@
+        @*                     { *@
+        @*                         <EditableEdgeLabel LabelText="@question.endLabel" *@
+        @*                                            DefaultText="אחרון" *@
+        @*                                            OnLabelSaved="@((newText) => question.endLabel = newText)"/> *@
+        @*                     } *@
+        @*                 </div> *@
+        @*                 <img src="SVG/strokeBody.svg" class="placeholder-segment" alt=""/> *@
+        @*             </div> *@
+        @*         } *@
+        @*         $1$ הפלייסהוֹלדר שמופיע אם העכבר ב-HOVER על הוספת פריט #1# *@
+        @*         $1$ הוא מופיע רק כשהעורך ב-HOVER וגם כאשר שני הפלייסהולדרים כבר התמלאו #1# *@
+        @*         @if (isHoveringAddItem == true && question.Items.Count >= 2 && question.Items.Count < 8) *@
+        @*         { *@
+        @*             <div class="segment-wrapper"> *@
+        @*                 <div class="label-container"></div> *@
+        @*                 <img src="SVG/strokeBody.svg" class="placeholder-segment floating-preview" alt=""/> *@
+        @*             </div> *@
+        @*         } *@
         </div>
         </AccordionRow>
     } @* סגירת הלולאה של ה-foreach *@

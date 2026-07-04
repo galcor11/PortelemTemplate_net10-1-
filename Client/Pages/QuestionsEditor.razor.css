@@ -224,21 +224,6 @@
     color: #333;
 }
 
-.silky-head {
-    display: flex;
-    width: 87px;
-    height: 87px;
-    justify-content: center;
-    align-items: center;
-    background-image: url('./svg/silkyHead.svg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    margin-left: 0px;
-    margin-right: 0px;
-    z-index: 2;
-}
-
 /* העטיפה של התות עצמו שמופיע כרקע */
 .strawberry-input-wrapper {
     background-image: url('svg/strawberry.svg');
@@ -293,133 +278,6 @@
     transform: translate(14px, -8px);
 }
 
-/* הקופסה שמכילה את התוכן של הפריט עצמו  */
-.item-box {
-    position: relative;
-    cursor: grab;
-    width: 98px;
-    height: 73px;
-    background-image: url('svg/silkyBody.svg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    white-space: normal;
-    word-wrap: break-word;
-    line-height: 1.1;
-    padding: 5px 10px;
-    font-weight: bold;
-    color: #333;
-}
-
-/* יד סגורה כשלוחצים פיזית על הפריט */
-.item-box:active {
-    cursor: grabbing;
-}
-
-/* עיצוב הפלייסהולדר המקווקו של גוף התולעת */
-.placeholder-segment {
-    width: 100px;
-    height: auto;
-    margin-left: 5px; /* מרווח קל בין הגופיפים */
-}
-
-  /* עיצוב הפלייסהולדר שמראה למשתמש היכן יתווסף הפריט הבא */
-  .floating-preview {
-      opacity: 0.4; 
-      transform: scale(0.95); 
-      transition: all 0.3s ease-in-out; 
-      }
-
-
-/* המעטפת של האייקונים - מוסתרת כברירת מחדל */
-.action-icons-overlay {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    display: flex;
-    gap: 5px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 10;
-}
-
-/* כשמרחפים על הפריט  */
-.item-box:hover .action-icons-overlay {
-    opacity: 1;
-}
-
-/* עיצוב האייקונים מ-Figma */
-.action-icon {
-    width:120%;
-    height: 120%;
-    cursor: pointer;
-    padding: 3px;
-    transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-/* כשמרחפים ספציפית על אחד האייקונים, הוא קצת גדל */
-.action-icon:hover {
-    background-color: white;
-    transform: scale(1.15);
-}
-
-/* המחלקה לתמונה האמיתית של הפריט */
-.worm-image {
-    width: 100px;
-    height: auto;
-    border-radius: 8px;
-    object-fit: cover;
-}
-
-
-  /* עיצוב לקצוות התולעת */
- .glass-edge-label {
-     background-image: url('SVG/tagit.svg'); 
-     background-size: 100% 100%; /* מותח את ה-SVG בדיוק לגודל התווית */
-     background-repeat: no-repeat;
-     background-position: center;
-     display: inline-flex;
-     align-items: center; /* ממרכז את הטקסט לגובה */
-     justify-content: center; /* ממרכז את הטקסט לרוחב */
-     padding: 8px 15px; /* מרווח פנימי שקובע את הגודל של המלבן סביב הטקסט */
-     margin: 0 10px; /* מרווח חיצוני קל מהתולעת עצמה */
-     font-weight: bold;
-     color: #333; 
-      }
-
-.segment-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    align-self: flex-start;
-}
-
-.label-container {
-    min-height: 32px; /* שומר על גובה אחיד גם כשאין תגית */
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: center;
-}
-
-.arrows-wrapper {
-    display: flex;
-    margin-top: 5px;
-}
-
-
-/* מחלקה שמוסיפה מסגרת כתומה לפריט שנמצא בעריכה */
-.active-edit-stroke {
-    outline: 3px solid #ff8c00; 
-    outline-offset: 2px; /* מרחיק את המסגרת טיפה מהפריט עצמו  */
-    border-radius: 15px; /* מעגל את הפינות  */
-    box-shadow: 0 0 10px rgba(255, 140, 0, 0.4); /* אפקט זוהר (Glow) עדין מסביב */
-    transition: all 0.3s ease; /* אנימציה חלקה כשהמסגרת מופיעה ונעלמת */
-}
-
 /* 
    תוספות נגישות לעמידה בתקן WCAG 2.1
    */
@@ -448,22 +306,6 @@
     outline-offset: 3px;
 }
 
-/* עיצוב כפתורי החצים  שלנו */
-.arrow-btn {
-    background-color: transparent; /* רקע שקוף */
-    border: none; /* הסרת המסגרת הרגילה של כפתור */
-    font-size: 22px; /* גודל החץ */
-    cursor: pointer; /* סמן של כף יד ברחיפה */
-    color: #ff9800; /* צבע כתום */
-    padding: 0 5px;
-    transition: transform 0.2s ease, color 0.2s ease; /* אנימציה חלקה לגדילה */
-}
-
-/* אפקט ריחוף עכבר: החץ גדל ונהיה כתום כהה יותר */
-.arrow-btn:hover {
-    transform: scale(1.3); /* הגדלה ב-30% */
-    color: #e65100; /* כתום כהה יותר */
-}
 
 /* עיצוב שורת ההוספה החדשה בטבלה */
 .new-question-row {

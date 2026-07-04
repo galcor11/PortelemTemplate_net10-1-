@@ -1,0 +1,148 @@
+@using AuthTemplate.Shared.Models
+@* קומפוננטה שפתחנו בשביל התולעת, הפלייסהולדרים שלי והחיצים *@
+
+@*  גוף התולעת והפלייסהולדרים  *@
+<div class="segment-wrapper">
+    <div class="label-container"></div>
+    <div class="silky-head"></div>
+</div>
+@* לולאת FOR שמייצרת את גוף התולעת האמיתי *@
+@for (int i = 0; i < CurrentQuestion.Items.Count; i++)
+{
+    @* משתנה עזר שפתחנו כדי לשמור את הפריט הנוכחי *@
+    var currentItemForAction = CurrentQuestion.Items[i];
+    
+    // אנחנו בודקים אם הפריט הנוכחי הוא זה שנמצא בעריכת התות כדי לתת לו מתאר כתום
+    string editStrokeClass = "";
+    @if (CurrentStrawberryItem != null && CurrentStrawberryItem.answerID == currentItemForAction.answerID && CurrentStrawberryItem.answerID > 0)
+    {
+        editStrokeClass = "active-edit-stroke";
+    }
+
+    <div class="segment-wrapper">
+        @* עוטפים את הקופסה והחיצים בעמודה כדי שיישבו זה מתחת לזה *@
+        <div class="label-container">
+            @* מופיע מעל הפריט האמיתי הראשון *@
+            @if (i == 0)
+            {
+                // אנחנו משתמשים בקומפוננטה של הקצוות, וכן נעזרים בפעמון כדי שיהיה אפשר לערוך ולשמור שינויים בעמוד הראשי
+                <EditableEdgeLabel LabelText="@CurrentQuestion.startLabel"
+                                   DefaultText="ראשון"
+                                   OnLabelSaved="@((newText) => OnStartLabelSaved.InvokeAsync(newText))"/>
+            }
+
+            @* מופיע מעל הפריט האמיתי האחרון *@
+            @if (i == CurrentQuestion.Items.Count - 1 && CurrentQuestion.Items.Count >= 2)
+            {
+                // אנחנו משתמשים בקומפוננטה של הקצוות, וכן נעזרים בפעמון כדי שיהיה אפשר לערוך ולשמור שינויים בעמוד הראשי
+                <EditableEdgeLabel LabelText="@CurrentQuestion.endLabel"
+                                   DefaultText="אחרון"
+                                   OnLabelSaved="@((newText) => OnEndLabelSaved.InvokeAsync(newText))"/>
+            }
+        </div>
+        
+        <div class="item-box @editStrokeClass">
+            <div class="action-icons-overlay">
+                @* עוטפים את זכוכית המגדלת בתנאי - תופיע רק אם הפריט הוא תמונה *@
+                @if (CurrentQuestion.Items[i].isImage == true)
+                {
+                    <img src="./svg/zoomIcon.svg" class="action-icon zoom-icon" alt="הגדלה"
+                         @onclick="() => OnImagePreviewClicked.InvokeAsync(currentItemForAction.content)"/>
+                }
+
+                <img src="./svg/editIcon.svg" class="action-icon edit-icon" alt="עריכה"
+                     @onclick="() => EditClicked(currentItemForAction)"/>
+                     
+                <img src="./svg/deleteIcon.svg" class="action-icon delete-icon" alt="מחיקה"
+                     @onclick="() => DeleteClicked(currentItemForAction)"/>
+            </div>
+
+            @if (CurrentQuestion.Items[i].isImage == false)
+            {
+                @CurrentQuestion.Items[i].content
+            }
+            else
+            {
+                @* אם התוכן הוא תמונה, אנחנו מציגים את התמונה מתוך התיקייה *@
+                <img src="uploadedFiles/@CurrentQuestion.Items[i].content" class="worm-image" alt=""/>
+            }
+        </div>
+
+        @* אזור החיצים שיושב מתחת לקופסה בשורה נפרדת *@
+        <div class="arrows-wrapper">
+            @* חץ ימינה - מקרב לראש התולעת (מקטין אינדקס). מופיע רק אם זה לא הפריט הראשון *@
+            @if (i > 0)
+            {
+                <button type="button" class="arrow-btn"
+                        @onclick="() => OnMoveRightClicked.InvokeAsync(currentItemForAction)">
+                    ➡
+                </button>
+            }
+
+            @* חץ שמאלה - מרחיק מראש התולעת (מגדיל אינדקס). מופיע רק אם זה לא הפריט האחרון *@
+            @if (i < CurrentQuestion.Items.Count - 1)
+            {
+                <button type="button" class="arrow-btn"
+                        @onclick="() => OnMoveLeftClicked.InvokeAsync(currentItemForAction)">
+                    ⬅
+                </button>
+            }
+        </div>
+    </div>
+}
+
+@* לולאת for שפתחנו בשביל להציג את הפלייסהוֹלְדרים הריקים *@
+@for (int p = 0; p < (2 - CurrentQuestion.Items.Count); p++)
+{
+    <div class="segment-wrapper">
+        <div class="label-container">
+            @* מופיע מעל הפלייסהולדר הראשון רק אם אין בכלל פריטים אמיתיים *@
+            @if (CurrentQuestion.Items.Count == 0 && p == 0)
+            {
+                <EditableEdgeLabel LabelText="@CurrentQuestion.startLabel"
+                                   DefaultText="ראשון"
+                                   OnLabelSaved="@((newText) => OnStartLabelSaved.InvokeAsync(newText))"/>
+            }
+
+            @* תמיד יופיע מעל הפלייסהולדר האחרון כי הוא חותם את התולעת *@
+            @if (p == (2 - CurrentQuestion.Items.Count) - 1)
+            {
+                <EditableEdgeLabel LabelText="@CurrentQuestion.endLabel"
+                                   DefaultText="אחרון"
+                                   OnLabelSaved="@((newText) => OnEndLabelSaved.InvokeAsync(newText))"/>
+            }
+        </div>
+        <img src="SVG/strokeBody.svg" class="placeholder-segment" alt=""/>
+    </div>
+}
+
+@* הפלייסהוֹלדר שמופיע אם העכבר ב-HOVER על הוספת פריט *@
+@* הוא מופיע רק כשהעורך ב-HOVER וגם כאשר שני הפלייסהולדרים כבר התמלאו *@
+@if (IsHoveringAddItem == true && CurrentQuestion.Items.Count >= 2 && CurrentQuestion.Items.Count < 8)
+{
+    <div class="segment-wrapper">
+        <div class="label-container"></div>
+        <img src="SVG/strokeBody.svg" class="placeholder-segment floating-preview" alt=""/>
+    </div>
+}
+
+@code {
+    // פרמטרים שמקבלים את הנתונים מהעמוד הראשי במקום להגדיר אותם כמשתנים מקומיים
+    [Parameter] public Question CurrentQuestion { get; set; }
+    [Parameter] public SilkyItem CurrentStrawberryItem { get; set; }
+    [Parameter] public bool IsHoveringAddItem { get; set; }
+
+    // פעמונים  שמדווחים לעמוד הראשי על לחיצות של המשתמש.
+    // מכיוון שהקומפוננטה מבודדת, היא רק מתריעה לעמוד הראשי כדי שהוא יבצע את השמירה במסד הנתונים
+    [Parameter] public EventCallback<SilkyItem> OnEditItemClicked { get; set; }
+    [Parameter] public EventCallback<SilkyItem> OnDeleteItemClicked { get; set; }
+    [Parameter] public EventCallback<string> OnImagePreviewClicked { get; set; }
+    [Parameter] public EventCallback<string> OnStartLabelSaved { get; set; }
+    [Parameter] public EventCallback<string> OnEndLabelSaved { get; set; }
+    [Parameter] public EventCallback<SilkyItem> OnMoveRightClicked { get; set; }
+    [Parameter] public EventCallback<SilkyItem> OnMoveLeftClicked { get; set; }
+
+    // פונקציות פנימיות שמפעילות את הפעמונים במקרה של עריכה ומחיקה
+    async Task EditClicked(SilkyItem item) => await OnEditItemClicked.InvokeAsync(item);
+    async Task DeleteClicked(SilkyItem item) => await OnDeleteItemClicked.InvokeAsync(item);
+}

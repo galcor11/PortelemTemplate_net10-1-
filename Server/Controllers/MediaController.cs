@@ -56,12 +56,5 @@ namespace AuthTemplate.Server.Controllers
             return Ok("deleted");
         }
         
-        
-        
-        
-        
-        
-        
-        
     }
 }
