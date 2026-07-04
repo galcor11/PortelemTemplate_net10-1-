@@ -1,7 +1,7 @@
 @using AuthTemplate.Shared.Models
 @* קומפוננטה שפתחנו לצורך השורות של האקורדיון *@
 @* שורת הכותרת של האקורדיון (תמיד מוצגת) *@
-<tr>
+<tr class="accordion-main-row">
     <td>
         @* סגירה ופתיחה של החיצים *@
         <span class="toggle-icon" @onclick="Toggle">
@@ -41,7 +41,7 @@
 @if (IsOpen)
 {
     <tr>
-        <td colspan="3" class="accordion-content-cell">
+        <td colspan="3" class="accordion-cell">
             @* לכאן נכניס את התוכן של התולעת *@
             @ChildContent 
         </td>

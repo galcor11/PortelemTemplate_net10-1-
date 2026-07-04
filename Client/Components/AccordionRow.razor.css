@@ -30,3 +30,18 @@
 .toggle-icon:hover {
     color: #000;
 }
+
+.delete-icon {
+    color: #ff4d4d;
+    cursor: pointer;
+    font-size: 20px;
+    transition: transform 0.2s ease, color 0.2s ease;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+.delete-icon:hover {
+    color: #CC0000;
+    transform: scale(1.15);
+}
