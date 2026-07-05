@@ -57,6 +57,9 @@
 </div>
 
 @code {
+    // שם התחלתי למילוי מראש - לעריכת שם קיים. אם לא מועבר, התיבה נפתחת ריקה (יצירת משחק חדש)
+    [Parameter] public string InitialName { get; set; }
+    
     // מופע חדש וריק של ה-DTO  (מכיל רק את שם המשחק)
     GameToAddDto gameToAdd = new GameToAddDto();
     
@@ -80,4 +83,12 @@
     {
         await OnCancel.InvokeAsync();
     }
+    
+    // בפתיחת הפופ-אפ: אם הועבר שם התחלתי, ממלאים אותו בתיבה
+    protected override void OnInitialized()
+    {
+        gameToAdd.gameName = InitialName;
+    }
+    
+    
 }

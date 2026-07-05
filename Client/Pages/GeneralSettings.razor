@@ -18,18 +18,9 @@
             <label><span class="required-asterisk">*</span> שם המשחק:</label>
         
             <div>
-                @if (isEditingName == true)
-                {
-                    @* מצב עריכה: תיבת טקסט שמקושרת לשם, וכפתור אישור *@
-                    <CustomInputText @bind-Value="gameSettings.gameName" maxLength="20"  minLength="1" />
-                    <input type="button" value="✔️" @onclick="(() => isEditingName = false)" style="background: none; border: none; cursor: pointer;" />
-                }
-                else
-                {
-                    @* מצב תצוגה: טקסט רגיל (בתור תת-כותרת) וכפתור עיפרון *@
-                    <span>@gameSettings.gameName</span>
-                    <input type="button" value="✏️" @onclick="(() => isEditingName = true)" style="background: none; border: none; cursor: pointer;" />
-                }
+                @* טקסט השם וכפתור עיפרון שפותח את הפופ-אפ של שם המשחק *@
+                <span>@gameSettings.gameName</span>
+                <input type="button" value="✏️" @onclick="() => showNamePopup = true" style="background: none; border: none; cursor: pointer;" />
             </div>
         
         </div>
@@ -122,6 +113,16 @@ else
         <img src="SVG/SilkyForSettings.svg" class="worm-character" alt="" aria-hidden="true" />
     </div>
 </div> <!-- סגירת העוטף הראשי של העמוד -->
+@* פופ-אפ עריכת שם המשחק - נפתח בלחיצה על העיפרון, עם השם הנוכחי מוכן לעריכה *@
+
+@if (showNamePopup)
+
+{
+
+    <AddGamePopup InitialName="@gameSettings.gameName" OnSave="SaveNewName" OnCancel="CloseNamePopup" />
+
+}
+
 
 @code
 {
@@ -136,7 +137,7 @@ else
     [Parameter] public GameToAddDto gameSettings { get; set; }
     
     // משתנה בוליאני שעוזר לנו לבדוק אם אנחנו במצב עריכה או בתצוגה רגילה
-    bool isEditingName = false;
+    bool showNamePopup = false;
     //משתנה בוליאני שנועד לעזור לנו לאפשרות של בלי הגבלת זמן
     bool isUnlimitedTime = false;
 
@@ -162,6 +163,22 @@ else
             }
         }
     }
+    
+    // נקרא כשהעורך מאשר בפופ-אפ: מעדכן רק את שם המשחק וסוגר את הפופ-אפ
+    void SaveNewName(GameToAddDto edited)
+    {
+        gameSettings.gameName = edited.gameName;
+        showNamePopup = false;
+    }
+
+    // נקרא כשסוגרים/מבטלים את הפופ-אפ
+    void CloseNamePopup()
+    {
+        showNamePopup = false;
+    }
+    
+    
+    
     // פונקציה שמופעלת כשהמשתמש לוחץ על הצ'קבוקס של "ללא הגבלה"
     void ToggleUnlimitedTime()
     {
