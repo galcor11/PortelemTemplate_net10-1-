@@ -48,9 +48,9 @@
     transition: background-color 0.2s ease; 
 }
 
-/* כשהעכבר עובר על שורה, היא מקבלת גוון ירוק בהיר  */
+/* כשהעכבר עובר על שורה, היא מקבלת גוון תכלת  */
 .games-table tbody tr:hover {
-    background-color: #f9fdf5;
+    background-color: #C3F7E7;
 }
 
 /* המחלקה לכפתורי העריכה והמחיקה */
