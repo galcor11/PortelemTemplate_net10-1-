@@ -148,7 +148,19 @@ else
             isUnlimitedTime = (gameSettings.time == 1000);
         }
     }
-    
+    // פונקציה שמופעלת כשהמשתמש לוחץ על הצ'קבוקס של "ללא הגבלה"
+    void ToggleUnlimitedTime()
+    {
+        // תחילה, אנחנו הופכים את המצב של המשתנה הבוליאני (אם היה true הופך ל-false ולהפך)
+        isUnlimitedTime = !isUnlimitedTime; 
+        
+        // אם המשתמש הרגע הוריד את ה-V (כלומר עכשיו יש הגבלת זמן), והזמן ששמור כרגע הוא 1000
+        if (isUnlimitedTime == false && gameSettings.time == 1000)
+        {
+           // משנים את הזמן ל- 60 שניות, כדי שהוא לא ייבהל מהמספר 1000 שיופיע לו בתיבה 
+            gameSettings.time = 60; 
+        }
+    }
     // פונקציה שמחזירה את מחלקת העיצוב לסליידר
     string GetSliderClass()
     {
