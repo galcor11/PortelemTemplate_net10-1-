@@ -47,6 +47,7 @@
                            min="45" max="180" step="5" 
                            class="time-input" />
                     <span>שניות</span>
+                    <span style="margin: 0 10px;">אוֹ</span>
                 }
 
                 @* הצ'קבוקס תמיד מוצג. אנחנו רוצים לתפוס את הרגע המדויק שבו המשתמש התחרט וביטל את הסימון של ללא הגבלה *@
@@ -79,8 +80,6 @@
                     </div>
                 
                     @* פקד הסליידר (המתג). מקבל את מחלקת האנימציה שלו (slider-on) מתוך הפונקציה. 
-                    <div class="@GetSliderClass()" @onclick="() => gameSettings.hasPotion = !gameSettings.hasPotion"></div>
-                
                     @* אזור בחירת ה"לא". 
                        שימוש בפונקציית חץ באירוע הלחיצה כדי להגדיר במפורש את המשתנה הבוליאני ל-false *@
                     <div class="@GetNoClass()" @onclick="() => gameSettings.hasPotion = false">
@@ -203,20 +202,10 @@ else
         //  אם אין הגבלת זמן, אנחנו בודקים ומתקנים את מה שהוזן בתיבה
         else
         {
-            //  בודקים אם התיבה ריקה לחלוטין (null) או שהוזן בה 0 
-            if (gameSettings.time == null || gameSettings.time == 0)
+            // אם התיבה ריקה (null) או קטנה מ-45 או גדולה מ-180 -> מחזירים ל-60
+            if (gameSettings.time == null || gameSettings.time < 45 || gameSettings.time > 180)
             {
-                gameSettings.time = 60; // מחזירים לברירת מחדל
-            }
-            // אם המספר נמוך מ-45, נתקן לגבול התחתון
-            else if (gameSettings.time < 45)
-            {
-                gameSettings.time = 45;
-            }
-            // אם המספר שהוזן גדול מ-180, נתקן לגבול העליון
-            else if (gameSettings.time > 180)
-            {
-                gameSettings.time = 180;
+                gameSettings.time = 60; 
             }
         }
         // שליחת בקשת POST לנתיב שיצרנו, תוך שרשור ה-ID ושליחת האובייקט המעודכן
