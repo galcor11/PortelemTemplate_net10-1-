@@ -19,3 +19,51 @@
 .opacity-half {
     opacity: 0.5;
 }
+
+/* --- תוספת לעיצוב הטולטיפ (ללא סימן שאלה) --- */
+
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 130px; /* תוכלי לשחק עם הרוחב אם הטקסט ארוך */
+    background-color: #ffffff;
+    color: #633c21;
+    text-align: center;
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    font-family: 'Playpen Sans Hebrew', cursive, sans-serif;
+    font-size: 13px;
+
+    /* מיקום הטולטיפ מעל הצ'קבוקס */
+    position: absolute;
+    z-index: 999;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* המשולש הקטן שמצביע למטה */
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #ffffff transparent transparent transparent;
+}
+
+/* הצגת הטולטיפ בעת ריחוף */
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}

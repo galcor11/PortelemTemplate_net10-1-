@@ -1,6 +1,9 @@
 @* קומפוננטה שפתחנו בשביל האייקונים שבמצבי פרסום *@
-<div class="custom-checkbox @GetCursorClass()" @onclick="ToggleCheckbox">
-    
+@* עטפנו את הקומפוננטה במחלקת הטולטיפ שיצרת בעבר *@
+
+<div class="custom-checkbox tooltip-container @GetCursorClass()" @onclick="ToggleCheckbox">
+    @* הבועה של הטולטיפ - הטקסט שלה משתנה דינמית לפי המצב *@
+    <span class="tooltip-text">@GetTooltipText()</span>  
     @if (CanPublish == false)
     {
         @* מצב 1: חסום לפרסום *@
@@ -43,5 +46,18 @@
     {
         if (CanPublish == false) return "cursor-blocked";
         return "cursor-pointer";
+    }
+    
+    // פונקציה שמחליטה מה יהיה כתוב בטולטיפ 
+    private string GetTooltipText()
+    {
+        if (CanPublish == false) 
+            return "המשחק אינו עומד בתנאי הפרסום";
+        
+        if (IsPublish == true) 
+            return "מפורסם - לחצו לביטול פרסום";
+        
+        return "מותר לפרסום - לחצו לפרסום";
+    }
     }
 }
