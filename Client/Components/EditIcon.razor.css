@@ -1,7 +1,16 @@
+/* מצב רגיל  */
 .edit-icon {
     cursor: pointer;
     margin-left: 10px;
     display: inline-block;
     width: 15px;
     height: 15px;
+    color: #666; 
+    transition: all 0.3s ease; /* גורם לשינוי הגודל והצבע להיות חלק  */
+}
+
+/* מצב ריחוף (Hover) - הגדלה ושינוי צבע לירוק */
+.edit-icon:hover {
+    color: #228B22; /* צבע ירוק  */
+    transform: scale(1.2); /* מגדיל את העיפרון ב-20% */
 }
