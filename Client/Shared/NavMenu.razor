@@ -22,6 +22,12 @@
                     </NavLink>
                 </div>
                 <div class="nav-item">
+                    <button class="nav-link popup-nav-btn" @onclick="() => showHowToPlay = true">איך משחקים?</button>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-link popup-nav-btn" @onclick="() => showAbout = true">אודות</button>
+                </div>
+                <div class="nav-item">
                     <button class="btn" @onclick="() => { _Auth.Logout(); }">התנתקות</button>
                 </div>
             </div>
@@ -46,8 +52,26 @@
     </NotAuthorized>
 </AuthorizeView>
 
+@if (showHowToPlay == true)
+{
+    <InfoPopup PopupTitle="איך משחקים?" OnClose="() => showHowToPlay = false">
+        <ol>
+            <li>זזים</li>
+            <li>אוכלים תותים</li>
+            <li>מתמצאים</li>
+        </ol>
+    </InfoPopup>
+}
 
+@if (showAbout == true)
+{
+    <InfoPopup PopupTitle="אודות" OnClose="() => showAbout = false">
+        <p>תוצר זה פותח במסגרת הפרויקט המשולש</p>
+        <p>הפקולטה לטכנולוגיות למידה תשפ"ו</p>
+    </InfoPopup>
+}
 @code {
     [CascadingParameter] private User user { get; set; }
-
+    bool showHowToPlay = false;
+    bool showAbout = false;
 }

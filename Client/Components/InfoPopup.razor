@@ -1,35 +1,41 @@
 @* קומפוננטה שפתחנו בשביל "אודות" ו-"איך משחקים" *@
 
-
 <div class="popup-overlay">
-<section class="popup-content">
-    @*  האיקס מפעיל את פונקציית הביטול  *@
-    <span class="close-x" @onclick="CancelDelete">✖</span>
-    @* אזור הכותרת *@
-    <div class="popup-header">
-    </div>
-        
-    @* לכאן ייכנס הטקסט הדינמי שנעביר מבחוץ בכל פעם *@
-    <div class="popup-body">
-        @ChildContent 
-    </div>
+    <section class="popup-content">
 
-</section>
+        @* אזור הכותרת: מכיל  את הכותרת הדינמית ואת האיקס לסגירה *@
+        <div class="popup-header">
+            <h2>@PopupTitle</h2>
+            <span class="close-x" @onclick="ClosePopup">✖</span>
+        </div>
+
+        @* לכאן נכנס הטקסט הדינמי שנעביר מבחוץ בכל פעם*@
+        <div class="popup-body">
+            @ChildContent
+        </div>
+
+    </section>
 </div>
 
+@code
+{
+    //  פרמטר כדי לקבל את כותרת הפופ-אפ מבחוץ
+    [Parameter]
+    public string PopupTitle { get; set; }
 
-
-@code{
-    //אנחנו משתמשים ב-CHILDCONTENT כדי להעביר תוכן שלם של HTML לתוך הקומפוננטה, כלומר תוכן מתחלף
+   
     [Parameter]
     public RenderFragment ChildContent { get; set; }
 
-    // פעמון שמודיע לעמוד הראשי אם המשתמש אישר או ביטל
+   
     [Parameter]
-    public EventCallback<bool> OnUserConfirm { get; set; }
-    private async Task CancelDelete()
+    public EventCallback OnClose { get; set; }
+
+    // הפונקציה שמופעלת בלחיצה על ה-X
+    private async Task ClosePopup()
     {
-        await OnUserConfirm.InvokeAsync(false);
-    }
+        // מצלצלים בפעמון החוצה לעמוד הראשי 
+        await OnClose.InvokeAsync();
+    }  
     
 }

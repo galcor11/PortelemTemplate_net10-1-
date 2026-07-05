@@ -5,33 +5,40 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.6); /* שחור חצי שקוף  */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 1000; /* מוודא שהפופ-אפ יופיע מעל הכול  */
 }
 
 /* הקופסה של הפופ-אפ עצמו */
 .popup-content {
+    /*  הגדרות תמונת הרקע  */
     background-image: url("./SVG/HowTo.svg");
+    background-size: cover; /* מוודא שהתמונה מכסה את כל הקופסה */
+    background-position: center; 
+    background-repeat: no-repeat; /* מונע מהתמונה לשכפל את עצמה */
     padding: 30px 40px;
     border-radius: 15px;
     text-align: center;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     width: 450px;
     position: relative;
+    direction: rtl; 
 }
-/*  העיצוב לאיקס  */
+
+/* העיצוב לאיקס */
 .close-x {
     position: absolute;
     top: 15px;
-    right: 20px; /* ממקם אותו בצד ימין */
+    left: 20px; 
     font-size: 20px;
     color: #888;
     cursor: pointer;
     transition: color 0.2s ease;
 }
+
 /* עיצוב אזור הכותרת באמצעות Flexbox */
 .popup-header {
     display: flex;
@@ -41,10 +48,12 @@
     margin-bottom: 20px;
 }
 
+.popup-header h2 {
+    margin: 0; /* מונע רווחים מיותרים  */
+}
 
 .popup-body {
     margin-bottom: 30px;
     font-size: 18px;
     color: #333;
 }
-
