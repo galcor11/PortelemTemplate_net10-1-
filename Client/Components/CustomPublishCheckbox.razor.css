@@ -1,0 +1,21 @@
+/* האייקונים  */
+.checkbox-icon {
+    width: 26px; 
+    height: 26px;
+    transition: 0.2s ease-in-out;
+}
+
+/* סמן של אצבע כשאפשר ללחוץ */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* סמן של חסימה כשאי אפשר לפרסם */
+.cursor-blocked {
+    cursor: not-allowed;
+}
+
+/* עושה את האייקון החסום קצת שקוף שייראה כבוי */
+.opacity-half {
+    opacity: 0.5;
+}

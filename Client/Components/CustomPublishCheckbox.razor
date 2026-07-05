@@ -1,0 +1,47 @@
+@* קומפוננטה שפתחנו בשביל האייקונים שבמצבי פרסום *@
+<div class="custom-checkbox @GetCursorClass()" @onclick="ToggleCheckbox">
+    
+    @if (CanPublish == false)
+    {
+        @* מצב 1: חסום לפרסום *@
+        <img src="./svg/greyCheckbox.svg" alt="חסום" class="checkbox-icon opacity-half" />
+    }
+    else if (IsPublish == true)
+    {
+        @* מצב 2: מותר לפרסום ומסומן "וי" *@
+        <img src="./svg/greenCheckbox.svg" alt="מפורסם" class="checkbox-icon" />
+    }
+    else
+    {
+        @* מצב 3: מותר לפרסום אבל ריק *@
+        <img src="./svg/unMarkedCheckbox.svg" alt="לא מפורסם" class="checkbox-icon" />
+    }
+
+</div>
+
+@code {
+    // מקבלים את מצב החסימה והפרסום מהעמוד הראשי
+    [Parameter] public bool CanPublish { get; set; }
+    [Parameter] public bool IsPublish { get; set; }
+    
+    // "הפעמון" שיצלצל לעמוד הראשי כשלוחצים על הצ'קבוקס
+    [Parameter] public EventCallback<bool> OnPublishToggled { get; set; }
+
+    // הפונקציה שמופעלת בלחיצה על הקומפוננטה
+    private async Task ToggleCheckbox()
+    {
+        // אנחנו מאפשרים לחיצה רק אם המשחק לא חסום!
+        if (CanPublish == true)
+        {
+            // שולחים לעמוד הראשי את המצב ההפוך (מדליקים אם כבוי, מכבים אם דלוק)
+            await OnPublishToggled.InvokeAsync(!IsPublish);
+        }
+    }
+
+    // פונקציית עזר קטנה כדי לשנות את סמן העכבר אם הכפתור חסום
+    private string GetCursorClass()
+    {
+        if (CanPublish == false) return "cursor-blocked";
+        return "cursor-pointer";
+    }
+}
