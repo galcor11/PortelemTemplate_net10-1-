@@ -53,7 +53,7 @@
     cursor: pointer;
     margin-left: 10px;
     display: inline-block;
-    width: 20px; 
+    width: 18px; 
     height: auto;
     color: #666; 
     transition: all 0.3s ease;
@@ -63,4 +63,16 @@
 .link-icon:hover {
     color: #5d9553; 
     transform: scale(1.2); /* מגדיל את האייקון ב-20% */
+}
+/* מצב כבוי (Disabled) - צבע אפור בהיר מראש וסמן חסום */
+.disabled-link {
+    color: #b0b0b0; 
+    cursor: not-allowed; 
+}
+
+/* דריסת מצב הריחוף (Hover) כדי שלא יגדל ולא ישנה צבע */
+.link-icon.disabled-link:hover {
+    color: #b0b0b0; 
+    transform: scale(1); 
+    cursor: not-allowed; 
 }
