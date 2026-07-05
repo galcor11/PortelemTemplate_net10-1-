@@ -32,8 +32,7 @@
                 }
             </div>
         
-        </div> 
-    }
+        </div>
     @* אזור הכרטיסים *@
     <div class="cards-container">
 
@@ -101,8 +100,7 @@
         </div>
 
     </div>
-   
-}
+       }    
 else
 {
     <p>טוען נתונים...</p>
@@ -157,6 +155,11 @@ else
         if (gameSettings != null)
         {
             isUnlimitedTime = (gameSettings.time == 1000);
+
+            if (!isUnlimitedTime && gameSettings.time == null)
+            {
+                gameSettings.time = 60;
+            }
         }
     }
     // פונקציה שמופעלת כשהמשתמש לוחץ על הצ'קבוקס של "ללא הגבלה"
