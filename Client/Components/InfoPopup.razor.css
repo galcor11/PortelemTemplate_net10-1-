@@ -23,9 +23,10 @@
     border-radius: 15px;
     text-align: center;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    width: 450px;
     position: relative;
-    direction: rtl; 
+    direction: rtl;
+    width: 900px; 
+    max-width: 95vw; /* מונע מהפופ-אפ לחרוג ממסכּים קטנים */
 }
 
 /* העיצוב לאיקס */
@@ -56,4 +57,10 @@
     margin-bottom: 30px;
     font-size: 18px;
     color: #333;
+}
+
+.popup-header h2 {
+    margin: 0; 
+    color: white;
+    font-weight: bold; 
 }

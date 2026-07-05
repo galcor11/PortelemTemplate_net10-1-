@@ -53,3 +53,29 @@
     background-color: rgba(255, 255, 255, 0.25);
     border-radius: 20px;
 }
+/* המעטפת שמסדרת את הסרטונים בשורה אופקית באמצעות פלקס */
+.howto-steps-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* רווח נעים בין הסרטונים */
+}
+
+/* כל שלב בפני עצמו מקבל שליש מהמקום (1 מתוך 3) */
+.howto-step {
+    flex: 1;
+    text-align: center; /* ממקרז את התוכן כדי שייראה טוב */
+}
+
+/* עיצוב התת-כותרות שמעל הסרטונים */
+.howto-step h3 {
+    color: #46BA9B;
+    margin-bottom: 10px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* עיצוב מסגרת הסרטון */
+.howto-step iframe {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
