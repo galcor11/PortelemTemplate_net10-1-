@@ -1,20 +1,21 @@
 @* קומפוננטה שפתחנו בשביל "אודות" ו-"איך משחקים" *@
 
 
-div class="popup-overlay">
+<div class="popup-overlay">
 <section class="popup-content">
-@*  האיקס מפעיל את פונקציית הביטול  *@
-<span class="close-x" @onclick="CancelDelete">✖</span>
-@* אזור הכותרת *@
-<div class="popup-header">
-</div>
+    @*  האיקס מפעיל את פונקציית הביטול  *@
+    <span class="close-x" @onclick="CancelDelete">✖</span>
+    @* אזור הכותרת *@
+    <div class="popup-header">
+    </div>
         
-@* לכאן ייכנס הטקסט הדינמי שנעביר מבחוץ בכל פעם *@
-<div class="popup-body">
-    @ChildContent 
-</div>
+    @* לכאן ייכנס הטקסט הדינמי שנעביר מבחוץ בכל פעם *@
+    <div class="popup-body">
+        @ChildContent 
+    </div>
 
 </section>
+</div>
 
 
 
