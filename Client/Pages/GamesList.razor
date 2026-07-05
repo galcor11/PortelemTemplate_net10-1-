@@ -76,10 +76,12 @@ else{
                     <td>@game.gameName</td>
                     <td>@game.gameCode</td>
                     <td>@game.questionCount</td>
-                    <td><input type="button" value="✏️" @onclick="(() => EditGame(game))"class="action-btn"/></td>
                     <td>
-                        @* אנחנו קוראים לקומפוננטה  *@
-                        @* אנחנו מעבירים את הנתונים מהעמוד אל הקומפוננטה  ומקבלים את אירוע הלחיצה חזרה  *@
+                        @* אנחנו קוראים לקומפוננטה ומחברים את הפעמון שלה (OnClick) לפונקציית העריכה של הטבלה *@
+                        <EditIcon OnClick="(() => EditGame(game))" />
+                    </td>
+                    <td>
+                        @* אנחנו מעבירים את הנתונים מהעמוד אל הקומפוננטה ומקבלים את אירוע הלחיצה חזרה  *@
                         <CustomPublishCheckbox 
                             CanPublish="@game.canPublish" 
                             IsPublish="@game.isPublish" 
