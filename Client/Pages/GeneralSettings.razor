@@ -47,7 +47,7 @@
                            min="45" max="180" step="5" 
                            class="time-input" />
                     <span>שניות</span>
-                    <span style="margin: 0 10px;">אוֹ</span>
+                    <strong style="margin: 0 10px;">אוֹ</strong>
                 }
 
                 @* הצ'קבוקס תמיד מוצג. אנחנו רוצים לתפוס את הרגע המדויק שבו המשתמש התחרט וביטל את הסימון של ללא הגבלה *@
@@ -78,7 +78,8 @@
                         <img src="./svg/potion.svg" class="potion-img" aria-label="שיקוי הצלה מלא" alt=""/>
                         <span>כן</span>
                     </div>
-                
+                    <div class="@GetSliderClass()" @onclick="() => gameSettings.hasPotion = !gameSettings.hasPotion"></div>
+                    
                     @* פקד הסליידר (המתג). מקבל את מחלקת האנימציה שלו (slider-on) מתוך הפונקציה. 
                     @* אזור בחירת ה"לא". 
                        שימוש בפונקציית חץ באירוע הלחיצה כדי להגדיר במפורש את המשתנה הבוליאני ל-false *@
