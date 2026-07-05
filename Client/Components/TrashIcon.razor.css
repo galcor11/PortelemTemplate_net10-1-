@@ -1,0 +1,14 @@
+/* מצב רגיל */
+.delete-icon {
+    cursor: pointer;
+    display: inline-block;
+    width: 26px; 
+    height: auto;
+    color: #DC143C; 
+    transition: transform 0.3s ease; /* האנימציה מוחלת רק על שינוי הגודל */
+}
+
+/* מצב ריחוף (Hover) - הגדלה בלבד בלי שינוי צבע */
+.delete-icon:hover {
+    transform: scale(1.2); /* מגדיל את הפח ב-20% */
+}

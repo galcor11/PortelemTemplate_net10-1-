@@ -88,7 +88,10 @@ else{
                             OnPublishToggled="@((newState) => changePublish(game, newState))" />
                     </td>
                     
-                    <td><input type="button" value="🗑️" @onclick="(() => ShowDeleteConfirmation(game))" class="action-btn"/></td>
+                    <td>
+                        @* אנחנו משתמשים בקומפוננטת הפח וחיבור אירוע הלחיצה לפונקציה בעמוד *@
+                        <TrashIcon OnClick="(() => ShowDeleteConfirmation(game))" />
+                    </td>
                 </tr>
             }
             </tbody>
