@@ -1,22 +1,52 @@
-.navbar-dark{
+/*.navbar-dark{*/
+/*    background-color: #46BA9B;*/
+/*}*/
+
+/*!* טאבים במצב מנוחה - שקיפות מופחתת כמו באפליקציית הייחוס *!*/
+/*::deep a.nav-link, button{*/
+/*     color: white;*/
+/*     opacity: 0.8;*/
+/*     transition: opacity 0.2s ease, background-color 0.2s ease;*/
+/*}*/
+
+/*!* ריחוף - חוזרים לשקיפות מלאה עם קו תחתון *!*/
+/*::deep a.nav-link:hover, button:hover{*/
+/*    text-decoration: underline;*/
+/*    color: white;*/
+/*    opacity: 1;*/
+/*}*/
+
+/*!* הטאב הפעיל - שקיפות מלאה, מודגש, ורקע  מעוגל *!*/
+/*::deep a.nav-link.active {*/
+/*    opacity: 1;*/
+/*    font-weight: bold;*/
+/*    background-color: rgba(255, 255, 255, 0.25);*/
+/*    border-radius: 20px;*/
+/*}*/
+.navbar-dark {
     background-color: #46BA9B;
 }
 
-/* טאבים במצב מנוחה - שקיפות מופחתת כמו באפליקציית הייחוס */
-::deep a.nav-link, button{
-     color: white;
-     opacity: 0.8;
-     transition: opacity 0.2s ease, background-color 0.2s ease;
+/* טאבים במצב מנוחה - חל על קישורים רגילים ועל כפתורי הפופ-אפ שלנו */
+::deep a.nav-link, ::deep .popup-nav-btn {
+    color: white;
+    opacity: 0.8;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+
+    /* ניקוי עיצוב דיפולטיבי של כפתורים */
+    background: none;
+    border: none;
 }
 
 /* ריחוף - חוזרים לשקיפות מלאה עם קו תחתון */
-::deep a.nav-link:hover, button:hover{
+::deep a.nav-link:hover, ::deep .popup-nav-btn:hover {
     text-decoration: underline;
     color: white;
     opacity: 1;
+    cursor: pointer; /* הופך את סמן העכבר ליד לחיצה */
 }
 
-/* הטאב הפעיל - שקיפות מלאה, מודגש, ורקע  מעוגל */
+/* הטאב הפעיל - שקיפות מלאה, מודגש, ורקע "גלולה" מעוגל (נשאר רק לקישורים) */
 ::deep a.nav-link.active {
     opacity: 1;
     font-weight: bold;
