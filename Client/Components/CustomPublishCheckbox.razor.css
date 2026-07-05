@@ -20,7 +20,7 @@
     opacity: 0.5;
 }
 
-/* --- תוספת לעיצוב הטולטיפ (ללא סימן שאלה) --- */
+/* עיצוב הטולטיפ (בלי סימן שאלה) */
 
 .tooltip-container {
     position: relative;
@@ -29,7 +29,7 @@
 
 .tooltip-text {
     visibility: hidden;
-    width: 130px; /* תוכלי לשחק עם הרוחב אם הטקסט ארוך */
+    width: 130px; 
     background-color: #ffffff;
     color: #633c21;
     text-align: center;

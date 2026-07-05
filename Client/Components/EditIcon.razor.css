@@ -1,3 +1,61 @@
+
+/* המעטפת כשאין טולטיפ */
+.icon-wrapper {
+    display: inline-block;
+}
+
+/* המעטפת כשיש טולטיפ */
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* עיצוב הטקסט הקופץ */
+.tooltip-text {
+    visibility: hidden;
+
+    /* התאמה דינמית של רוחב הבועה וירידות שורה  */
+    width: max-content;
+    max-width: 150px; 
+    white-space: normal; 
+    background-color: #ffffff;
+    color: #633c21;
+    text-align: center;
+    border-radius: 8px;
+    padding: 8px 12px; 
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    font-family: 'Playpen Sans Hebrew', cursive, sans-serif;
+    font-size: 13px;
+
+    /* מיקום הטולטיפ באוויר */
+    position: absolute;
+    z-index: 999;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* המשולש הקטן שמצביע למטה */
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #ffffff transparent transparent transparent;
+}
+
+/* מציג את הבועה רק כשמרחפים עם העכבר על המעטפת */
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
 /* מצב רגיל  */
 .edit-icon {
     cursor: pointer;
@@ -5,12 +63,12 @@
     display: inline-block;
     width: 15px;
     height: 15px;
-    color: #666; 
+    color: #666;
     transition: all 0.3s ease; /* גורם לשינוי הגודל והצבע להיות חלק  */
 }
 
 /* מצב ריחוף (Hover) - הגדלה ושינוי צבע לירוק */
 .edit-icon:hover {
     color: #228B22; /* צבע ירוק  */
-    transform: scale(1.2); /* מגדיל את העיפרון ב-20% */
+    transform: scale(1.2);
 }

@@ -1,5 +1,15 @@
 @* קומפוננטה שפתחנו לצורך האייקונים של עריכת הנחיה/שאלה, וכן לצורך עריכת משחק *@
 
+
+@* דיב עוטף שמקבל את מחלקת הטולטיפ *@
+<div class="@wrapperClass" @onclick="IconClicked">
+
+    @* הדרך שלמדתם לבדוק אם יש טקסט להציג *@
+    @if (TooltipText != null && TooltipText != "")
+    {
+        <span class="tooltip-text">@TooltipText</span>
+    }
+
 @* אייקון עיפרון לחיץ *@
 <span class="edit-icon" @onclick="IconClicked">
     <svg viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -7,11 +17,30 @@
 
     </svg>
 </span>
+</div>
+
 
 @code {
+    // פרמטר שקובע אם יהיה טולטיפ ומה יהיה כתוב בו 
+    [Parameter] public string TooltipText { get; set; } 
     [Parameter]
     public EventCallback OnClick { get; set; } // "פעמון" שמודיע שלחצו על האייקון 
+    // המשתנה שיחזיק את המחלקה של הדיב העוטף
+    string wrapperClass = "icon-wrapper"; 
 
+    // פונקציה מובנית שפועלת בכל פעם כשהקומפוננטה מקבלת פרמטרים מהעמוד הראשי
+    protected override void OnParametersSet()
+    {
+        // אם הועבר טקסט לטולטיפ
+        if (TooltipText != null && TooltipText != "")
+        {
+            wrapperClass = "tooltip-container";
+        }
+        else // אם לא הועבר טקסט 
+        {
+            wrapperClass = "icon-wrapper";
+        }
+    }
     async Task IconClicked()
     {
         await OnClick.InvokeAsync();
