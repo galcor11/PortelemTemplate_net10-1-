@@ -7,25 +7,33 @@
 @* המכל הראשי שמכיל את הדשא *@
 <div class="settings-page-wrapper">
 
-<h1>⚙️הגדרות כלליות️</h1>
+    <h1>⚙️הגדרות כלליות️</h1>
 
-@if (gameSettings != null)
-{
-    <label><span class="required-asterisk">*</span> שם המשחק:</label>
-    <div>
-        @if (isEditingName == true)
-        {
-            @* מצב עריכה: תיבת טקסט שמקושרת לשם, וכפתור אישור *@
-            <CustomInputText @bind-Value="gameSettings.gameName" maxLength="20" midLength="17" minLength="1" />
-            <input type="button" value="✔️" @onclick="(() => isEditingName = false)" style="background: none; border: none; cursor: pointer;" />
-        }
-        else
-        {
-            @* מצב תצוגה: טקסט רגיל (בתור תת-כותרת) וכפתור עיפרון *@
-            <span>@gameSettings.gameName</span>
-            <input type="button" value="✏️" @onclick="(() => isEditingName = true)" style="background: none; border: none; cursor: pointer;" />
-        }
-    </div>
+    @* התנאי מופיע ומיד אחריו נפתחים הסוגריים המסולסלים *@
+    @if (gameSettings != null)
+    {
+        @* דיב נוסף שמקבל עיצוב של שורה *@
+        <div class="game-name-row">
+        
+            <label><span class="required-asterisk">*</span> שם המשחק:</label>
+        
+            <div>
+                @if (isEditingName == true)
+                {
+                    @* מצב עריכה: תיבת טקסט שמקושרת לשם, וכפתור אישור *@
+                    <CustomInputText @bind-Value="gameSettings.gameName" maxLength="20"  minLength="1" />
+                    <input type="button" value="✔️" @onclick="(() => isEditingName = false)" style="background: none; border: none; cursor: pointer;" />
+                }
+                else
+                {
+                    @* מצב תצוגה: טקסט רגיל (בתור תת-כותרת) וכפתור עיפרון *@
+                    <span>@gameSettings.gameName</span>
+                    <input type="button" value="✏️" @onclick="(() => isEditingName = true)" style="background: none; border: none; cursor: pointer;" />
+                }
+            </div>
+        
+        </div> 
+    }
     @* אזור הכרטיסים *@
     <div class="cards-container">
 

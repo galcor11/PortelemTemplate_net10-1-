@@ -17,7 +17,18 @@
     color: red; /* צבע אדום */
     font-weight: bold; 
 }
+/* עיצוב המעטפת של שם המשחק לתצוגה בשורה אחת */
+.game-name-row {
+    display: flex;
+    align-items: center; /* יישור אנכי של הטקסט והתיבה לאמצע */
+    gap: 10px; /* רווח נעים לעין בין התווית לבין התוכן עצמו */
+    margin-bottom: 20px; /* קצת רווח מלמטה לפני שמתחילים הכרטיסים */
+}
 
+/* ביטול רווחים מיותרים שעלולים להיות לתווית */
+.game-name-row label {
+    margin: 0;
+}
 /* המכל של הכרטיסיות */
 .cards-container {
     display: flex;

@@ -1,0 +1,50 @@
+/* הרקע החצי-שקוף שמכסה את כל המסך */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* הקופסה של הפופ-אפ עצמו */
+.popup-content {
+    background-image: url("./SVG/HowTo.svg");
+    padding: 30px 40px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 450px;
+    position: relative;
+}
+/*  העיצוב לאיקס  */
+.close-x {
+    position: absolute;
+    top: 15px;
+    right: 20px; /* ממקם אותו בצד ימין */
+    font-size: 20px;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+/* עיצוב אזור הכותרת באמצעות Flexbox */
+.popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px; /* המרווח בין ראש התולעת לכותרת */
+    margin-bottom: 20px;
+}
+
+
+.popup-body {
+    margin-bottom: 30px;
+    font-size: 18px;
+    color: #333;
+}
+
