@@ -55,26 +55,52 @@
 @if (showHowToPlay == true)
 {
     <InfoPopup PopupTitle="איך משחקים?" OnClose="() => showHowToPlay = false">
+        
         <div class="howto-steps-container">
 
-        @* --- שלב 1 --- *@
-        <div class="howto-step">
-            <h3>זזים</h3>
-            <iframe width="100%" height="220" src="https://www.youtube.com/embed/pMOSpW46JHM?si=8hR7rfebcmssdYIb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        </div>
+            @* --- שלב 1 --- *@
+            <div class="howto-step">
+                <h3>זזים</h3>
+                <iframe width="100%" height="220" src="https://www.youtube.com/embed/pMOSpW46JHM?si=8hR7rfebcmssdYIb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
 
-        @* --- שלב 2 --- *@
-        <div class="howto-step">
-            <h3>אוכלים תותים</h3>
-            <iframe width="100%" height="220" src="https://www.youtube.com/embed/ccyyBG1JTvs?si=CQShjQfVgxqqtr7H" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        </div>
+            @* --- שלב 2 --- *@
+            <div class="howto-step">
+                <h3>אוכלים תותים</h3>
+                <iframe width="100%" height="220" src="https://www.youtube.com/embed/ccyyBG1JTvs?si=CQShjQfVgxqqtr7H" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
 
-        @* --- שלב 3 --- *@
-        <div class="howto-step">
-            <h3>מתמצאים</h3>
-            <iframe width="100%" height="220" src="https://www.youtube.com/embed/1_EOlzto55w?si=jo_nWnuF0PMiCMM6" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            @* --- שלב 3 --- *@
+            <div class="howto-step">
+                <h3>מתמצאים</h3>
+                <iframe width="100%" height="220" src="https://www.youtube.com/embed/1_EOlzto55w?si=jo_nWnuF0PMiCMM6" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+
         </div>
-   </div>
+       @* תותים ושיקויים *@
+       <div class="strawberry-footer">
+            
+        <h2 class="strawberry-question">ומה קורה אם אכלתי תות לא בַּסֵּדר?</h2>
+
+       <div class="potions-box">
+           <div class="potions-text">
+               <span class="potions-title">זה בְּסֵדֶר, לא נורא!</span>
+               <span class="potions-subtitle">במשחקים מסוימים, יש 2 שיקויי הצלה</span>
+           </div>
+                
+           <div class="potions-details">
+               <div class="potion-item">
+                   <span class="potion-label">מתחדשים בכל שאלה</span>
+                   <img src="./svg/potion.svg" alt="שיקוי ירוק" class="potion-icon" />
+               </div>
+               <div class="potion-item">
+                   <span class="potion-label">ניתנים אוטומטית בפסילה</span>
+                   <img src="./svg/potion.svg" alt="שיקוי ירוק" class="potion-icon" />
+               </div>
+           </div>
+       </div>
+       </div>
+      
     </InfoPopup>
 }
 

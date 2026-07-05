@@ -49,10 +49,6 @@
     margin-bottom: 20px;
 }
 
-.popup-header h2 {
-    margin: 0; /* מונע רווחים מיותרים  */
-}
-
 .popup-body {
     margin-bottom: 30px;
     font-size: 18px;
