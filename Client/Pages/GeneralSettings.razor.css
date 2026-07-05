@@ -12,6 +12,11 @@
     padding-bottom: 180px; /* שומר על מרווח ביטחון בתחתית שהתוכן לא ייכנס מאחורי הדשא והתולעת */
     box-sizing: border-box;
 }
+/* עיצוב לכוכבית של שדה חובה */
+.required-asterisk {
+    color: red; /* צבע אדום */
+    font-weight: bold; 
+}
 
 /* המכל של הכרטיסיות */
 .cards-container {
