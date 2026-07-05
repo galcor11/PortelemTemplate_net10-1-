@@ -67,6 +67,18 @@
     text-align: center;
 }
 
+/* אִפְרוּר וביטול לחיצות בזמן עריכת ההנחיה (אותו עיצוב כמו בהוספת שאלה חדשה בעמוד הראשי) */
+.disabled-area {
+    opacity: 0.4;
+    pointer-events: none;
+    filter: grayscale(50%);
+}
+
+/* סמן עכבר חסום לאזור התוכן בזמן עריכת ההנחיה */
+.not-allowed-cursor {
+    cursor: not-allowed;
+}
+
 /* פוקוס נגיש למקלדת (Tab) עבור האייקונים הלחיצים - תקן WCAG 2.1 */
 .toggle-icon:focus-visible,
 .delete-icon:focus-visible {

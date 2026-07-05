@@ -23,5 +23,10 @@
     <ProjectReference Include="..\Shared\AuthTemplate.Shared.csproj" />
   </ItemGroup>
 
+  <!-- launchSettings.json is gitignored (each dev keeps local tweaks); recreate it
+       from the tracked template when missing, e.g. right after a fresh clone or pull -->
+  <Target Name="RestoreLaunchSettings" BeforeTargets="BeforeBuild" Condition="!Exists('Properties\launchSettings.json')">
+    <Copy SourceFiles="Properties\launchSettings.template.json" DestinationFiles="Properties\launchSettings.json" />
+  </Target>
 
 </Project>

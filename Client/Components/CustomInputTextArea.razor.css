@@ -15,7 +15,7 @@
     overflow: hidden; /* בלי פס גלילה */
     font: inherit;
     font-weight: inherit;
-    text-align: inherit;
+    text-align: right; /* יישור הטקסט לימין בהתאם לכיוון העברית */
     box-sizing: border-box;
 }
 
@@ -32,15 +32,15 @@
     padding: 0 3px;
 }
 
-/* רק צבע הטקסט של המונה משתנה, לא המסגרת */
-.char-counter.good-input {
+/* רק צבע הטקסט של המונה משתנה, לא המסגרת - ירוק כשהאורך תקין, אדום כשלא */
+.char-counter.good-counter {
     color: green;
 }
 
-.char-counter.warnning-input {
-    color: orange;
+.char-counter.warning-counter {
+    color: #fd8a03;
 }
 
-.char-counter.danger-input {
+.char-counter.danger-counter {
     color: red;
 }

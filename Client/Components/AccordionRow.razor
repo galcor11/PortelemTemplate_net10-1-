@@ -3,8 +3,8 @@
 @* שורת הכותרת של האקורדיון (תמיד מוצגת) *@
 <tr class="accordion-main-row">
     <td>
-        @* סגירה ופתיחה של החיצים *@
-        <span class="toggle-icon" @onclick="Toggle">
+        @* סגירה ופתיחה של החיצים - מושבת בזמן עריכת ההנחיה *@
+        <span class="toggle-icon @disabledClass" @onclick="Toggle">
             @if (IsOpen)
             {
                 <span>▼</span>
@@ -14,10 +14,11 @@
                 <span>◀</span>
             }
         </span>
-        
+
         @* הקומפוננטה לעריכת ההנחיה *@
-        <EditableInstructionRow InstructionText="@Question.instruction" 
-                                OnInstructionSaved="SaveInstruction" />
+        <EditableInstructionRow InstructionText="@Question.instruction"
+                                OnInstructionSaved="SaveInstruction"
+                                OnEditModeChanged="InstructionEditModeChanged" />
     </td>
     <td>
         @ItemsCount
@@ -31,7 +32,8 @@
         }
     </td>
     <td class="center-text">
-        <button type="button" class="delete-icon" @onclick="DeleteQuestion">
+        @* כפתור מחיקה - מושבת בזמן עריכת ההנחיה *@
+        <button type="button" class="delete-icon @disabledClass" @onclick="DeleteQuestion">
             🗑️
         </button>
     </td>
@@ -41,9 +43,10 @@
 @if (IsOpen)
 {
     <tr>
-        <td colspan="3" class="accordion-cell">
+        @* בזמן עריכת ההנחיה התא מקבל סמן חסום (התוכן עצמו מושבת דרך העמוד הראשי) *@
+        <td colspan="3" class="accordion-cell @(isEditingInstruction ? "not-allowed-cursor" : "")">
             @* לכאן נכניס את התוכן של התולעת *@
-            @ChildContent 
+            @ChildContent
         </td>
     </tr>
 }
@@ -63,6 +66,21 @@
     [Parameter] public EventCallback<int> OnToggle { get; set; }
     //פרמטר בוליאני שעוזר לנו לנהל את הסגירה ואת הפתיחה של האקורדיון
     [Parameter] public bool IsOpen { get; set; }
+    //פעמון שמדווח לעמוד הראשי על כניסה/יציאה ממצב עריכת ההנחיה, כדי שישבית את שאר השאלה
+    [Parameter] public EventCallback<bool> OnInstructionEditToggled { get; set; }
+
+    // האם ההנחיה של השורה נמצאת כרגע בעריכה - בזמן עריכה שאר השורה מושבתת
+    bool isEditingInstruction = false;
+
+    // מחלקת ההשבתה לאייקונים של השורה בזמן עריכת ההנחיה (אותו רעיון כמו בהוספת שאלה חדשה)
+    string disabledClass => isEditingInstruction ? "disabled-area" : "";
+
+    // הפונקציה מקבלת את מצב העריכה מהקומפוננטה של ההנחיה ומדווחת עליו הלאה לעמוד הראשי
+    async Task InstructionEditModeChanged(bool isEditing)
+    {
+        isEditingInstruction = isEditing;
+        await OnInstructionEditToggled.InvokeAsync(isEditing);
+    }
 
     // הפונקציה מקבלת את הטקסט המעודכן של ההנחיה, ומפעילה את הפעמון כדע להעביר את הטקסט הֶחדש לעמוד
     async Task SaveInstruction(string newText)

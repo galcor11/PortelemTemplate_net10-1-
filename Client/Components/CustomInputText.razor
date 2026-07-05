@@ -1,9 +1,9 @@
 @inherits Microsoft.AspNetCore.Components.Forms.InputText
 
 <span class="input-with-counter">
-    <input @attributes="@AdditionalAttributes" class="@CssClass default-input @inputClass" @bind="@CurrentValueAsString"  @bind:event="oninput" @onkeyup="countChars" maxlength="@maxLength" />
+    <input @attributes="@AdditionalAttributes" class="@CssClass default-input" @bind="@CurrentValueAsString"  @bind:event="oninput" @onkeyup="countChars" maxlength="@maxLength" />
     @* ספירת תווים (מקסימום/נוכחי כדי שיקרא נכון בעברית) *@
-    <span class="char-counter">@maxLength.ToString()/@length.ToString()</span>
+    <span class="char-counter @counterClass">@maxLength.ToString()/@length.ToString()</span>
 </span>
 
 
@@ -11,14 +11,17 @@
     // פרמטר לקבלת אורך מחרוזת מינימלי
     [Parameter]
     public int minLength { get; set; } = 1;
-    // פרמטר לקבלת אורך מחרוזת להצגת אזהרה
+    // פרמטר לקבלת אורך מחרוזת שממנו המונה נצבע כתום (אזהרת התקרבות למקסימום)
+    // אם לא הועבר ערך, ברירת המחדל היא שלושה תווים לפני המקסימום
     [Parameter]
-    public int midLength { get; set; } = 10;
+    public int? midLength { get; set; }
     // פרמטר לקבלת אורך מחרוזת מקסימלי
     [Parameter]
     public int maxLength { get; set; } = 20;
-    // משתנה שיכיל את שם המחלקה הרלוונטי במידה ואורך המחרוזת תקין, דורש אזהרה או לא תקין
-    string inputClass = "";
+    // הערך האפקטיבי של סף האזהרה - מה שהועבר בפרמטר, או המקסימום פחות 3
+    int effectiveMidLength => midLength ?? maxLength - 3;
+    // משתנה שיכיל את שם המחלקה של המונה - ירוק כשהאורך תקין, אדום כשלא
+    string counterClass = "";
     // משתנה שיכיל את אורך המחרוזת
     int length = 0;
 
@@ -33,17 +36,17 @@
         if (CurrentValueAsString != null)
         {
             length = CurrentValueAsString.Length;
-            if (length >= minLength && length < midLength)
+            if (length >= minLength && length < effectiveMidLength)
             {
-                inputClass = "good-input";
+                counterClass = "good-counter";
             }
-            else if (length >= midLength && length <= maxLength)
+            else if (length >= effectiveMidLength && length < maxLength)
             {
-                inputClass = "warnning-input";
+                counterClass = "warning-counter";
             }
             else
             {
-                inputClass = "danger-input";
+                counterClass = "danger-counter";
             }
         }
     }

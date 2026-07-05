@@ -1,7 +1,6 @@
-@page "/QuestionsEditor/{gameID:int}"
-<p>עריכת השאלות</p>
-<!-- ניהול משתמשים - רק יוזר מחובר יכול להיכנס -->
-@attribute [Authorize]
+@* קומפוננטת עריכת השאלות - מוצגת בתור טאב בתוך העמוד המארח GameEditor *@
+@* ההרשאות (Authorize) נאכפות בעמוד המארח, והכותרת עברה לשם *@
+@using System.Linq
 @using AuthTemplate.Shared.Models
 @inject HttpClient Http
 @* הוספנו את זה בשביל סייר הקבצים וכפתור נסתר *@
@@ -11,7 +10,7 @@
 @* בדיקה שיש שאלות להצגה, כלומר שהרשימה איננה ריקה *@
 @if (gameData != null)
 {
-    <h1>@gameData.gameName</h1>
+    <h2>@gameData.gameName</h2>
     <div class="table-scroll-container">
         <table class="questions-table">
             <thead>
@@ -31,7 +30,7 @@
                     <div class="input-action-wrapper">
                         @* תיבת טקסט המקושרת למודל ומיישמת הגבלת תווים *@
                         <CustomInputText class="instruction-input" @bind-Value="questionToAdd.instruction"
-                                         maxLength="20" minLength="1" placeholder="הקלידו הנחיה (עד 20 תווים)..."/>
+                                         maxLength="20" midLength="17" minLength="1" placeholder="הקלידו הנחיה (עד 20 תווים)..."/>
 
                         @* שימוש בקומפוננטה לשני הכפתורים שלנו *@
                         <MyButton ButtonStyle="primary"
@@ -97,8 +96,8 @@
         }
 
 
-        @* לולאת FOREACH שעוברת לנו על כל שאלה ברשימת השאלות *@
-        @foreach (Question question in gameData.Questions)
+        @* לולאת FOREACH שעוברת לנו על כל שאלה ברשימת השאלות במיון הפוך כך שהחדשה ביותר למעלה *@
+        @foreach (Question question in Enumerable.Reverse(gameData.Questions))
         {
             int itemsCount = question.Items.Count;
             @*אנחנו משתמשים בקומפוננטה שיצרנו לאקורדיון*@
@@ -108,10 +107,11 @@
                 IsOpen="@(openQuestionId == question.questionID)"
                 OnToggle="ToggleAccordion"
                 OnDeleteClicked="DeleteQuestionClicked"
-                OnInstructionSaved="@((newText) => SaveInstructionRow(newText, question))">
+                OnInstructionSaved="@((newText) => SaveInstructionRow(newText, question))"
+                OnInstructionEditToggled="@((isEditing) => editingInstructionId = isEditing ? question.questionID : 0)">
 
-                @* אזור ה-ChildContent *@
-                <div class="items-container">
+                @* אזור ה-ChildContent - מקבל את מצב ההשבתה (כמו בהוספת שאלה חדשה) בזמן עריכת ההנחיה *@
+                <div class="items-container @(editingInstructionId == question.questionID ? "disabled-area" : "")">
                     @* השתמשנו באירועים של בלייזור שגילינו בחקירה עצמית *@
                     <div class="strawberry-container" @onmouseover="() => isHoveringAddItem = true"
                          @onmouseout="() => isHoveringAddItem = false">
@@ -150,7 +150,7 @@
                                     <div class="strawberry-input-wrapper">
                                         <CustomInputTextArea @bind-Value="currentStrawberryItem.content"
                                                              placeholder="הקלידו כאן..."
-                                                             class="inner-strawberry-input" maxLength="30" minLength="1"/>
+                                                             class="inner-strawberry-input" maxLength="30" midLength="27" minLength="1"/>
                                     </div>
                                     <ValidationMessage For="@(() => currentStrawberryItem.content)"/>
                                 }
@@ -188,15 +188,17 @@
                                     <span class="toggle-label">תמונה</span>
                                 </div>
                                 <!-- כפתור ה-SUBMIT של התות שמשנה את הטקסט שלו -->
+                                <!-- הכפתור אפור וחסום כשאין תוכן תקין, וכתום כשאפשר לאשר -->
                                 @if (currentStrawberryItem.answerID > 0)
                                 {
-                                    <button type="submit">שמירת שינויים</button>
+                                    <button type="submit" class="strawberry-submit"
+                                            disabled="@isStrawberryDisabled">שמירת שינויים</button>
                                 }
                                 else
                                 {
-                                    <button type="submit">אישור</button>
+                                    <button type="submit" class="strawberry-submit"
+                                            disabled="@isStrawberryDisabled">אישור</button>
                                 }
-                        
 
                             </EditForm>
                         </div>
@@ -225,16 +227,14 @@
         <p style="color:red;">שגיאה: @errorMsg</p>
     }
     
-    @* הכפתור המשני שפותח את חלונית ההוספה *@
-    @if (isAddingQuestion == false)
-    {
-        <div class="add-button-wrapper">
-            @* קוראים לקומפוננטה ומעבירים לה את כל הפרמטרים *@
-            <MyButton ButtonStyle="secondary"
-                      ButtonText="+ ליצור שאלה"
-                      OnClickAction="StartAddingQuestion"/>
-        </div>
-    }
+    @* הכפתור המשני שפותח את חלונית ההוספה - מושבת בזמן הוספת שאלה *@
+    <div class="add-button-wrapper">
+        @* קוראים לקומפוננטה ומעבירים לה את כל הפרמטרים *@
+        <MyButton ButtonStyle="secondary"
+                  ButtonText="+ ליצור שאלה"
+                  IsDisabled="isAddingQuestion"
+                  OnClickAction="StartAddingQuestion"/>
+    </div>
 
     @if (showQuestionDeletePopup)
     {
@@ -277,8 +277,11 @@ else
 
     long maxFileSize = 4194304;
 
-    //הפרמטר שמתקבל מהנתיב (מזהה המשחק)
+    //הפרמטר שמתקבל מהעמוד המארח (מזהה המשחק)
     [Parameter] public int gameID { get; set; }
+
+    // פעמון שמדווח לעמוד המארח על שמירה מוצלחת, כדי שיציג "השינויים נשמרו בהצלחה"
+    [Parameter] public EventCallback OnChangesSaved { get; set; }
 
     //משתנה בוליאני הוספנו כדי לדעת אם העכבר נמצא בHOVER מעל הוספת פריט
     bool isHoveringAddItem = false;
@@ -298,12 +301,16 @@ else
     QuestionToAdd questionToAdd = new QuestionToAdd();
 
     //מופע של מחלקה שנועד לשמור את רשימת השאלות ואת שם המשחק מהקונטרולר   
-    GameEditDto gameData;
+    [Parameter] public GameEditDto gameData { get; set; }
     string successMsg = "";
     string errorMsg = "";
 
 // משתנה לשמירת ה-ID של השאלה הפתוחה כרגע. 0 אומר שהכול סגור.
     int openQuestionId = 0;
+
+    // מזהה השאלה שההנחיה שלה נמצאת כרגע בעריכה. 0 אומר שאף הנחיה לא בעריכה.
+    // בזמן עריכה שאר השאלה מושבתת (אותו עיצוב כמו בהוספת שאלה חדשה) כדי לא להציף את המשתמש
+    int editingInstructionId = 0;
 
     // משתני עזר לפופ-אפ 
     bool showDeletePopup = false;
@@ -385,12 +392,20 @@ else
                 gameData.Questions = new List<Question>();
             }
 
-            //  הוספת השאלה החדשה לרשימה 
+            //  הוספת השאלה החדשה לרשימה
             gameData.Questions.Add(createdQuestion);
 
             //  סגירת שורת ההוספה והעלמת הודעות שגיאה
             isAddingQuestion = false;
             errorMsg = "";
+
+            // פותחים את האקורדיון של השאלה החדשה כדי שהתולעת תישאר פתוחה כמו בתצוגת הדמה
+            openQuestionId = createdQuestion.questionID;
+            // מאפסים את התות לקראת הפריט הראשון (כמו בפתיחת אקורדיון רגילה)
+            currentStrawberryItem = new SilkyItem();
+
+            // מדווחים לעמוד המארח על שמירה מוצלחת
+            await OnChangesSaved.InvokeAsync();
         }
         else
         {
@@ -418,6 +433,9 @@ else
             {
                 // אנחנו מסירים את השאלה מהרשימה כדי שהתצוגה תתעדכן
                 gameData.Questions.Remove(questionToDelete);
+
+                // מדווחים לעמוד המארח על שמירה מוצלחת
+                await OnChangesSaved.InvokeAsync();
 
                 //שימוש בטוסט שלנו
                 errorMsg = "";
@@ -508,6 +526,9 @@ else
                 }
             }
 
+            // מדווחים לעמוד המארח על שמירה מוצלחת
+            await OnChangesSaved.InvokeAsync();
+
             //עדכון הטוסט (גילינו בחקירה עצמית)
             errorMsg = "";
             showToast = true; // מדליקים את הטוסט
@@ -548,30 +569,44 @@ else
     //עם טעינת העמוד
     protected override async Task OnInitializedAsync()
     {
-        // אנחנו מאתחלים את אובייקט השאלה החדשה עם ה-ID של המשחק מהנתיב
-        //אנחנו קוראים לשיטה בקונטולר של עריכת השאלות ומשרשרים את gameID בנתיב
-        var response = await Http.GetAsync("api/Questions/getQuestions/" + gameID);
-        //בדיקה אם סטטוס התשובה תקין
-        if (response.IsSuccessStatusCode == true)
+        if (gameData == null)
         {
-            // אנחנו ממירים את ה-JSON שחזר ושומרים במופע שלנו
-            gameData = response.Content.ReadFromJsonAsync<GameEditDto>().Result;
-
-            // מבחינה אפיונית נרצה להציג לעורך של משחק בלי שאלות את האופציה להוסיף שאלה אך לא לעורך של משחק עם שאלות
-            if (gameData.Questions.Count <= 0)
+            // אנחנו מאתחלים את אובייקט השאלה החדשה עם ה-ID של המשחק מהנתיב
+            //אנחנו קוראים לשיטה בקונטולר של עריכת השאלות ומשרשרים את gameID בנתיב
+            var response = await Http.GetAsync("api/Questions/getQuestions/" + gameID);
+            //בדיקה אם סטטוס התשובה תקין
+            if (response.IsSuccessStatusCode == true)
             {
-                StartAddingQuestion();
+                // אנחנו ממירים את ה-JSON שחזר ושומרים במופע שלנו
+                gameData = response.Content.ReadFromJsonAsync<GameEditDto>().Result;
+
+                // מבחינה אפיונית נרצה להציג לעורך של משחק בלי שאלות את האופציה להוסיף שאלה אך לא לעורך של משחק עם שאלות
+                if (gameData.Questions.Count <= 0)
+                {
+                    StartAddingQuestion();
+                }
+            }
+            else
+            {
+                //המשתנה ERRORMSG מכיל בתוכו את התוכן המחרוזתי של השגיאה
+                errorMsg = response.Content.ReadAsStringAsync().Result;
             }
         }
         else
         {
-            //המשתנה ERRORMSG מכיל בתוכו את התוכן המחרוזתי של השגיאה
-            errorMsg = response.Content.ReadAsStringAsync().Result;
+            // מבחינה אפיונית נרצה להציג לעורך של משחק בלי שאלות את האופציה להוסיף שאלה אך לא לעורך של משחק עם שאלות
+            if (gameData.Questions.Count <= 0 && !isAddingQuestion)
+            {
+                StartAddingQuestion();
+            }
         }
     }
 
 // מופע של התות לקליטת הנתונים
     SilkyItem currentStrawberryItem = new SilkyItem();
+
+    // הכפתור של התות מושבת כשאין תוכן אמיתי - רווחים בלבד לא נחשבים (כמו באפליקציית הייחוס)
+    bool isStrawberryDisabled => string.IsNullOrWhiteSpace(currentStrawberryItem.content);
 
     // הפונקציה שמופעלת בלחיצה על התות ופותחת את סייר הקבצים
     async Task TriggerFileInput()
@@ -637,7 +672,9 @@ else
 
             //אנחנו מאתחלים את המופע
             currentStrawberryItem = new SilkyItem();
-            // כאן תהיה הודעת "נשמר בהצלחה"
+
+            // מדווחים לעמוד המארח על שמירה מוצלחת
+            await OnChangesSaved.InvokeAsync();
         }
         else
         {
@@ -698,6 +735,8 @@ else
         else
         {
             successMsg = "הקצה נשמר בהצלחה!";
+            // מדווחים לעמוד המארח על שמירה מוצלחת
+            await OnChangesSaved.InvokeAsync();
         }
     }
 
@@ -729,6 +768,9 @@ else
 
             //  אנחנו מאפסים את התות לקראת הפריט הבא
             currentStrawberryItem = new SilkyItem();
+
+            // מדווחים לעמוד המארח על שמירה מוצלחת
+            await OnChangesSaved.InvokeAsync();
         }
         else
         {
@@ -798,6 +840,8 @@ else
         else
         {
             errorMsg = "";
+            // מדווחים לעמוד המארח על שמירה מוצלחת (נקרא פעמיים בהחלפה - הכיתוב פשוט מתרענן)
+            await OnChangesSaved.InvokeAsync();
         }
     }
 

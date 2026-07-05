@@ -24,7 +24,7 @@
 ::deep .char-counter {
     position: absolute;
     top: 100%;
-    right: 6px;
+    left: 6px;
     font-size: 10px;
 }
 

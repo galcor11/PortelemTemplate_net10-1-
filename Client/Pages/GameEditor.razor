@@ -1,0 +1,130 @@
+@page "/GameEditor/{gameID:int}"
+@* עמוד מארח שמאגד את עריכת השאלות ואת ההגדרות הכלליות תחת כתובת אחת עם טאבים *@
+@attribute [Authorize]
+@using AuthTemplate.Shared.Models
+@inject HttpClient Http
+
+@if (gameData != null && gameSettings != null)
+{
+    <div class="editor-header">
+        @* שני הטאבים של מסך העריכה - בפריסת RTL האלמנט הראשון יושב בצד ימין *@
+        <div class="editor-tabs">
+            <button type="button" class="editor-tab @(activeTab == "settings" ? "active-tab" : "")"
+                    @onclick="@(() => SwitchTab("settings"))">
+                ⚙️ הגדרות כלליות
+            </button>
+            <button type="button" class="editor-tab @(activeTab == "questions" ? "active-tab" : "")"
+                    @onclick="@(() => SwitchTab("questions"))">
+                ✏️ עריכת השאלות
+            </button>
+        </div>
+
+        @* כפתור החזרה לטבלת המשחקים - יושב בפינה השמאלית *@
+        <a class="back-pill" href="./GamesList">טבלת המשחקים <span class="back-arrow">←</span></a>
+    </div>
+
+    @* התוכן של הטאב הפעיל *@
+    @if (activeTab == "questions")
+    {
+        <QuestionsEditor gameID="gameID" OnChangesSaved="ShowSavedMessage" gameData="gameData" />
+    }
+    else
+    {
+        <GeneralSettings gameID="gameID" OnSettingsSaved="SettingsSaved" gameSettings="gameSettings" />
+    }
+
+    @* כיתוב הסטטוס בתחתית המסך *@
+    <p class="status-caption">@statusMessage</p>
+}
+else if (!string.IsNullOrEmpty(errorMsg))
+{
+    <p style="color:red; text-align:center; padding: 20px;">שגיאה: @errorMsg</p>
+}
+else
+{
+    <p style="text-align:center; padding: 20px;">טוען נתונים...</p>
+}
+
+@code {
+    // הפרמטר שמתקבל מהנתיב (מזהה המשחק)
+    [Parameter] public int gameID { get; set; }
+
+    // טאב פתיחה אופציונלי מכתובת ה-URL, למשל ?tab=settings אחרי יצירת משחק חדש
+    [Parameter, SupplyParameterFromQuery(Name = "tab")]
+    public string startTab { get; set; }
+
+    // הטאב הפעיל כרגע - ברירת המחדל היא עריכת השאלות
+    string activeTab = "questions";
+
+    GameEditDto gameData;
+    GameToAddDto gameSettings;
+    string errorMsg = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // רק בכניסה לעמוד - בחירת הטאב לפי הכתובת (החלפות טאב בהמשך הן מקומיות בלבד)
+        if (startTab == "settings")
+        {
+            activeTab = "settings";
+        }
+
+        var qResponseTask = Http.GetAsync("api/Questions/getQuestions/" + gameID);
+        var sResponseTask = Http.GetAsync("api/Games/byId/" + gameID);
+
+        await Task.WhenAll(qResponseTask, sResponseTask);
+
+        var qResponse = await qResponseTask;
+        var sResponse = await sResponseTask;
+
+        if (qResponse.IsSuccessStatusCode)
+        {
+            gameData = await qResponse.Content.ReadFromJsonAsync<GameEditDto>();
+        }
+        else
+        {
+            errorMsg = await qResponse.Content.ReadAsStringAsync();
+        }
+
+        if (sResponse.IsSuccessStatusCode)
+        {
+            gameSettings = await sResponse.Content.ReadFromJsonAsync<GameToAddDto>();
+        }
+        else
+        {
+            errorMsg = await sResponse.Content.ReadAsStringAsync();
+        }
+    }
+
+    // החלפת טאב מקומית - הכתובת בדפדפן לא משתנה, כמו באפליקציית הייחוס
+    void SwitchTab(string tabName)
+    {
+        activeTab = tabName;
+    }
+
+    // כיתוב ברירת המחדל בתחתית המסך
+    const string autoSaveText = "השינויים נשמרים אוטומטית 💡";
+    string statusMessage = "השינויים נשמרים אוטומטית 💡";
+
+    // מציג את הודעת ההצלחה אחרי שמירה מוצלחת, ומחזיר את כיתוב ברירת המחדל אחרי כמה שניות
+    async Task ShowSavedMessage()
+    {
+        statusMessage = "השינויים נשמרו בהצלחה ✨";
+        StateHasChanged();
+
+        await Task.Delay(4000);
+
+        statusMessage = autoSaveText;
+        StateHasChanged();
+    }
+
+    // אחרי שמירת ההגדרות - מציגים את ההודעה וחוזרים לטאב עריכת השאלות (כמו הניווט הישן)
+    async Task SettingsSaved()
+    {
+        if (gameData != null && gameSettings != null)
+        {
+            gameData.gameName = gameSettings.gameName;
+        }
+        activeTab = "questions";
+        await ShowSavedMessage();
+    }
+}

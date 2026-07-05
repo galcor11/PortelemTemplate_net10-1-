@@ -198,7 +198,7 @@ else{
             GameToTableDto newGame = newGameRes.Content.ReadFromJsonAsync<GameToTableDto>().Result;
             MyGamesList.Add(newGame);
             //כדי שיהיה אפשר לנווט מהכפתור של יצירת משחק חדש אל העמוד של הגדרות כלליות יחד עם ה-ID של המשחק הֶחדש
-            Nav.NavigateTo("./GeneralSettings/" + newGame.gameID.ToString());
+            Nav.NavigateTo("./GameEditor/" + newGame.gameID.ToString() + "?tab=settings");
             showAddPopup = false; 
         }
         else
@@ -290,7 +290,7 @@ else{
     void EditGame(GameToTableDto game)
     {
         // מעבר לעמוד החדש ושרשור ה-ID של המשחק לנתיב
-        Nav.NavigateTo("/QuestionsEditor/" + game.gameID); 
+        Nav.NavigateTo("/GameEditor/" + game.gameID);
     }
    //ניצור פונקציה שתקבל שגיאה ותציג הודעה בהתאם 
     void ShowError(string error)
