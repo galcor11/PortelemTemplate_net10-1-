@@ -61,8 +61,8 @@
     cursor: pointer;
     margin-left: 10px;
     display: inline-block;
-    width: 15px;
-    height: 15px;
+    width: 22px;
+    height: auto;
     color: #666;
     transition: all 0.3s ease; /* גורם לשינוי הגודל והצבע להיות חלק  */
 }
