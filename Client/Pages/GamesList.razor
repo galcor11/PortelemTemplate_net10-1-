@@ -77,19 +77,15 @@ else{
                     <td>@game.gameCode</td>
                     <td>@game.questionCount</td>
                     <td><input type="button" value="✏️" @onclick="(() => EditGame(game))"class="action-btn"/></td>
-
                     <td>
-                        @if (game.canPublish == false)
-                        {
-                            <input type="checkbox" disabled/>
-                        }
-                        else
-                        {
-                            <input type="checkbox" checked=@game.isPublish
-                                                                                                                                            @onchange="(() => changePublish(game))"/>
-
-                        }
+                        @* אנחנו קוראים לקומפוננטה  *@
+                        @* אנחנו מעבירים את הנתונים מהעמוד אל הקומפוננטה  ומקבלים את אירוע הלחיצה חזרה  *@
+                        <CustomPublishCheckbox 
+                            CanPublish="@game.canPublish" 
+                            IsPublish="@game.isPublish" 
+                            OnPublishToggled="@((newState) => changePublish(game, newState))" />
                     </td>
+                    
                     <td><input type="button" value="🗑️" @onclick="(() => ShowDeleteConfirmation(game))" class="action-btn"/></td>
                 </tr>
             }
@@ -256,18 +252,18 @@ else{
     }
     
     //שליחת בקשה לקונטרולר שמטפל בפרסום
-     private async Task changePublish(GameToTableDto game)    {
+     private async Task changePublish(GameToTableDto game, bool newState)    {
         // בעת לחיצה על פרסום ניצור מופע של מחלקה עם מזהה המשחק ומצב הפרסום
         PublishGame gameToSend = new PublishGame();
         gameToSend.gameID = game.gameID;
-	        // נגדיר שמצב הפרסום הפוך למצב הנוכחי. כלומר, אם לא היה מפורסם - כעת יהיה ולהיפך
-        gameToSend.isPublish = !game.isPublish;
+	        // נגדיר שמצב הפרסום הוא לפי הערך הבוליאני שהתקבל מהקומפוננטה
+            gameToSend.isPublish = newState;
 	        // נשלח את המידע לקונטרולר
         var userRes = await Http.PostAsJsonAsync("api/Games/publishGame", gameToSend);
 	        // אם הכל תקין - נציג את מצב הפרסום העדכני
             //אם העדכון הצליח בבסיס הנתונים, שינוי מצב פרסום המשחק ברשימת המשחקים הקיימת בדף
         if (userRes.IsSuccessStatusCode == true) {
-            game.isPublish = !game.isPublish;
+            game.isPublish = newState;
         }
         else
         {
