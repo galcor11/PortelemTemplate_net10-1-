@@ -12,6 +12,11 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     margin-bottom: 20px;
 }
+/* מחלקה לשורה שנבחרה למחיקה */
+.selected-for-delete {
+    background-color: #C3F7E7; 
+    transition: background-color 0.3s ease; /* מעבר צבע חלק */
+}
 
 /* מרווחים פנימיים - הורדנו קצת גובה כדי שהשורות לא יהיו "שמנות" מדי */
 .games-table th, .games-table td {

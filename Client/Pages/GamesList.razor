@@ -77,7 +77,14 @@ else{
             <tbody>
             @foreach (GameToTableDto game in MyGamesList)
             {
-                <tr>
+                // אנחנו מגדירים משתנה מחלקה ריק כברירת מחדל
+                string rowClass = "";
+                // אנחנו בודקים אם יש משחק שמיועד למחיקה, ואם זה המשחק הנוכחי שבשורה
+                if (gameToDelete != null && gameToDelete.gameCode == game.gameCode)
+                {
+                    rowClass = "selected-for-delete";
+                }
+                <tr class="@rowClass">
                     <td>@game.gameID</td>
                     <td>@game.gameName</td>
                     <td>@game.gameCode</td>
@@ -143,13 +150,15 @@ else{
 }
 
 @code {
+ 
+   
     
     // משתנה בוליאני בשביל תצוגת הפופ-אפ
     bool showAddPopup = false; 
     
     //משתנים בשביל המחיקה
     bool showDeletePopup = false; 
-    GameToTableDto gameToDelete; 
+    GameToTableDto gameToDelete=null; 
         
     [CascadingParameter]
     private User user { get; set; }
@@ -243,6 +252,8 @@ else{
            //אנחנו קוראים לפונקציית המחיקה שלמטה
             await DeleteGame(gameToDelete); 
         }
+        // איפוס המשתנה מוריד את הצבע מהשורה (הכרחי למקרה שהמשתמש לחץ "ביטול" והתחרט)
+        gameToDelete = null; 
     }
 //פנייה לשיטת המחיקה שבקונטרולר
     public async Task DeleteGame(GameToTableDto game)
