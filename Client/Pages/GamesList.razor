@@ -45,18 +45,20 @@ else{
                 </th>
 
                 <th>
-                <div class="header-tooltip-container">
-                    <span>מספר השאלות</span>
-                    <TooltipIcon ExplanationText="יכולות להיות במשחק לפחות שלוש שאלות" />
-                </div>
+                    <div class="header-tooltip-container">
+                        <span>מספר השאלות</span>
+                        <TooltipIcon ExplanationText="יכולות להיות במשחק לפחות שלוש שאלות" />
+                    </div>
                 </th>
+                
 
                 <th>
-                <div class="header-with-tooltip">
-                    <span>עריכה</span>
-                    <TooltipIcon ExplanationText="מעבר למסך עריכת המשחק" />
-                </div>
+                    <div class="header-with-tooltip">
+                        <span>קישור</span>
+                        <TooltipIcon ExplanationText="מעבר ישיר למשחק" />
+                    </div>
                 </th>
+                <th>עריכה</th>
 
                 <th>
                 <div class="header-with-tooltip">
@@ -76,6 +78,7 @@ else{
                     <td>@game.gameName</td>
                     <td>@game.gameCode</td>
                     <td>@game.questionCount</td>
+                    <td>*</td>
                     <td>
                         @* אנחנו קוראים לקומפוננטה ומחברים את הפעמון שלה (OnClick) לפונקציית העריכה של הטבלה ומעבירים כפרמטר את הטקסט שיופיע על הטולטיפ *@
                         <EditIcon OnClick="(() => EditGame(game))" TooltipText="עריכה המשחק עלולה להוריד אותו מפרסום" />
