@@ -51,15 +51,19 @@ else{
                     </div>
                 </th>
                 
-
                 <th>
                     <div class="header-with-tooltip">
                         <span>קישור</span>
                         <TooltipIcon ExplanationText="מעבר ישיר למשחק" />
                     </div>
                 </th>
-                <th>עריכה</th>
-
+                <th>
+                    <div class="header-with-tooltip">
+                        <span>עריכה</span>
+                        <TooltipIcon ExplanationText="מעבר למסך עריכת המשחק" />
+                    </div>
+                </th>
+               
                 <th>
                 <div class="header-with-tooltip">
                     <span>פרסום</span>
@@ -136,8 +140,6 @@ else{
 }
 
 @code {
-    // מופע של הDTO שיקושר לתיבת הטקסט
-    GameToAddDto gameToAdd = new GameToAddDto(){ time = 60 };
     
     // משתנה בוליאני בשביל תצוגת הפופ-אפ
     bool showAddPopup = false; 
