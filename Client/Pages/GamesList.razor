@@ -82,7 +82,10 @@ else{
                     <td>@game.gameName</td>
                     <td>@game.gameCode</td>
                     <td>@game.questionCount</td>
-                    <td>*</td>
+                    <td>
+                        @* קוראים לקומפוננטה, שולחים לה את קוד המשחק לפונקציה, וחוסמים אם המשחק לא מפורסם *@
+                        <LinkIcon OnClick="(() => GoToGame(game.gameCode))" IsDisabled="!game.isPublish" />
+                    </td>
                     <td>
                         @* אנחנו קוראים לקומפוננטה ומחברים את הפעמון שלה (OnClick) לפונקציית העריכה של הטבלה ומעבירים כפרמטר את הטקסט שיופיע על הטולטיפ *@
                         <EditIcon OnClick="(() => EditGame(game))" TooltipText="עריכה המשחק עלולה להוריד אותו מפרסום" />
@@ -179,7 +182,12 @@ else{
             isLoading = false;
         }
     }
-    
+    // הפונקציה שמקבלת את הצלצול מהפעמון ומבצעת את המעבר למשחק
+    private void GoToGame(int codeToPlay)
+    {
+        // מעביר לכתובת ה-URL החדשה יחד עם קוד המשחק
+        Nav.NavigateTo("/" + codeToPlay.ToString());
+    }
     // הפונקציה שמקבלת את המשחק החדש מהפופ-אפ
     async Task SaveGame(GameToAddDto gameFromPopup)
     {

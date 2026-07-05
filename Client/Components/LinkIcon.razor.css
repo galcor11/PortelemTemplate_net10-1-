@@ -1,0 +1,66 @@
+/* 1. עיצוב המעטפת והטולטיפ (הבועה המרחפת)   */
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* עיצוב הטקסט הקופץ */
+.tooltip-text {
+    visibility: hidden;
+    width: max-content; /* מתאים את רוחב הבועה בדיוק לאורך הטקסט */
+    max-width: 150px;
+    white-space: normal;
+    background-color: #ffffff;
+    color: #633c21;
+    text-align: center;
+    border-radius: 8px;
+    padding: 8px 12px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    font-family: 'Playpen Sans Hebrew', cursive, sans-serif;
+    font-size: 13px;
+
+    /* מיקום הטולטיפ באוויר */
+    position: absolute;
+    z-index: 999;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* המשולש הקטן שמצביע למטה */
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #ffffff transparent transparent transparent;
+}
+
+/* מציג את הבועה רק כשמרחפים עם העכבר על המעטפת */
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* מצב רגיל */
+.link-icon {
+    cursor: pointer;
+    margin-left: 10px;
+    display: inline-block;
+    width: 26px; 
+    height: auto;
+    color: #666; 
+    transition: all 0.3s ease;
+}
+
+/* מצב ריחוף (Hover) */
+.link-icon:hover {
+    color: #5d9553; 
+    transform: scale(1.2); /* מגדיל את האייקון ב-20% */
+}
