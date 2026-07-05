@@ -195,14 +195,34 @@ else
 //פונקציה שפונה לקונטרולר שמעדכן את הפרטים שקשורים להגדרות הכלליות: שם המשחק, זמן, שיקוי
     async Task SaveSettingsAndMove()
     {
-        //  אם המשתמש סימן ללא הגבלה, אנחנו משנים את ערך הזמן ל-1000
+        // בדיקה  אם המשתמש סימן ללא הגבלה, אנחנו מעדכנים ל-1000
         if (isUnlimitedTime == true)
         {
             gameSettings.time = 1000;
         }
+        //  אם אין הגבלת זמן, אנחנו בודקים ומתקנים את מה שהוזן בתיבה
+        else
+        {
+            //  בודקים אם התיבה ריקה לחלוטין (null) או שהוזן בה 0 
+            if (gameSettings.time == null || gameSettings.time == 0)
+            {
+                gameSettings.time = 60; // מחזירים לברירת מחדל
+            }
+            // אם המספר נמוך מ-45, נתקן לגבול התחתון
+            else if (gameSettings.time < 45)
+            {
+                gameSettings.time = 45;
+            }
+            // אם המספר שהוזן גדול מ-180, נתקן לגבול העליון
+            else if (gameSettings.time > 180)
+            {
+                gameSettings.time = 180;
+            }
+        }
         // שליחת בקשת POST לנתיב שיצרנו, תוך שרשור ה-ID ושליחת האובייקט המעודכן
         var updateResponse = await Http.PostAsJsonAsync("api/Games/updateGame/" + gameID.ToString(), gameSettings);
-//בדיקה אם העדכון הצליח        
+        
+        // בדיקה אם העדכון הצליח        
         if (updateResponse.IsSuccessStatusCode == true)
         {
             // מדווחים לעמוד המארח - הוא יציג את ההודעה בתחתית ויעבור לטאב עריכת השאלות
@@ -213,5 +233,6 @@ else
             // אם העדכון נכשל, נקרא את השגיאה שהשרת החזיר
             msg = updateResponse.Content.ReadAsStringAsync().Result;
         }
-    }
+    } 
+    
   }
