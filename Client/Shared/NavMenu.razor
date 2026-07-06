@@ -1,10 +1,10 @@
-﻿@inject IAuthenticationService _Auth
+@inject IAuthenticationService _Auth
 
 <AuthorizeView>
     <Authorized>
         <div class="navbar navbar-dark">
-
             <div class="container-fluid justify-content-start">
+                <img src="./png/SilkyLogo.png" alt="לוגו מְסַדְּרֵי המשי" class="navbar-logo" />
                 @if (user != null)
                 {
                     <div class="px-3">
@@ -37,6 +37,7 @@
     <NotAuthorized>
         <div class="navbar navbar-dark">
             <div class="container-fluid justify-content-start">
+                <img src="./png/SilkyLogo.png" alt="לוגו מְסַדְּרֵי המשי" class="navbar-logo" />
                 <div class="nav-item">
                     <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                         <span aria-hidden="true"></span> משחק
@@ -47,10 +48,18 @@
                         <span aria-hidden="true"></span> המשחקים שלי
                     </NavLink>
                 </div>
+                <div class="nav-item">
+                    <button class="nav-link popup-nav-btn" @onclick="() => showHowToPlay = true">איך משחקים?</button>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-link popup-nav-btn" @onclick="() => showAbout = true">אודות</button>
+                </div>
             </div>
         </div>
     </NotAuthorized>
 </AuthorizeView>
+
+
 
 @if (showHowToPlay == true)
 {

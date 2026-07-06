@@ -65,7 +65,7 @@ else
         // רק בכניסה לעמוד - בחירת הטאב לפי הכתובת (החלפות טאב בהמשך הן מקומיות בלבד)
         if (startTab == "settings")
         {
-            activeTab = "settings";
+            SwitchTab("settings");
         }
 
         var qResponseTask = Http.GetAsync("api/Questions/getQuestions/" + gameID);
