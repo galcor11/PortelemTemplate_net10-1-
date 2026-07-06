@@ -263,6 +263,12 @@ else
         המחיקה בוצעה בהצלחה!
     </Toast>
 }
+@if (showSizeErrorToast)
+{
+    <Toast IsError="true" OnCloseToast="HideSizeErrorToast">
+        התמונה גדולה מדי! הגודל המקסימלי הוא 4MB
+    </Toast>
+}
 
 @code {
     string myFileImage = "";
@@ -313,11 +319,21 @@ else
 
     // משתנה בוליאני שפתחנו לצורך התצוגה של הטוסט
     bool showToast = false;
+    
+    // משתנה בוליאני לטוסט שגיאה כשהתמונה גדולה מדי
+    bool showSizeErrorToast = false;
 
     // הפונקציה שמקבלת את ה"צלצול" ומאפשרת לסגור את הטוסט
     void HideToast(bool isClosed)
     {
         showToast = false;
+        StateHasChanged();
+    }
+    
+    // סוגר את טוסט השגיאה של גודל התמונה
+    void HideSizeErrorToast(bool isClosed)
+    {
+        showSizeErrorToast = false;
         StateHasChanged();
     }
 
@@ -654,6 +670,7 @@ else
     // הפונקציה שמופעלת מייד לאחר שהמשתמש בחר תמונה
     private async Task UploadFile(InputFileChangeEventArgs e)
     {
+        showSizeErrorToast = false;
         //מעבר על כל תמונה ובדיקה שהגודל לא חורג מהמגבלה
         var imageFiles = e.GetMultipleFiles();
         foreach (var file in imageFiles)
@@ -666,7 +683,7 @@ else
                 var imageBase64 = Convert.ToBase64String(buffer);
                 // שליחת התמונה לקונטרולר התמונות
                 var saveResponse = await Http.PostAsJsonAsync("api/Media/upload", imageBase64);
-//אם ההעלאה הצליחה, אנחנו שומרים את השם של התמונה                  
+                //אם ההעלאה הצליחה, אנחנו שומרים את השם של התמונה                  
                 if (saveResponse.IsSuccessStatusCode == true)
                 {
                     // הקונטרולר שומר את התמונה בתיקייה ומחזיר לנו את השם החדש שלה
@@ -678,6 +695,12 @@ else
                     //פונקציה לרענון, גילינו אותה דרך חקירה עצמית
                     StateHasChanged();
                 }
+            }
+            else
+            {
+                // התמונה חורגת מהמגבלה - מציגים טוסט שגיאה אדום
+                showSizeErrorToast = true;
+                StateHasChanged();
             }
         }
     }

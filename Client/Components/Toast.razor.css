@@ -29,6 +29,11 @@
     animation: fadeOutEffect 10s forwards;
 }
 
+/* גרסה אדומה של הטוסט להודעות שגיאה */
+.toast-container.error {
+    background-color: #d9534f;
+}
+
 .close-btn {
     background: none;
     border: none;
