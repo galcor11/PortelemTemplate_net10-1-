@@ -14,3 +14,10 @@
     border: 1px solid #ccc;
 }
 
+/* ההנחיה הקבועה - טקסט תצוגה בלבד לפני השאלה */
+.fixed-prefix {
+    /* מונע גלישת הלייבל לשורה שנייה */
+    white-space: nowrap;
+    font-weight: bold;
+}
+

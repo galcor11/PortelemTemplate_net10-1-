@@ -101,7 +101,7 @@ else
 <div style="width: max-content;">
     <MyButton ButtonStyle="primary" 
               ButtonText="לעריכת השאלות" 
-              OnClickAction="SaveSettingsAndMove" />
+              OnClickAction="SaveSettings" />
 </div>
 <p>@msg</p>
     <div class="worm-area" aria-hidden="true">
@@ -168,6 +168,7 @@ else
     void SaveNewName(GameToAddDto edited)
     {
         gameSettings.gameName = edited.gameName;
+        SaveSettings();
         showNamePopup = false;
     }
 
@@ -176,8 +177,6 @@ else
     {
         showNamePopup = false;
     }
-    
-    
     
     // פונקציה שמופעלת כשהמשתמש לוחץ על הצ'קבוקס של "ללא הגבלה"
     void ToggleUnlimitedTime()
@@ -230,7 +229,7 @@ else
     
     string msg = "";
 //פונקציה שפונה לקונטרולר שמעדכן את הפרטים שקשורים להגדרות הכלליות: שם המשחק, זמן, שיקוי
-    async Task SaveSettingsAndMove()
+    async Task SaveSettings()
     {
         // בדיקה  אם המשתמש סימן ללא הגבלה, אנחנו מעדכנים ל-1000
         if (isUnlimitedTime == true)

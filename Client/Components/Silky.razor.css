@@ -56,6 +56,13 @@
     transition: all 0.3s ease;
 }
 
+/* במצב עריכה - החיצים של הפריט הנערך מואפרים ולא פעילים כמו שאר התולעת */
+.arrows-disabled {
+    opacity: 0.4;
+    filter: grayscale(70%);
+    pointer-events: none;
+}
+
 /* הקופסה שמכילה את התוכן של הפריט עצמו  */
 .item-box {
     position: relative;

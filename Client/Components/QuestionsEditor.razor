@@ -107,7 +107,14 @@
                                         {
                                             @* אם אין עדיין תמונה, מציגים כרטיס לבן אחד עם טקסט ואייקון יחד - כמו בפיגמה *@
                                             <div class="upload-card">
-                                                <span class="upload-text">העלאת תמונה</span>
+                                                @if (isUploading == true)
+                                                {
+                                                    <span class="upload-text">מעלה תמונה...</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="upload-text">העלאת תמונה</span>
+                                                }
                                                 <img src="./svg/photoIcon.svg" class="upload-plus-icon"
                                                      alt="הוספת תמונה"/>
                                             </div>
@@ -126,6 +133,9 @@
 
                                 <!-- אזור הטוגל המעוצב -->
                                 <div class="toggle-container">
+                                    @* טולטיפ שמסביר שהחלפת המתג מוחקת את התוכן שהוזן *@
+                                    <TooltipIcon ExplanationText="שימו לב! לחיצה על המתג תמחק את התוכן מהתות"/>
+
                                     @* אייקון טקסט - נצבע טורקיז כשמצב טקסט פעיל *@
                                     <span
                                         class="mode-icon @(currentStrawberryItem.isImage == false ? "mode-icon-text-active" : "")"
@@ -322,6 +332,9 @@ else
     
     // משתנה בוליאני לטוסט שגיאה כשהתמונה גדולה מדי
     bool showSizeErrorToast = false;
+    
+    // משתנה בוליאני שמסמן שתמונה נמצאת כרגע בתהליך העלאה לשרת
+    bool isUploading = false;
 
     // הפונקציה שמקבלת את ה"צלצול" ומאפשרת לסגור את הטוסט
     void HideToast(bool isClosed)
@@ -602,15 +615,6 @@ else
         {
             editingInstructionId = 0;
         }
-
-        // בכניסה לעריכה אנחנו פותחים את השורה כדי שהתוכן המושבת יוצג מתחת להנחיה,
-        // בדיוק כמו תצוגת הדמה שמופיעה מתחת לתיבת ההזנה בהוספת שאלה חדשה
-        if (isEditing == true && openQuestionId != question.questionID)
-        {
-            openQuestionId = question.questionID;
-            // מאפסים את התות כמו בפתיחת אקורדיון רגילה
-            currentStrawberryItem = new SilkyItem();
-        }
     }
 
     //עם טעינת העמוד
@@ -671,6 +675,9 @@ else
     private async Task UploadFile(InputFileChangeEventArgs e)
     {
         showSizeErrorToast = false;
+        isUploading = true;
+        StateHasChanged(); // מרנדר מייד את הטקסט "מעלה תמונה..."
+    
         //מעבר על כל תמונה ובדיקה שהגודל לא חורג מהמגבלה
         var imageFiles = e.GetMultipleFiles();
         foreach (var file in imageFiles)
@@ -703,6 +710,10 @@ else
                 StateHasChanged();
             }
         }
+        
+        // סיום ההעלאה - מחזירים את הטקסט למצב רגיל
+        isUploading = false;
+        StateHasChanged();
     }
 
 

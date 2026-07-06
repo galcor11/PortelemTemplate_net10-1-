@@ -5,12 +5,12 @@
         {
             <!-- מצב עריכה: תיבת טקסט קטנה וכפתור שמירה -->
             <CustomInputText @bind-Value="tempText" class="edge-edit-input" maxLength="10" midLength="7" minLength="1" />
-            <button type="button" class="icon-btn" title="שמור" @onclick="SaveLabel">✔️</button>
+            <button type="button" class="icon-btn" title="שמירה" @onclick="SaveLabel">✔️</button>
         }
         else
         {
             <!-- מצב תצוגה: העיפרון והטקסט הרגיל -->
-            <span class="edit-icon" title="עריכה" @onclick="StartEditing"> ✏️ </span>
+            <EditIcon OnClick="StartEditing" />
             <span>@LabelText</span>
         }
     </div>
@@ -31,6 +31,8 @@
 
     bool isEditing = false;
     string tempText = "";
+    
+    
 
     // מפעיל את מצב העריכה
     void StartEditing()

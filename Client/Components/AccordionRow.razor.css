@@ -28,6 +28,19 @@
     flex-shrink: 0;
 }
 
+/* הטולטיפ של כותרת הוספת פריט יושב בקצה העליון של אזור הגלילה */
+/* לכן מציגים אותו כלפי מטה כדי שלא ייחתך */
+.centered-tooltip-title ::deep .tooltip-text {
+    bottom: auto;
+    top: 130%;
+}
+
+.centered-tooltip-title ::deep .tooltip-text::after {
+    top: auto;
+    bottom: 100%;
+    border-color: transparent transparent #ffffff transparent;
+}
+
 /* עיצוב החץ של האקורדיון (הפתיחה/סגירה) */
 .toggle-icon {
     cursor: pointer;
@@ -39,6 +52,12 @@
 
 .toggle-icon:hover {
     color: #000;
+}
+
+/* מחזיק את החץ וההנחיה באותה שורה - מונע מתצוגת העריכה לרדת מתחת לחץ */
+.instruction-header {
+    display: flex;
+    align-items: center;
 }
 
 .delete-icon {
@@ -283,5 +302,5 @@
 .disabled-leaf {
     /* הופך לשחור-לבן (100% אפור) ומוריד את האטימות ל-50% כדי שייראה שקוף */
     filter: grayscale(100%) opacity(40%);
-    cursor: not-allowed;
+    cursor: default;
 }

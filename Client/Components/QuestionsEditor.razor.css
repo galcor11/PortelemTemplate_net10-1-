@@ -45,8 +45,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex-shrink: 0;
+    flex: 0 1 auto;        /* לא גדל מעבר לתוכן, אבל יכול להתכווץ ולגלול */
+    min-width: 0;          /* מאפשר לגלילה האופקית לעבוד */
+    overflow-x: auto;      /* הגלילה של התולעת עברה לכאן */
 }
+
 
 /* ההנחיה הממורכזת מעל התולעת */
 .worm-instruction {
@@ -187,7 +190,7 @@
     align-items: center;        /* יישור לגובה של התולעת */
     justify-content: flex-start;
     gap: 0px;
-    overflow-x: auto;           /* מאפשר גלילה אופקית אם התולעת ארוכה מדי */
+    overflow: visible;          /* לא חותך - הטולטיפ יכול לצאת החוצה. הגלילה עברה לתולעת */
     padding: 10px 0;
     flex-wrap: nowrap !important;          /* מונע מהתולעת לרדת שורה  */
 }
@@ -199,6 +202,7 @@
     padding: 20px;
     margin-left: 30px;
     width: 200px;
+    flex-shrink: 0;   /* התיבה שומרת על רוחבה ולא מתכווצת כשהתולעת ארוכה */
     background-color: rgba(255, 255, 255, 0.4);
     /*  התכונה מאפשרת לטולטיפ לצאת מגבולות התיבה בלי להיחתך */
     overflow: visible;

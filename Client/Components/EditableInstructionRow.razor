@@ -5,10 +5,12 @@
     {
         @* מצב תצוגה רגיל: אייקון עיפרון וטקסט  *@
         <EditIcon OnClick="EnterEditMode" />
+        <span class="fixed-prefix">@FixedPrefix</span>
         <span>@InstructionText</span>
     }
     else
     {
+        <span class="fixed-prefix">@FixedPrefix</span>
         @* מצב עריכה: תיבת טקסט + כפתורי אישור/ביטול *@
         <CustomInputText @bind-Value="tempText" class="edit-input" maxLength="20" midLength="17" minLength="1" />
 
@@ -35,6 +37,8 @@
     public EventCallback<bool> OnEditModeChanged { get; set; } // פעמון שמדווח החוצה על כניסה/יציאה ממצב עריכה
 
     bool isEditMode = false;
+    // הנחיה קבועה לתצוגה בלבד, לא נשמרת ב-DB
+    const string FixedPrefix = "סדרו את התותים לפי:";
     string tempText = ""; // משתנה זמני לעריכה, כדי שלא נדרוס את הטקסט המקורי אם המשתמש לוחץ "ביטול"
 
     // מעבר למצב עריכה

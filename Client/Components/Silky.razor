@@ -72,7 +72,7 @@
         </div>
 
         @* אזור החיצים שיושב מתחת לקופסה בשורה נפרדת *@
-        <div class="arrows-wrapper">
+        <div class="arrows-wrapper @(isEditingItem ? "arrows-disabled" : "")">
             @* חץ ימינה - מקרב לראש התולעת (מקטין אינדקס). מופיע רק אם זה לא הפריט הראשון *@
             @if (i > 0)
             {
