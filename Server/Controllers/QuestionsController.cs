@@ -38,10 +38,11 @@ namespace AuthTemplate.Server.Controllers
             };
     //שאילתת SQL ששולפת את שם המשחק, כדי לוודא שהמשחק שייך כרגע למשתמש שמחובר כעת למערכת
             string checkQuery = "SELECT gameName FROM Games WHERE userID = @UserId AND gameID = @GameID";
+            
             var checkRecords = await _db.GetRecordsAsync<string>(checkQuery, authParam);
             // משתנה שנועד לשמור לתוכו את התוצאה הראשונה, כלומר את שם המשחק
             string gameName = checkRecords.FirstOrDefault();
-
+            
 //בדיקת תקינוּת              
             if (string.IsNullOrWhiteSpace(gameName)) 
             {
@@ -72,7 +73,8 @@ namespace AuthTemplate.Server.Controllers
             GameEditDto gameData = new GameEditDto();
                 //אנחנו מכניסים את הנתונים (השם והשאלות) אל תוך התכונות של המופע
             gameData.gameName = gameName; 
-            gameData.Questions = questionsList; 
+            gameData.Questions = questionsList;
+            gameData.gameID = gameID; 
 //אנחנו מחזירים את המופע אם סטטוס הרשת תקין
             return Ok(gameData);
           
@@ -279,6 +281,14 @@ namespace AuthTemplate.Server.Controllers
                 return BadRequest("Question not found");
             }
             return Unauthorized("user is not authenticated");
+        }
+        
+        //בדיקה ועדכון של המשתנה canPublish
+        [HttpGet("checkCanPublish/{gameID}")]
+
+        public async Task<bool> checkCanPublish(int gameID)
+        {
+            return await CanPublishFunc(gameID);
         }
 
         // שיטה שמיועדת למחוק שאלה שלמה

@@ -1,6 +1,6 @@
 @* קומפוננטה שפתחנו בשביל הודעות ה-TOAST שלנו *@
 
-<div class="toast-container">
+<div class="@toastCSSClass()">
     @* כפתור האיקס קורא לפונקציה הפנימית שממוקמת למטה *@
     <input type="button" class="close-btn" value="X" @onclick="CloseClicked" />
 
@@ -16,10 +16,23 @@
     // "הפעמון" שמודיע לעמוד הראשי שצריך לסגור את הטוסט 
     [Parameter] public EventCallback<bool> OnCloseToast { get; set; }
 
+    // פרמטר שקובע אם הטוסט הוא הודעת שגיאה (אדום) או הצלחה (ירוק)
+    [Parameter] public bool IsError { get; set; }
+    
     // הפונקציה שמופעלת בלחיצה על האיקס 
     async Task CloseClicked()
     {
         // מפעילים את הפעמון ושולחים true החוצה לעמוד הראשי 
         await OnCloseToast.InvokeAsync(true);
+    }
+    
+    // מחזיר את שם הקלאס המתאים לפי סוג הטוסט
+    string toastCSSClass()
+    {
+        if (IsError == true)
+        {
+            return "toast-container error";
+        }
+        return "toast-container";
     }
 }

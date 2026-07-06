@@ -129,3 +129,120 @@
     width: 22px;
     height: auto;
 }
+/* =========================================
+   פופ-אפ אודות
+========================================= */
+
+.about-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #ffffff; /* טקסט לבן שיבלוט על רקע העץ */
+    direction: rtl;
+    position: static;
+}
+
+.about-creators {
+    font-size: 1.3rem;
+    font-weight: normal;
+    margin-bottom: 25px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+
+    /* התוספות החדשות להזזה: */
+    margin-top: 25px; /* דוחף את השורה כלפי מטה  */
+    position: relative;
+    left: 25px; /* מזיז את הטקסט ימינה  */
+}
+
+/* שורת הכותרת של הקורסים (עם הפרפר) */
+.about-courses-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.butterfly-icon {
+    width: 100px;
+    height: auto;
+}
+
+/* רשימת הקורסים והתותים */
+.courses-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 0 30px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.courses-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.bullet-icon {
+    width: 30px;
+    height: auto;
+}
+
+/* אזור הFOOTER */
+.about-footer {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.about-footer p {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* המלבן הלבן של שם הפקולטה - עם קו תחתון תכלת */
+.faculty-text {
+    background-color: #ffffff;
+    color: #2b5c8f !important; /* צבע כחול כהה לטקסט */
+    padding: 4px 18px;
+    border-radius: 6px;
+    border: 1px solid #cccccc;
+    text-shadow: none !important;
+    font-size: 1.1rem !important;
+    display: inline-block;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+
+    /* הגדרות הקו התחתון: */
+    text-decoration: underline; /* מוסיף את הקו */
+    text-decoration-color: #2b5c8f !important; /* צבע תכלת לקו התחתון */
+    text-decoration-thickness: 2px; /* עובי הקו התחתון */
+    text-underline-offset: 4px; /* מרחיק מעט את הקו מהאותיות כדי שלא יחתוך אותן */
+}
+
+/* אפקט ריחוף - אפשר לשנות את צבע הקו או להשאיר אותו */
+.faculty-text:hover {
+    opacity: 0.85;
+    color: #2b5c8f !important;
+    text-decoration: underline;
+    text-decoration-color: #2b5c8f !important; /* הופך לכחול כהה יותר כשמעבירים את העכבר, פידבק נחמד ללחיצה */
+}
+
+/* מיקום הלוגו בפינה התחתונה של הפופ-אפ */
+.hit-logo {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 130px;
+    padding: 5px;
+    border-radius: 0px; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}

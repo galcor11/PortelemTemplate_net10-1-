@@ -11,8 +11,11 @@ public class GameToAddDto
     public string gameName { get; set; } 
    
     [Range(0, 1000, ErrorMessage = "הזמן לשאלה חייב להיות בין 45 ל-180 שניות או ללא הגבלה")]
-    public int? time { get; set; }
+    public int time { get; set; }
     
     public bool hasPotion { get; set; }
+    
+    public bool isPublish { get; set; }
+    public bool canPublish { get; set; }
     
 }

@@ -20,7 +20,7 @@
 
 /* מרווחים פנימיים - הורדנו קצת גובה כדי שהשורות לא יהיו "שמנות" מדי */
 .games-table th, .games-table td {
-    padding: 12px 20px;
+    padding: 8px 20px;
     /* קו הפרדה אופקי עדין מאוד בין השורות במקום משבצות */
     border-bottom: 1px solid #f0f0f0;
 }

@@ -1,102 +1,278 @@
 @using AuthTemplate.Shared.Models
 @* קומפוננטה שפתחנו לצורך השורות של האקורדיון *@
-@* שורת הכותרת של האקורדיון (תמיד מוצגת) *@
-<tr class="accordion-main-row">
-    <td>
-        @* סגירה ופתיחה של החיצים - מושבת בזמן עריכת ההנחיה *@
-        <span class="toggle-icon @disabledClass" @onclick="Toggle">
-            @if (IsOpen)
+@* הקומפוננטה מטפלת בשני מצבים: שורה של שאלה קיימת, ושורת הוספה של שאלה חדשה (IsNew) *@
+@* בשני המצבים הרעיון זהה: כשמקלידים הנחיה (חדשה או בעריכה) - שאר העמוד נחסם והתוכן מוצג מושבת *@
+
+@if (IsNew == true)
+{
+    @* מצב הוספת שאלה חדשה *@
+    @* שורה 1: הזנת הטקסט וכפתור האישור מאוחדים יחד באותו תא *@
+    <tr class="new-question-row">
+        <td colspan="3">
+            <div class="input-action-wrapper">
+                @* תיבת טקסט המקושרת למודל שמגיע מהעמוד המארח ומיישמת הגבלת תווים *@
+                <CustomInputText class="instruction-input" @bind-Value="NewQuestion.instruction"
+                                 maxLength="20" midLength="17" minLength="1" placeholder="הקלידו הנחיה (עד 20 תווים)..."/>
+
+                @* שימוש בקומפוננטה לשני הכפתורים שלנו - הפעמונים מדווחים לעמוד המארח *@
+                <MyButton ButtonStyle="primary"
+                          ButtonText="אישור"
+                          OnClickAction="ConfirmNew"/>
+                <MyButton ButtonText="ביטול"
+                          ButtonStyle="secondary"
+                          OnClickAction="CancelNew"/>
+            </div>
+        </td>
+    </tr>
+
+    @* שורה 2: תצוגת דמה של התולעת הממתינה במצב חסום *@
+    <tr>
+        <td colspan="3" class="accordion-cell not-allowed-cursor">
+            <div class="items-container disabled-area">
+                <!-- תצוגת "דמה" של התות (כדי שהמשתמש יראה מה מחכה לו) -->
+                <div class="strawberry-container">
+                    <h3>הוספת פריט</h3>
+                    <div class="strawberry-input-wrapper">
+                        <textarea placeholder="הקלידו כאן..." class="inner-strawberry-input"
+                                  disabled></textarea>
+                    </div>
+
+                    <!-- אזור הטוגל המעוצב (דמה) -->
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" disabled class="toggle-checkbox"/>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label">תמונה</span>
+                    </div>
+
+                    <button type="button" disabled>אישור</button>
+                </div>
+                <div class="worm-lane">
+                    <div class="segment-wrapper">
+                        <div class="label-container"></div>
+                        <div class="silky-head"></div>
+                    </div>
+
+                    <!--  שני הפלייסהולדרים הסטטיים של התולעת -->
+                    <div class="segment-wrapper">
+                        <div class="label-container">
+                            @* שימוש בקומפוננטה לתגית הראשונה של תולעת הדמה *@
+                            <EditableEdgeLabel LabelText="@NewQuestion.startLabel"
+                                               DefaultText="ראשון"
+                                               OnLabelSaved="@((newText) => NewQuestion.startLabel = newText)"/>
+                        </div>
+                        <img src="./svg/strokeBody.svg" class="placeholder-segment" alt=""/>
+                    </div>
+                    <div class="segment-wrapper">
+                        <div class="label-container">
+                            @* שימוש בקומפוננטה לתגית האחרונה של תולעת הדמה *@
+                            <EditableEdgeLabel LabelText="@NewQuestion.endLabel"
+                                               DefaultText="אחרון"
+                                               OnLabelSaved="@((newText) => NewQuestion.endLabel = newText)"/>
+                        </div>
+                        <img src="./svg/strokeBody.svg" class="placeholder-segment" alt=""/>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+}
+else
+{
+    @* מצב רגיל: שורה של שאלה קיימת *@
+    @* שורת הכותרת של האקורדיון (תמיד מוצגת) *@
+    <tr class="accordion-main-row">
+        <td>
+            <span class="instruction-header">
+                @* סגירה ופתיחה של החיצים - מושבת בזמן עריכת ההנחיה או כשהשורה חסומה *@
+                <span class="toggle-icon @disabledClass" @onclick="Toggle">
+                    @if (IsOpen)
+                    {
+                        <span>▼</span>
+                    }
+                    else
+                    {
+                        <span>◀</span>
+                    }
+                </span>
+
+                @* הקומפוננטה לעריכת ההנחיה - נחסמת רק כששורה אחרת נמצאת בהוספה/עריכה *@
+                <span class="@blockedClass">
+                    <EditableInstructionRow InstructionText="@Question.instruction"
+                                            OnInstructionSaved="SaveInstruction"
+                                            OnEditModeChanged="InstructionEditModeChanged"/>
+                </span>
+            </span>
+        </td>
+        <td>
+            @ItemsCount
+            @if (ItemsCount >= 4 && ItemsCount <= 8)
             {
-                <span>▼</span>
+                @* צבעוניות מלאה - 4 עד 8 פריטים *@
+                <img src="./svg/leafIcon.svg" alt="עלה" class="svg-leaf" /> 
             }
             else
             {
-                <span>◀</span>
+                @* עלה אפרפר ושקוף - פחות מ-4 פריטים *@
+                <img src="./svg/leafIcon.svg" alt="עלה" class="svg-leaf disabled-leaf" /> 
             }
-        </span>
-
-        @* הקומפוננטה לעריכת ההנחיה *@
-        <EditableInstructionRow InstructionText="@Question.instruction"
-                                OnInstructionSaved="SaveInstruction"
-                                OnEditModeChanged="InstructionEditModeChanged" />
-    </td>
-    <td>
-        @ItemsCount
-        @if (ItemsCount >= 4 && ItemsCount <= 8)
-        {
-            <span class="leaf-icon good-count"> 🌿 </span>
-        }
-        else
-        {
-            <span class="leaf-icon bad-count"> 🌿 </span>
-        }
-    </td>
-    <td class="center-text">
-        @* כפתור מחיקה - מושבת בזמן עריכת ההנחיה *@
-        <button type="button" class="delete-icon @disabledClass" @onclick="DeleteQuestion">
-            🗑️
-        </button>
-    </td>
-</tr>
-
-@*  אזור התוכן הנפתח *@
-@if (IsOpen)
-{
-    <tr>
-        @* בזמן עריכת ההנחיה התא מקבל סמן חסום (התוכן עצמו מושבת דרך העמוד הראשי) *@
-        <td colspan="3" class="accordion-cell @(isEditingInstruction ? "not-allowed-cursor" : "")">
-            @* לכאן נכניס את התוכן של התולעת *@
-            @ChildContent
+        </td>
+        <td class="center-text @disabledClass">
+            @* קוראים לקומפוננטת הפח שלנו, ומחברים את הפעמון לפונקציית המחיקה *@
+            <TrashIcon OnClick="DeleteQuestion" />
         </td>
     </tr>
+
+    @*  אזור התוכן הנפתח *@
+    @if (IsOpen)
+    {
+        <tr>
+            @* בזמן עריכת ההנחיה התא מקבל סמן חסום (התוכן עצמו מושבת דרך העמוד הראשי) *@
+            <td colspan="3" class="accordion-cell @notAllowedClass">
+                @* לכאן נכניס את התוכן של התולעת *@
+                @ChildContent
+            </td>
+        </tr>
+    }
 }
 
 @code {
     // קבלת הנתונים מהעמוד הראשי
-    [Parameter] public Question Question { get; set; } 
-    [Parameter] public int ItemsCount { get; set; } 
-    
-    // "פעמונים" שמדווחים לעמוד הראשי על מחיקה ושמירה
-    [Parameter] public EventCallback<string> OnInstructionSaved { get; set; } 
-    [Parameter] public EventCallback<Question> OnDeleteClicked { get; set; } 
+    [Parameter] public Question Question { get; set; }
+    [Parameter] public int ItemsCount { get; set; }
 
-    // הפרמטר המיוחד שמקבל תוכן HTML שלם לתוך הקומפוננטה 
-    [Parameter] public RenderFragment ChildContent { get; set; } 
+    // "פעמונים" שמדווחים לעמוד הראשי על מחיקה ושמירה
+    [Parameter] public EventCallback<string> OnInstructionSaved { get; set; }
+    [Parameter] public EventCallback<Question> OnDeleteClicked { get; set; }
+
+    // הפרמטר המיוחד שמקבל תוכן HTML שלם לתוך הקומפוננטה
+    [Parameter] public RenderFragment ChildContent { get; set; }
     //פעמון שנועד לדווח על לחיצה על סגירה או פתיחה
     [Parameter] public EventCallback<int> OnToggle { get; set; }
     //פרמטר בוליאני שעוזר לנו לנהל את הסגירה ואת הפתיחה של האקורדיון
     [Parameter] public bool IsOpen { get; set; }
-    //פעמון שמדווח לעמוד הראשי על כניסה/יציאה ממצב עריכת ההנחיה, כדי שישבית את שאר השאלה
+    //פעמון שמדווח לעמוד הראשי על כניסה/יציאה ממצב עריכת ההנחיה, כדי שיחסום את שאר השורות
     [Parameter] public EventCallback<bool> OnInstructionEditToggled { get; set; }
+
+    // פרמטרים למצב הוספת שאלה חדשה
+    // כשהפרמטר דלוק - השורה מציגה את תיבת ההזנה ואת תצוגת הדמה במקום שאלה קיימת
+    [Parameter] public bool IsNew { get; set; }
+    // המופע של השאלה החדשה (נשאר בבעלות העמוד המארח, כי הקריאה לשרת נשארת שם)
+    [Parameter] public QuestionToAdd NewQuestion { get; set; }
+    // פעמונים לאישור ולביטול של השאלה החדשה - העמוד המארח הוא זה שפונה לקונטרולר
+    [Parameter] public EventCallback OnConfirmNew { get; set; }
+    [Parameter] public EventCallback OnCancelNew { get; set; }
+
+    // פרמטר חסימה מהעמוד המארח - דלוק כששורה אחרת נמצאת בהוספה או בעריכת הנחיה
+    // כך רק שורה אחת יכולה להיות "פעילה" בכל רגע (אותו רעיון גם בהוספה וגם בעריכה)
+    [Parameter] public bool IsBlocked { get; set; }
 
     // האם ההנחיה של השורה נמצאת כרגע בעריכה - בזמן עריכה שאר השורה מושבתת
     bool isEditingInstruction = false;
 
-    // מחלקת ההשבתה לאייקונים של השורה בזמן עריכת ההנחיה (אותו רעיון כמו בהוספת שאלה חדשה)
-    string disabledClass => isEditingInstruction ? "disabled-area" : "";
+    // משתני מחלקות עיצוב לCSS
+    string disabledClass = "";
+    string blockedClass = "";
+    string notAllowedClass = "";
 
+    protected override void OnParametersSet()
+    {
+        if (isEditingInstruction || IsBlocked)
+        {
+            disabledClass = "disabled-area";
+        }
+        else
+        {
+            disabledClass = "";
+        }
+
+        if (IsBlocked)
+        {
+            blockedClass = "disabled-area";
+        }
+        else
+        {
+            blockedClass = "";
+        }
+
+        if (isEditingInstruction)
+        {
+            notAllowedClass = "not-allowed-cursor";
+        }
+        else
+        {
+            notAllowedClass = "";
+        }
+    }
+
+    
     // הפונקציה מקבלת את מצב העריכה מהקומפוננטה של ההנחיה ומדווחת עליו הלאה לעמוד הראשי
     async Task InstructionEditModeChanged(bool isEditing)
     {
         isEditingInstruction = isEditing;
+        
+        if (isEditing)
+        {
+            disabledClass = "disabled-area";
+            notAllowedClass = "not-allowed-cursor";
+        }
+        else
+        {
+            if (IsBlocked)
+            {
+                disabledClass = "disabled-area";
+            }
+            else
+            {
+                disabledClass = "";
+            }
+            notAllowedClass = "";
+        }
+        
         await OnInstructionEditToggled.InvokeAsync(isEditing);
     }
+
 
     // הפונקציה מקבלת את הטקסט המעודכן של ההנחיה, ומפעילה את הפעמון כדע להעביר את הטקסט הֶחדש לעמוד
     async Task SaveInstruction(string newText)
     {
-        await OnInstructionSaved.InvokeAsync(newText); 
+        await OnInstructionSaved.InvokeAsync(newText);
     }
 
     //הפונקציה אחראית להפעיל את הפעמון כדי לדווח לעמוד שלחצו על הפח למחיקה.
     async Task DeleteQuestion()
     {
-        await OnDeleteClicked.InvokeAsync(Question); 
+        // הגנה נוספת (למשל בהפעלה ממקלדת): בזמן עריכה או חסימה אין למחוק
+        if (isEditingInstruction == true || IsBlocked == true)
+        {
+            return;
+        }
+
+        await OnDeleteClicked.InvokeAsync(Question);
     }
-    
+
     async Task Toggle()
     {
+        // הגנה נוספת (למשל בהפעלה ממקלדת): בזמן עריכה או חסימה אין לפתוח/לסגור
+        if (isEditingInstruction == true || IsBlocked == true)
+        {
+            return;
+        }
+
         //אנחנו קוראים לעמוד הראשי ומעבירים לו את מזהה השאלה
         await OnToggle.InvokeAsync(Question.questionID);
+    }
+
+    // פונקציה שמפעילה את פעמון האישור של שאלה חדשה - העמוד המארח פונה לקונטרולר
+    async Task ConfirmNew()
+    {
+        await OnConfirmNew.InvokeAsync();
+    }
+
+    // פונקציה שמפעילה את פעמון הביטול של שאלה חדשה
+    async Task CancelNew()
+    {
+        await OnCancelNew.InvokeAsync();
     }
 }

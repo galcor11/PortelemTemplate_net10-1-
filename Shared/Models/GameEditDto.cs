@@ -3,6 +3,8 @@ namespace AuthTemplate.Shared.Models;
 
 public class GameEditDto
 {
-    public string gameName { get; set; }
+    public string gameName { get; set; } 
     public List<Question> Questions { get; set; }
+    public int gameID { get; set; }
+   
 }

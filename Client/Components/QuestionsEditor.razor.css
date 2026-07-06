@@ -1,8 +1,87 @@
+/* כרטיס לבן במצב תמונה - טקסט ואייקון יחד, ממורכז על התות */
+.upload-card {
+    background: #FFF;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 97px;
+    height: 71px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    box-sizing: border-box;
+    transform: translate(14px, -8px);
+}
+
+.upload-text {
+    font-size: 11px;
+    font-weight: bold;
+    color: #373434;
+}
+
+.upload-plus-icon {
+    width: 28px;
+    height: 28px;
+    opacity: 0.7;
+}
 
 .success-msg {
     color: green;
     text-align: center;
     font-weight: bold;
+}
+
+.worm-lane {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;   /* הסגמנטים נשארים מיושרים למעלה זה מול זה */
+    flex-shrink: 0;
+}
+
+/* אזור התולעת: ההנחיה מעל, התולעת מתחת, שניהם ממורכזים */
+.worm-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 1 auto;        /* לא גדל מעבר לתוכן, אבל יכול להתכווץ ולגלול */
+    min-width: 0;          /* מאפשר לגלילה האופקית לעבוד */
+    overflow-x: auto;      /* הגלילה של התולעת עברה לכאן */
+}
+
+
+/* ההנחיה הממורכזת מעל התולעת */
+.worm-instruction {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-weight: bold;
+    color: #555;
+    white-space: nowrap;
+}
+
+/* האייקון שליד ההנחיה */
+.worm-instruction-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.worm-instruction-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.questions-table thead th:last-child {
+    text-align: center;
+}
+
+.strawberry-container ::deep form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .error-msg {
@@ -62,15 +141,6 @@
 }
 
 
-/* התא הגדול של שורת הדמה בהוספת שאלה (מתפרס על כל העמודות) */
-.accordion-cell {
-    padding: 25px 15px;
-    /* מעבר צבעים רך באלכסון */
-    background-color: #C5ECA5;
-    border-bottom: 1px solid #E2E8F0;
-    box-shadow: inset 0 4px 8px rgba(0,0,0,0.03);
-}
-
 /* המכל שעוטף את כל הפריטים יחד  */
 .items-container-wrapper {
     display: flex;
@@ -120,7 +190,7 @@
     align-items: center;        /* יישור לגובה של התולעת */
     justify-content: flex-start;
     gap: 0px;
-    overflow-x: auto;           /* מאפשר גלילה אופקית אם התולעת ארוכה מדי */
+    overflow: visible;          /* לא חותך - הטולטיפ יכול לצאת החוצה. הגלילה עברה לתולעת */
     padding: 10px 0;
     flex-wrap: nowrap !important;          /* מונע מהתולעת לרדת שורה  */
 }
@@ -131,7 +201,8 @@
     border-radius: 15px;
     padding: 20px;
     margin-left: 30px;
-    width: fit-content;
+    width: 200px;
+    flex-shrink: 0;   /* התיבה שומרת על רוחבה ולא מתכווצת כשהתולעת ארוכה */
     background-color: rgba(255, 255, 255, 0.4);
     /*  התכונה מאפשרת לטולטיפ לצאת מגבולות התיבה בלי להיחתך */
     overflow: visible;
@@ -153,7 +224,7 @@
 }
 
 /* הסתרת הצ'קבוקס המקורי של הדפדפן */
-.toggle-switch .toggle-checkbox {
+.toggle-switch ::deep .toggle-checkbox {
     opacity: 0;
     width: 0;
     height: 0;
@@ -167,7 +238,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
+    background-color: #46BA9B;
     transition: .4s;
     border-radius: 24px;
 }
@@ -183,16 +254,17 @@
     background-color: white;
     transition: .4s;
     border-radius: 50%;
+    transform: translateX(22px);
 }
 
 /* צבע הרקע כשהצ'קבוקס מסומן (True) */
 .toggle-checkbox:checked + .toggle-slider {
-    background-color: #4CAF50;
+    background-color: #FF8B03;
 }
 
 /* הזזת העיגול הצידה כשזה מסומן (True) */
 .toggle-checkbox:checked + .toggle-slider:before {
-    transform: translateX(22px);
+    transform: translateX(0);
 }
 
 /* עיצוב הטקסט שליד הטוגל */
@@ -202,271 +274,262 @@
     color: #333;
 }
 
-/* העטיפה של התות עצמו שמופיע כרקע */
-.strawberry-input-wrapper {
-    background-image: url('svg/strawberry.svg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: top center;
-    width: 160px;
-    height: 119px;
-    display: flex;
-    justify-content: center;
+/* אייקוני המצב שמשני צידי המתג - אפור כברירת מחדל */
+.mode-icon {
+    color: #B7B7B7;
+    display: inline-flex;
     align-items: center;
-    padding: 15px;
+    margin: 0 8px;
 }
 
-/* העיצוב המשותף לשני הפקדים */
-::deep .inner-strawberry-input {
-    text-align: right; /* יישור הטקסט לימין בהתאם לכיוון העברית */
-    border: 1px solid #ccc;
-    font-weight: bold;
-    border-radius: 8px !important;
-    background: #FFF;
-    width: 97px;
-    height: 71px;
-    box-sizing: border-box;
-    resize: none !important;
-    overflow: hidden;
-    outline: none;
-    font-family: inherit;
-    transform: translate(14px,-8px);
+/* אייקון טקסט פעיל - טורקיז */
+.mode-icon-text-active {
+    color: #46BA9B;
 }
 
-/* התאמה ספציפית למצב טקסט (אזור הטקסט שבתוך העוטף של הקומפוננטה) */
-::deep .inner-strawberry-input textarea {
-    /* פחות ריפוד למעלה ושמירת מקום למונה למטה כדי שלא ידרוס את הטקסט */
-    padding: 6px 5px 16px;
-    /* גופן קטן יותר כדי ש-30 תווים ייכנסו לתיבה בלי לגלוש על המונה */
-    font-size: 13px;
-    line-height: 1.25;
-}
-
-/* התאמה ספציפית למצב תמונה (תגית ה-P) */
-::deep p.inner-strawberry-input {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-    cursor: pointer;
-}
-
-/*עיצוב לתצוגה של תמונה על התות*/
-.strawberry-preview-img {
-    max-width: 80%;
-    max-height: 80%;
-    border-radius: 10px;
-    object-fit: contain;
-    transform: translate(14px, -8px);
+/* אייקון תמונה פעיל - כתום */
+.mode-icon-image-active {
+    color: #FF8B03;
 }
 
 
-/* 
-   תוספות נגישות לעמידה בתקן WCAG 2.1
-   */
+    /* העטיפה של התות עצמו שמופיע כרקע */
 
-/* פוקוס נגיש למקלדת (Tab) עבור כל האייקונים הלחיצים */
-.toggle-icon:focus-visible,
-.delete-icon:focus-visible,
-.edit-icon:focus-visible,
-.action-icon:focus-visible,
-.item-box:focus-visible {
-    outline: 3px solid #005FCC; /* כחול כהה עם ניגודיות תקנית */
-    outline-offset: 4px; /* מרחיק את המסגרת מהאלמנט */
-    border-radius: 4px; /* מעגל קצת את מסגרת הפוקוס */
-}
+    .strawberry-input-wrapper {
+        background-image: url('svg/strawberry.svg');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: top center;
+        width: 160px;
+        height: 119px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+    }
 
-/* חיווי ברור בעת הקלדה בתוך התות (focus-within כי הפוקוס על אזור הטקסט הפנימי) */
-::deep .inner-strawberry-input:focus-within {
-    outline: none; /* מסירים את הדיפולט של הדפדפן */
-    border: 2px solid #005FCC !important; /* מסגרת כחולה עבה */
-    box-shadow: 0 0 0 4px rgba(0, 95, 204, 0.2); /* הילה כחולה מסביב למראה רך */
-}
+    /* העיצוב המשותף לשני הפקדים */
 
-/* העברת מסגרת הפוקוס מהצ'קבוקס המוסתר אל הרקע של המתג הנראה */
-.toggle-checkbox:focus-visible + .toggle-slider {
-    outline: 3px solid #005FCC;
-    outline-offset: 3px;
-}
+    ::deep .inner-strawberry-input {
+        text-align: right; /* יישור הטקסט לימין בהתאם לכיוון העברית */
+        border: 1px solid #ccc;
+        font-weight: bold;
+        border-radius: 8px !important;
+        background: #FFF;
+        width: 97px;
+        height: 71px;
+        box-sizing: border-box;
+        resize: none !important;
+        overflow: hidden;
+        outline: none;
+        font-family: inherit;
+        transform: translate(14px, -8px);
+    }
 
+    /* התאמה ספציפית למצב טקסט (אזור הטקסט שבתוך העוטף של הקומפוננטה) */
 
-/* עיצוב שורת ההוספה החדשה בטבלה */
-.new-question-row {
-    background-color: #f9f9f9;
-}
+    ::deep .inner-strawberry-input textarea {
+        /* פחות ריפוד למעלה ושמירת מקום למונה למטה כדי שלא ידרוס את הטקסט */
+        padding: 6px 5px 16px;
+        /* גופן קטן יותר כדי ש-30 תווים ייכנסו לתיבה בלי לגלוש על המונה */
+        font-size: 13px;
+        line-height: 1.25;
+    }
 
-/* עיצוב שדה הקלט של ההנחיה (::deep כי התיבה נמצאת בתוך קומפוננטת הבת CustomInputText) */
-::deep .instruction-input {
-    width: 100%; /* מתפרס על כל התא - רספונסיבי */
-    max-width: 300px; /* חוסם את ההתרחבות במסכּים גדולים כדי להתאים ל-20 תווים */
-    margin: 0 !important; /* מבטל את המרווחים של default-input כדי לא לשבור את השורה */
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
+    /* התאמה ספציפית למצב תמונה (תגית ה-P) */
 
-/* אִפְרוּר וביטול הלחיצות על התולעת */
-.disabled-area {
-    opacity: 0.4;
-    pointer-events: none;
-    filter: grayscale(50%);
-}
+    ::deep p.inner-strawberry-input {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        cursor: pointer;
+    }
 
-/* עיצוב המרווח לכפתור המשני מתחת לטבלה */
-.add-button-wrapper {
-    margin-top: 15px;
-}
-/* מאגד את תיבת הטקסט וכפתור האישור לאותה שורה צמודה */
-.input-action-wrapper {
-    display: flex;
-    gap: 15px; /* המרווח המדויק בין תיבת הטקסט לכפתור */
-    align-items: center; /* יישור לאמצע הגובה */
-}
+    /*עיצוב לתצוגה של תמונה על התות*/
 
-/* מחלקה עוטפת שיוצרת את סמן העכבר חסום */
-.not-allowed-cursor {
-    cursor: not-allowed;
-}
+    .strawberry-preview-img {
+        max-width: 80%;
+        max-height: 80%;
+        border-radius: 10px;
+        object-fit: contain;
+        transform: translate(14px, -8px);
+    }
 
 
-/* המכל שעוטף את הטבלה - משמש רק כמסגרת, הגלילה עצמה נמצאת בתוך גוף הטבלה */
-.table-scroll-container {
-    width: 95%; /* רספונסיביות - תופס כמעט את כל רוחב העמוד  */
-    max-width: 1200px; /* מונע מהטבלה להימתח מדי במסכּים רחבים */
-    margin: 0 auto; /* ממרכז את הקונטיינר באמצע העמוד */
-}
+    /* 
+       תוספות נגישות לעמידה בתקן WCAG 2.1
+       */
 
-/* הגלילה מוגדרת על גוף הטבלה בלבד, כך שפס הגלילה מתחיל מתחת לשורת הכותרת */
-.questions-table tbody {
-    display: block; /* מאפשר לתת לגוף הטבלה גובה משלו בנפרד מהכותרת */
-    max-height: 48vh; /* גובה יחסי רספונסיבי למניעת גלילת העמוד */
-    overflow-y: auto; /* מוסיף פס גלילה אנכי רק כשהתוכן חורג מהגובה */
-    direction: ltr; /* מעביר את פס הגלילה לצד ימין */
-    background-color: #E9FDD9; /* ממלא את אזור הפס בירוק של השורות גם כשאין גלילה */
-}
+    /* פוקוס נגיש למקלדת (Tab) עבור כל האייקונים הלחיצים */
 
-/* הכותרת וכל שורה בגוף מתנהגות כטבלה עצמאית ברוחב מלא, כדי שהעמודות יישארו מיושרות */
-/* ::deep נדרש כי שורות האקורדיון נוצרות בתוך הקומפוננטה AccordionRow */
-.questions-table thead,
-.questions-table tbody ::deep tr {
-    display: table;
-    width: 100%;
-    table-layout: fixed; /* חלוקת רוחב אחידה של העמודות בכל השורות */
-}
+    .toggle-icon:focus-visible,
+    .delete-icon:focus-visible,
+    .edit-icon:focus-visible,
+    .action-icon:focus-visible,
+    .item-box:focus-visible {
+        outline: 3px solid #005FCC; /* כחול כהה עם ניגודיות תקנית */
+        outline-offset: 4px; /* מרחיק את המסגרת מהאלמנט */
+        border-radius: 4px; /* מעגל קצת את מסגרת הפוקוס */
+    }
 
-/* מחזיר את כיוון הטקסט בשורות לעברית (כי גוף הטבלה הפך לאנגלית בשביל פס הגלילה) */
-.questions-table tbody ::deep tr {
-    direction: rtl;
-}
+    /* חיווי ברור בעת הקלדה בתוך התות (focus-within כי הפוקוס על אזור הטקסט הפנימי) */
 
-/* ריווח בכותרת שמפצה על הרוחב שפס הגלילה תופס בגוף, כדי שהעמודות יתיישרו */
-.questions-table thead {
-    padding-right: 10px;
-    background-color: #C5ECA5; /* צבע הכותרת גם באזור הריווח, כדי שלא יישאר פס לבן */
-}
+    ::deep .inner-strawberry-input:focus-within {
+        outline: none; /* מסירים את הדיפולט של הדפדפן */
+        border: 2px solid #005FCC !important; /* מסגרת כחולה עבה */
+        box-shadow: 0 0 0 4px rgba(0, 95, 204, 0.2); /* הילה כחולה מסביב למראה רך */
+    }
 
-/*  עיצוב פס הגלילה עצמו */
-/* העובי של פס הגלילה */
-.questions-table tbody::-webkit-scrollbar {
-    width: 10px;
-}
+    /* העברת מסגרת הפוקוס מהצ'קבוקס המוסתר אל הרקע של המתג הנראה */
 
-/* הרקע של פס הגלילה - באותו ירוק של שורות התוכן */
-.questions-table tbody::-webkit-scrollbar-track {
-    background: #E9FDD9;
-    border-radius: 4px;
-}
+    .toggle-checkbox:focus-visible + .toggle-slider {
+        outline: 3px solid #005FCC;
+        outline-offset: 3px;
+    }
 
-/* המילוי של פס הגלילה */
-.questions-table tbody::-webkit-scrollbar-thumb {
-    background: #fd8a03; /* כתום תואם לכפתור הראשי */
-    border-radius: 4px;
-}
 
-/* אפקט בעת ריחוף עם העכבר על פס הגלילה */
-.questions-table tbody::-webkit-scrollbar-thumb:hover {
-    background: #e67e22;
-}
+    /* אִפְרוּר וביטול הלחיצות על התולעת */
 
-/* ממקם את הטולטיפ והכותרת במרכז אזור הוספת הפריט ודוחף מעט כלפי מטה */
-.centered-tooltip-title {
-    justify-content: center;
-    margin-bottom: 15px;
-}
+    .disabled-area {
+        opacity: 0.4;
+        pointer-events: none;
+        filter: grayscale(50%);
+    }
 
-/* מונע מכותרות h3 בתוך אזור הטולטיפ לשבור שורה */
-.title-with-tooltip h3 {
-    margin: 0;
-    width: auto;
-    white-space: nowrap;
-}
+    /* עיצוב המרווח לכפתור המשני מתחת לטבלה */
 
-/* כפתור האישור של התות - עיצוב אחיד לשני המצבים עם מעבר חלק */
-.strawberry-submit {
-    border: none;
-    border-radius: 6px;
-    padding: 8px 22px;
-    font-weight: bold;
-    font-size: 15px;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease;
-    /* מצב פעיל - כתום כמו הכפתור הראשי */
-    background-color: #fd8a03;
-    color: white;
-    box-shadow: 0px 4px 0px #cc5c00;
-    cursor: pointer;
-}
+    .add-button-wrapper {
+        margin-top: 15px;
+    }
 
-/* ריחוף על הכפתור הפעיל - כתום כהה יותר */
-.strawberry-submit:hover:not(:disabled) {
-    background-color: #e67e22;
-}
+    /* מחלקה עוטפת שיוצרת את סמן העכבר חסום */
 
-/* לחיצה - הכפתור "שוקע" כמו הכפתור הראשי */
-.strawberry-submit:active:not(:disabled) {
-    transform: translateY(4px);
-    box-shadow: 0px 0px 0px #cc5c00;
-}
+    .not-allowed-cursor {
+        cursor: not-allowed;
+    }
 
-/* מצב מושבת - אפור עם סמן עכבר חסום (עיגול חסום) כמו באפליקציית הייחוס */
-.strawberry-submit:disabled {
-    background-color: #B7B7B7;
-    color: white;
-    box-shadow: 0px 4px 0px #96928E;
-    cursor: not-allowed;
-}
 
-/* עיצוב תולעת הדמה בשורת הוספת שאלה - העתק של המבנה מ-Silky.razor.css,
-   כי בידוד ה-CSS של בלייזור לא מחיל את הכללים של הקומפוננטה על העמוד הזה */
-.segment-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    align-self: flex-start;
-}
+    /* המכל שעוטף את הטבלה - משמש רק כמסגרת, הגלילה עצמה נמצאת בתוך גוף הטבלה */
 
-.label-container {
-    min-height: 32px; /* שומר על גובה אחיד גם כשאין תגית */
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: center;
-}
+    .table-scroll-container {
+        width: 95%; /* רספונסיביות - תופס כמעט את כל רוחב העמוד  */
+        max-width: 1500px; /* מונע מהטבלה להימתח מדי במסכּים רחבים */
+        margin: 0 auto; /* ממרכז את הקונטיינר באמצע העמוד */
+        scrollbar-gutter: stable;
+    }
 
-.silky-head {
-    display: flex;
-    width: 87px;
-    height: 87px;
-    justify-content: center;
-    align-items: center;
-    background-image: url('./svg/silkyHead.svg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    z-index: 2;
-}
+    /* הגלילה מוגדרת על גוף הטבלה בלבד, כך שפס הגלילה מתחיל מתחת לשורת הכותרת */
 
-.placeholder-segment {
-    width: 100px;
-    height: auto;
-    margin-left: 5px;
-    opacity: 0.4; /* אותו מצב מנוחה כמו בתולעת האמיתית */
-}
+    .questions-table tbody {
+        display: block; /* מאפשר לתת לגוף הטבלה גובה משלו בנפרד מהכותרת */
+        max-height: 72vh; /* גובה יחסי רספונסיבי למניעת גלילת העמוד */
+        overflow-y: auto; /* מוסיף פס גלילה אנכי רק כשהתוכן חורג מהגובה */
+        direction: ltr; /* מעביר את פס הגלילה לצד ימין */
+        background-color: #E9FDD9; /* ממלא את אזור הפס בירוק של השורות גם כשאין גלילה */
+        scrollbar-gutter: stable;
+    }
+
+    /* הכותרת וכל שורה בגוף מתנהגות כטבלה עצמאית ברוחב מלא, כדי שהעמודות יישארו מיושרות */
+    /* ::deep נדרש כי שורות האקורדיון נוצרות בתוך הקומפוננטה AccordionRow */
+
+    .questions-table thead,
+    .questions-table tbody ::deep tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed; /* חלוקת רוחב אחידה של העמודות בכל השורות */
+    }
+
+    /* מחזיר את כיוון הטקסט בשורות לעברית (כי גוף הטבלה הפך לאנגלית בשביל פס הגלילה) */
+
+    .questions-table tbody ::deep tr {
+        direction: rtl;
+    }
+
+    /* ריווח בכותרת שמפצה על הרוחב שפס הגלילה תופס בגוף, כדי שהעמודות יתיישרו */
+
+    .questions-table thead {
+        padding-right: 10px;
+        background-color: #C5ECA5; /* צבע הכותרת גם באזור הריווח, כדי שלא יישאר פס לבן */
+    }
+
+    /*  עיצוב פס הגלילה עצמו */
+    /* העובי של פס הגלילה */
+
+    .questions-table tbody::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    /* הרקע של פס הגלילה - באותו ירוק של שורות התוכן */
+
+    .questions-table tbody::-webkit-scrollbar-track {
+        background: #E9FDD9;
+        border-radius: 4px;
+    }
+
+    /* המילוי של פס הגלילה */
+
+    .questions-table tbody::-webkit-scrollbar-thumb {
+        background: #fd8a03; /* כתום תואם לכפתור הראשי */
+        border-radius: 4px;
+    }
+
+    /* אפקט בעת ריחוף עם העכבר על פס הגלילה */
+
+    .questions-table tbody::-webkit-scrollbar-thumb:hover {
+        background: #e67e22;
+    }
+
+    /* ממקם את הטולטיפ והכותרת במרכז אזור הוספת הפריט ודוחף מעט כלפי מטה */
+
+    .centered-tooltip-title {
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+
+    /* מונע מכותרות h3 בתוך אזור הטולטיפ לשבור שורה */
+
+    .title-with-tooltip h3 {
+        margin: 0;
+        width: auto;
+        white-space: normal;
+    }
+
+    /* כפתור האישור של התות - עיצוב אחיד לשני המצבים עם מעבר חלק */
+
+    .strawberry-submit {
+        border: none;
+        border-radius: 6px;
+        padding: 8px 22px;
+        font-weight: bold;
+        font-size: 15px;
+        transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        /* מצב פעיל - כתום כמו הכפתור הראשי */
+        background-color: #fd8a03;
+        color: white;
+        box-shadow: 0px 4px 0px #cc5c00;
+        cursor: pointer;
+    }
+
+    /* ריחוף על הכפתור הפעיל - כתום כהה יותר */
+
+    .strawberry-submit:hover:not(:disabled) {
+        background-color: #e67e22;
+    }
+
+    /* לחיצה - הכפתור "שוקע" כמו הכפתור הראשי */
+
+    .strawberry-submit:active:not(:disabled) {
+        transform: translateY(4px);
+        box-shadow: 0px 0px 0px #cc5c00;
+    }
+
+    /* מצב מושבת - אפור עם סמן עכבר חסום (עיגול חסום) כמו באפליקציית הייחוס */
+
+    .strawberry-submit:disabled {
+        background-color: #B7B7B7;
+        color: white;
+        box-shadow: 0px 4px 0px #96928E;
+        cursor: not-allowed;
+    }

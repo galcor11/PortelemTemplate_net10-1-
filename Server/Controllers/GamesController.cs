@@ -30,8 +30,6 @@ namespace AuthTemplate.Server.Controllers
                 // object param = new { ID = authUserId };
                 string query = "SELECT Games.gameID, Games.gameName, Games.gameCode, Games.isPublish, Games.canPublish, COUNT(Questions.questionID) AS questionCount FROM Games LEFT JOIN Questions ON Games.gameID = Questions.gameID WHERE Games.userID = @userID GROUP BY Games.gameID, Games.gameName, Games.gameCode, Games.isPublish, Games.canPublish";
 
-                // string query =
-                //     "SELECT Games.*, count(Questions.questionID) AS questionCount FROM Games LEFT OUTER JOIN Questions on Games.gameCode = Questions.gameID WHERE Games.userID=@ID group by Games.gameCode";
                 var record = await _db.GetRecordsAsync<GameToTableDto>(query, param);
                 List<GameToTableDto> gameList = record.ToList();
                 if (gameList.Count > 0)
@@ -200,7 +198,7 @@ namespace AuthTemplate.Server.Controllers
             };
 
             //  שאילתת SQL שבודקת גם את ה-ID של המשחק וגם שהוא שייך למשתמש
-            string query = "SELECT gameName, hasPotion, time FROM Games WHERE gameID = @gameID AND userID = @userId";
+            string query = "SELECT gameName, hasPotion, time, isPublish, canPublish FROM Games WHERE gameID = @gameID AND userID = @userId";
 
             // אנחנו שולפים מבסיס הנתונים
             var records = await _db.GetRecordsAsync<GameToAddDto>(query, param);

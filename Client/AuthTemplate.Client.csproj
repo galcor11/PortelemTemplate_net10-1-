@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\png\" />
     <Folder Include="wwwroot\svg\" />
   </ItemGroup>
 
