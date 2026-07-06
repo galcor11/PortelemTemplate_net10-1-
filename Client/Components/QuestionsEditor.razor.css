@@ -1,8 +1,35 @@
-
+.upload-text {
+    font-size: 12px; 
+    margin-bottom: 5px;
+    color: #373434;
+}
+.upload-plus-icon {
+    width: 30px; 
+    height: 30px;
+    margin-top: 5px; /* מרווח קטן מהטקסט שמעליו */
+    opacity: 0.7; 
+}
 .success-msg {
     color: green;
     text-align: center;
     font-weight: bold;
+}
+
+.worm-lane {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;   /* הסגמנטים נשארים מיושרים למעלה זה מול זה */
+    flex-shrink: 0;
+}
+
+.questions-table thead th:last-child {
+    text-align: center;
+}
+
+.strawberry-container ::deep form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .error-msg {
@@ -61,15 +88,6 @@
     background-color: rgba(157, 242, 245, 0.5) !important;
 }
 
-
-/* התא הגדול של שורת הדמה בהוספת שאלה (מתפרס על כל העמודות) */
-.accordion-cell {
-    padding: 25px 15px;
-    /* מעבר צבעים רך באלכסון */
-    background-color: #C5ECA5;
-    border-bottom: 1px solid #E2E8F0;
-    box-shadow: inset 0 4px 8px rgba(0,0,0,0.03);
-}
 
 /* המכל שעוטף את כל הפריטים יחד  */
 .items-container-wrapper {
@@ -131,7 +149,7 @@
     border-radius: 15px;
     padding: 20px;
     margin-left: 30px;
-    width: fit-content;
+    width: 200px;
     background-color: rgba(255, 255, 255, 0.4);
     /*  התכונה מאפשרת לטולטיפ לצאת מגבולות התיבה בלי להיחתך */
     overflow: visible;
@@ -211,6 +229,7 @@
     width: 160px;
     height: 119px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 15px;
@@ -290,21 +309,6 @@
 }
 
 
-/* עיצוב שורת ההוספה החדשה בטבלה */
-.new-question-row {
-    background-color: #f9f9f9;
-}
-
-/* עיצוב שדה הקלט של ההנחיה (::deep כי התיבה נמצאת בתוך קומפוננטת הבת CustomInputText) */
-::deep .instruction-input {
-    width: 100%; /* מתפרס על כל התא - רספונסיבי */
-    max-width: 300px; /* חוסם את ההתרחבות במסכּים גדולים כדי להתאים ל-20 תווים */
-    margin: 0 !important; /* מבטל את המרווחים של default-input כדי לא לשבור את השורה */
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
 /* אִפְרוּר וביטול הלחיצות על התולעת */
 .disabled-area {
     opacity: 0.4;
@@ -316,12 +320,6 @@
 .add-button-wrapper {
     margin-top: 15px;
 }
-/* מאגד את תיבת הטקסט וכפתור האישור לאותה שורה צמודה */
-.input-action-wrapper {
-    display: flex;
-    gap: 15px; /* המרווח המדויק בין תיבת הטקסט לכפתור */
-    align-items: center; /* יישור לאמצע הגובה */
-}
 
 /* מחלקה עוטפת שיוצרת את סמן העכבר חסום */
 .not-allowed-cursor {
@@ -332,14 +330,14 @@
 /* המכל שעוטף את הטבלה - משמש רק כמסגרת, הגלילה עצמה נמצאת בתוך גוף הטבלה */
 .table-scroll-container {
     width: 95%; /* רספונסיביות - תופס כמעט את כל רוחב העמוד  */
-    max-width: 1200px; /* מונע מהטבלה להימתח מדי במסכּים רחבים */
+    max-width: 1500px; /* מונע מהטבלה להימתח מדי במסכּים רחבים */
     margin: 0 auto; /* ממרכז את הקונטיינר באמצע העמוד */
 }
 
 /* הגלילה מוגדרת על גוף הטבלה בלבד, כך שפס הגלילה מתחיל מתחת לשורת הכותרת */
 .questions-table tbody {
     display: block; /* מאפשר לתת לגוף הטבלה גובה משלו בנפרד מהכותרת */
-    max-height: 48vh; /* גובה יחסי רספונסיבי למניעת גלילת העמוד */
+    max-height: 72vh; /* גובה יחסי רספונסיבי למניעת גלילת העמוד */
     overflow-y: auto; /* מוסיף פס גלילה אנכי רק כשהתוכן חורג מהגובה */
     direction: ltr; /* מעביר את פס הגלילה לצד ימין */
     background-color: #E9FDD9; /* ממלא את אזור הפס בירוק של השורות גם כשאין גלילה */
@@ -398,7 +396,7 @@
 .title-with-tooltip h3 {
     margin: 0;
     width: auto;
-    white-space: nowrap;
+    white-space: normal;
 }
 
 /* כפתור האישור של התות - עיצוב אחיד לשני המצבים עם מעבר חלק */
@@ -433,40 +431,4 @@
     color: white;
     box-shadow: 0px 4px 0px #96928E;
     cursor: not-allowed;
-}
-
-/* עיצוב תולעת הדמה בשורת הוספת שאלה - העתק של המבנה מ-Silky.razor.css,
-   כי בידוד ה-CSS של בלייזור לא מחיל את הכללים של הקומפוננטה על העמוד הזה */
-.segment-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    align-self: flex-start;
-}
-
-.label-container {
-    min-height: 32px; /* שומר על גובה אחיד גם כשאין תגית */
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: center;
-}
-
-.silky-head {
-    display: flex;
-    width: 87px;
-    height: 87px;
-    justify-content: center;
-    align-items: center;
-    background-image: url('./svg/silkyHead.svg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    z-index: 2;
-}
-
-.placeholder-segment {
-    width: 100px;
-    height: auto;
-    margin-left: 5px;
-    opacity: 0.4; /* אותו מצב מנוחה כמו בתולעת האמיתית */
 }

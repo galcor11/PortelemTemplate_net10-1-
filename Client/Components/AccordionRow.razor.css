@@ -19,12 +19,20 @@
     box-shadow: inset 0 4px 8px rgba(0,0,0,0.03);
 }
 
+.worm-lane {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    align-self: center;
+    flex-shrink: 0;
+}
+
 /* עיצוב החץ של האקורדיון (הפתיחה/סגירה) */
 .toggle-icon {
     cursor: pointer;
     font-weight: bold;
     margin-left: 8px;
-    color: #4a5c2d; 
+    color: #4a5c2d;
     transition: color 0.2s ease;
 }
 
@@ -67,14 +75,14 @@
     text-align: center;
 }
 
-/* אִפְרוּר וביטול לחיצות בזמן עריכת ההנחיה (אותו עיצוב כמו בהוספת שאלה חדשה בעמוד הראשי) */
+/* אִפְרוּר וביטול לחיצות - משמש גם בזמן עריכת ההנחיה וגם לחסימת שורות אחרות */
 .disabled-area {
     opacity: 0.4;
     pointer-events: none;
     filter: grayscale(50%);
 }
 
-/* סמן עכבר חסום לאזור התוכן בזמן עריכת ההנחיה */
+/* סמן עכבר חסום לאזור התוכן בזמן עריכת ההנחיה ולתצוגת הדמה */
 .not-allowed-cursor {
     cursor: not-allowed;
 }
@@ -85,4 +93,181 @@
     outline: 3px solid #005FCC; /* כחול כהה עם ניגודיות תקנית */
     outline-offset: 4px; /* מרחיק את המסגרת מהאלמנט */
     border-radius: 4px; /* מעגל קצת את מסגרת הפוקוס */
+}
+
+/* 
+   העיצובים של שורת הוספת שאלה חדשה - עברו לכאן מ-QuestionsEditor.razor.css
+   יחד עם המרקאפ, כי בידוד ה-CSS של בלייזור מחיל כללים רק על מרקאפ שנכתב באותה קומפוננטה
+   */
+
+/* עיצוב שורת ההוספה החדשה בטבלה */
+.new-question-row {
+    background-color: #f9f9f9;
+}
+
+/* מאגד את תיבת הטקסט וכפתור האישור לאותה שורה צמודה */
+.input-action-wrapper {
+    display: flex;
+    gap: 15px; /* המרווח המדויק בין תיבת הטקסט לכפתור */
+    align-items: center; /* יישור לאמצע הגובה */
+}
+
+/* עיצוב שדה הקלט של ההנחיה (::deep כי התיבה נמצאת בתוך קומפוננטת הבת CustomInputText) */
+::deep .instruction-input {
+    width: 100%; /* מתפרס על כל התא - רספונסיבי */
+    max-width: 300px; /* חוסם את ההתרחבות במסכּים גדולים כדי להתאים ל-20 תווים */
+    margin: 0 !important; /* מבטל את המרווחים של default-input כדי לא לשבור את השורה */
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* הקונטיינר שמחזיק את התות והתולעת יחד בשורה אחת (עותק לתצוגת הדמה) */
+.items-container {
+    display: flex !important;
+    flex-direction: row !important;        /* מכריח סידור אופקי */
+    align-items: center;        /* יישור לגובה של התולעת */
+    justify-content: flex-start;
+    gap: 0px;
+    overflow-x: auto;           /* מאפשר גלילה אופקית אם התולעת ארוכה מדי */
+    padding: 10px 0;
+    flex-wrap: nowrap !important;          /* מונע מהתולעת לרדת שורה  */
+}
+
+/* העיצוב של קופסת התות (אזור ההזנה) - עותק לתצוגת הדמה */
+.strawberry-container {
+    border: 2px dashed gray;
+    border-radius: 15px;
+    padding: 20px;
+    margin-left: 30px;
+    width: fit-content;
+    background-color: rgba(255, 255, 255, 0.4);
+    /*  התכונה מאפשרת לטולטיפ לצאת מגבולות התיבה בלי להיחתך */
+    overflow: visible;
+}
+
+/* העטיפה של התות עצמו שמופיע כרקע */
+.strawberry-input-wrapper {
+    background-image: url('svg/strawberry.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: top center;
+    width: 160px;
+    height: 119px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+
+/* תיבת הטקסט של הדמה (כאן בלי ::deep כי ה-textarea נכתב ישירות בקומפוננטה הזו) */
+.inner-strawberry-input {
+    text-align: right; /* יישור הטקסט לימין בהתאם לכיוון העברית */
+    border: 1px solid #ccc;
+    font-weight: bold;
+    border-radius: 8px !important;
+    background: #FFF;
+    width: 97px;
+    height: 71px;
+    box-sizing: border-box;
+    resize: none !important;
+    overflow: hidden;
+    outline: none;
+    font-family: inherit;
+    transform: translate(14px,-8px);
+}
+
+/* סידור האזור של המתג והטקסט לידו (דמה) */
+.toggle-container {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+/* העטיפה של הטוגל */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 24px;
+}
+
+/* הסתרת הצ'קבוקס המקורי של הדפדפן */
+.toggle-switch .toggle-checkbox {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* העיצוב של הרקע (הסליידר עצמו) */
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+/* העיצוב של העיגול בתוך הטוגל */
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+/* עיצוב הטקסט שליד הטוגל */
+.toggle-label {
+    margin-right: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* עיצוב תולעת הדמה - עותק של המבנה מ-Silky.razor.css (שוב בגלל בידוד ה-CSS) */
+.segment-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: flex-start;
+}
+
+.label-container {
+    height: 50px; /* שומר על גובה אחיד גם כשאין תגית */
+    margin-bottom: 5px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.label-container ::deep .glass-edge-container {
+    margin-bottom: 0;
+}
+
+.silky-head {
+    display: flex;
+    width: 87px;
+    height: 87px;
+    justify-content: center;
+    align-items: center;
+    background-image: url('./svg/silkyHead.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 2;
+}
+
+.placeholder-segment {
+    width: 100px;
+    height: auto;
+    margin-left: 5px;
+    opacity: 0.4; /* אותו מצב מנוחה כמו בתולעת האמיתית */
 }

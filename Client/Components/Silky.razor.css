@@ -22,10 +22,15 @@
 }
 
 .label-container {
-    min-height: 32px; /* שומר על גובה אחיד גם כשאין תגית */
-    margin-bottom: 10px;
+    height: 50px;            /* גובה קבוע במקום min-height - כל הסגמנטים מתחילים באותו קו */
+    margin-bottom: 5px;
     display: flex;
+    align-items: flex-end;   /* התווית יושבת בתחתית ולא נמתחת - ממש מעל הפריט */
     justify-content: center;
+}
+
+.label-container ::deep .glass-edge-container {
+    margin-bottom: 0;
 }
 
 .arrows-wrapper {
@@ -57,8 +62,8 @@
     justify-content: center;
     align-items: center;
     text-align: right; /* יישור הטקסט לימין בהתאם לכיוון העברית */
+    overflow-wrap: anywhere;/* שובר מילים ארוכות רק כשהן חורגות מרוחב הגופיף, כדי שלא תהיה גלישה */
     white-space: normal;
-    overflow-wrap: anywhere; /* שובר מילים ארוכות רק כשהן חורגות מרוחב הגופיף, כדי שלא תהיה גלישה */
     line-height: 1.1;
     padding: 5px 10px;
     font-weight: bold;
@@ -125,12 +130,22 @@
 
 /* המחלקה לתמונה האמיתית של הפריט */
 .worm-image {
-    width: 100px;
-    height: auto;
-    border-radius: 8px;
-    object-fit: cover;
-}
+    position: absolute;
+    inset: 0;                 /* התמונה ממלאת בדיוק את גוף התולעת */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;        /* כל תמונה תכסה את השטח בלי עיוות, בכל גודל שהוא */
 
+    /* חיתוך התמונה לצורת גוף התולעת, כך שהיא אף פעם לא חורגת מהקווים */
+    -webkit-mask-image: url('svg/silkyBody.svg');
+    mask-image: url('svg/silkyBody.svg');
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+}
 
 /* עיצוב לקצוות התולעת */
 ::deep .glass-edge-label {

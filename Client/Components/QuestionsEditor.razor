@@ -10,7 +10,14 @@
 @* בדיקה שיש שאלות להצגה, כלומר שהרשימה איננה ריקה *@
 @if (gameData != null)
 {
-    <h2>@gameData.gameName</h2>
+    <h1>@gameData.gameName</h1>
+    
+    @* <div class="publish-wrapper"> *@
+    @*     <CustomPublishCheckbox CanPublish="gameData.canPublish"  *@
+    @*                    IsPublish="gameData.isPublish"  *@
+    @*                    OnPublishToggled="ChangePublishStatus" /> *@
+    @* </div> *@
+    
     <div class="table-scroll-container">
         <table class="questions-table">
             <thead>
@@ -21,78 +28,14 @@
             </tr>
             </thead>
         <tbody>
-        @* בשביל שורת ההוספה *@
+        @* שורת ההוספה - עכשיו דרך אותה קומפוננטת אקורדיון במצב IsNew *@
+        @* הקומפוננטה מציגה את תיבת ההזנה ואת תצוגת הדמה, והפעמונים מחזירים אותנו לפונקציות כאן *@
         @if (isAddingQuestion == true)
         {
-            @* שורה 1: הזנת הטקסט וכפתור האישור מאוחדים יחד באותו תא *@
-            <tr class="new-question-row">
-                <td colspan="3">
-                    <div class="input-action-wrapper">
-                        @* תיבת טקסט המקושרת למודל ומיישמת הגבלת תווים *@
-                        <CustomInputText class="instruction-input" @bind-Value="questionToAdd.instruction"
-                                         maxLength="20" midLength="17" minLength="1" placeholder="הקלידו הנחיה (עד 20 תווים)..."/>
-
-                        @* שימוש בקומפוננטה לשני הכפתורים שלנו *@
-                        <MyButton ButtonStyle="primary"
-                                  ButtonText="אישור"
-                                  OnClickAction="ConfirmNewQuestion"/>
-                        <MyButton ButtonText="ביטול"
-                                  ButtonStyle="secondary"
-                                  OnClickAction="CancelAddingQuestion"/>
-                    </div>
-                </td>
-            </tr>
-
-            @* שורה 2: תצוגת דמה של התולעת הממתינה במצב חסום *@
-            <tr>
-                <td colspan="3" class="accordion-cell not-allowed-cursor">
-                    <div class="items-container disabled-area">
-                        <!-- תצוגת "דמה" של התות (כדי שהמשתמש יראה מה מחכה לו) -->
-                        <div class="strawberry-container">
-                            <h3>הוספת פריט</h3>
-                            <div class="strawberry-input-wrapper">
-                                <textarea placeholder="הקלידו כאן..." class="inner-strawberry-input"
-                                          disabled></textarea>
-                            </div>
-
-                            <!-- אזור הטוגל המעוצב (דמה) -->
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" disabled class="toggle-checkbox"/>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                                <span class="toggle-label">תמונה</span>
-                            </div>
-
-                            <button type="button" disabled>אישור</button>
-                        </div>
-                        <div class="segment-wrapper">
-                            <div class="label-container"></div>
-                            <div class="silky-head"></div>
-                        </div>
-
-                        <!--  שני הפלייסהולדרים הסטטיים של התולעת -->
-                        <div class="segment-wrapper">
-                            <div class="label-container">
-                                @* שימוש בקומפוננטה לתגית הראשונה של תולעת הדמה *@
-                                <EditableEdgeLabel LabelText="@questionToAdd.startLabel"
-                                                   DefaultText="ראשון"
-                                                   OnLabelSaved="@((newText) => questionToAdd.startLabel = newText)"/>
-                            </div>
-                            <img src="./svg/strokeBody.svg" class="placeholder-segment" alt=""/>
-                        </div>
-                        <div class="segment-wrapper">
-                            <div class="label-container">
-                                @* שימוש בקומפוננטה לתגית האחרונה של תולעת הדמה *@
-                                <EditableEdgeLabel LabelText="@questionToAdd.endLabel"
-                                                   DefaultText="אחרון"
-                                                   OnLabelSaved="@((newText) => questionToAdd.endLabel = newText)"/>
-                            </div>
-                            <img src="./svg/strokeBody.svg" class="placeholder-segment" alt=""/>
-                        </div>
-                    </div>
-                </td>
-            </tr>
+            <AccordionRow IsNew="true"
+                          NewQuestion="questionToAdd"
+                          OnConfirmNew="ConfirmNewQuestion"
+                          OnCancelNew="CancelAddingQuestion"/>
         }
 
 
@@ -101,19 +44,22 @@
         {
             int itemsCount = question.Items.Count;
             @*אנחנו משתמשים בקומפוננטה שיצרנו לאקורדיון*@
+            @* IsBlocked - השורה חסומה כשמוסיפים שאלה חדשה או כשעורכים הנחיה של שורה אחרת *@
+            @* כך רק שורה אחת יכולה להיות פעילה/פתוחה בכל רגע *@
             <AccordionRow
                 Question="@question"
                 ItemsCount="@itemsCount"
                 IsOpen="@(openQuestionId == question.questionID)"
+                IsBlocked="@(isAddingQuestion || (editingInstructionId != 0 && editingInstructionId != question.questionID))"
                 OnToggle="ToggleAccordion"
                 OnDeleteClicked="DeleteQuestionClicked"
                 OnInstructionSaved="@((newText) => SaveInstructionRow(newText, question))"
-                OnInstructionEditToggled="@((isEditing) => editingInstructionId = isEditing ? question.questionID : 0)">
+                OnInstructionEditToggled="@((isEditing) => InstructionEditToggled(isEditing, question))">
 
                 @* אזור ה-ChildContent - מקבל את מצב ההשבתה (כמו בהוספת שאלה חדשה) בזמן עריכת ההנחיה *@
                 <div class="items-container @(editingInstructionId == question.questionID ? "disabled-area" : "")">
                     @* השתמשנו באירועים של בלייזור שגילינו בחקירה עצמית *@
-                    <div class="strawberry-container" @onmouseover="() => isHoveringAddItem = true"
+                    <div class="strawberry-container @(question.Items.Count >= 8 && currentStrawberryItem.answerID == 0 ? "disabled-area" : "")" @onmouseover="() => isHoveringAddItem = true"
                          @onmouseout="() => isHoveringAddItem = false">
                         @* אזור הכותרת עם הטולטיפ *@
                         <div class="title-with-tooltip centered-tooltip-title">
@@ -128,7 +74,7 @@
                                 }
                                 else
                                 {
-                                    <h3> הגעת למקסימום פריטים</h3>
+                                    <h3>הגעת למקסימום!</h3>
                                 }
                             }
                             else
@@ -163,7 +109,9 @@
                                         @if (string.IsNullOrEmpty(currentStrawberryItem.content))
                                         {
                                             @* אם אין עדיין תמונה, אנחנו מציגים את טקסט ברירת המחדל *@
-                                            <p class="inner-strawberry-input upload-text">לחצו להעלאת תמונה</p>
+                                            <p class="inner-strawberry-input upload-text">להעלאת תמונה</p>
+                                            <img src="./svg/photoIcon.svg" class="upload-plus-icon" alt="הוספת תמונה" />
+
                                         }
                                         else
                                         {
@@ -204,6 +152,7 @@
                         </div>
 
                         @* אנחנו משתמשים בקומפוננטה שפתחנו והנקייה שלנו לתולעת *@
+                    <div class="worm-lane">
                         <Silky CurrentQuestion="question"
                                CurrentStrawberryItem="currentStrawberryItem"
                                IsHoveringAddItem="isHoveringAddItem"
@@ -214,6 +163,7 @@
                                OnEndLabelSaved="@((newText) => SaveEndLabel(newText, question))"
                                OnMoveRightClicked="@((item) => MoveRight(item, question.Items))"
                                OnMoveLeftClicked="@((item) => MoveLeft(item, question.Items))"/>
+                    </div>
 
                     </div>
         </AccordionRow>
@@ -227,12 +177,12 @@
         <p style="color:red;">שגיאה: @errorMsg</p>
     }
     
-    @* הכפתור המשני שפותח את חלונית ההוספה - מושבת בזמן הוספת שאלה *@
+    @* הכפתור המשני שפותח את חלונית ההוספה - מושבת בזמן הוספת שאלה או עריכת הנחיה *@
     <div class="add-button-wrapper">
         @* קוראים לקומפוננטה ומעבירים לה את כל הפרמטרים *@
         <MyButton ButtonStyle="secondary"
                   ButtonText="+ ליצור שאלה"
-                  IsDisabled="isAddingQuestion"
+                  IsDisabled="@(isAddingQuestion || editingInstructionId != 0)"
                   OnClickAction="StartAddingQuestion"/>
     </div>
 
@@ -309,7 +259,7 @@ else
     int openQuestionId = 0;
 
     // מזהה השאלה שההנחיה שלה נמצאת כרגע בעריכה. 0 אומר שאף הנחיה לא בעריכה.
-    // בזמן עריכה שאר השאלה מושבתת (אותו עיצוב כמו בהוספת שאלה חדשה) כדי לא להציף את המשתמש
+    // בזמן עריכה שאר השאלה מושבתת ושאר השורות חסומות (אותו רעיון כמו בהוספת שאלה חדשה)
     int editingInstructionId = 0;
 
     // משתני עזר לפופ-אפ 
@@ -346,6 +296,9 @@ else
     {
         isAddingQuestion = true;
 
+        // רק שורה אחת פתוחה בכל רגע - שורת ההוספה היא עכשיו השורה הפעילה, אז סוגרים כל אקורדיון פתוח
+        openQuestionId = 0;
+
         // אנחנו מאתחלים את המופע עם ערכי ברירת המחדל ושיוך למשחק הנוכחי 
         questionToAdd = new QuestionToAdd
         {
@@ -358,7 +311,7 @@ else
         };
     }
 
-    // פונקציה שמופעלת בלחיצה על כפתור "אישור" הראשי
+    // פונקציה שמופעלת מהפעמון של הקומפוננטה בלחיצה על כפתור "אישור" הראשי
     async Task ConfirmNewQuestion()
     {
         //בדיקת תקינוּת         
@@ -434,13 +387,16 @@ else
                 // אנחנו מסירים את השאלה מהרשימה כדי שהתצוגה תתעדכן
                 gameData.Questions.Remove(questionToDelete);
 
-                // מדווחים לעמוד המארח על שמירה מוצלחת
-                await OnChangesSaved.InvokeAsync();
-
                 //שימוש בטוסט שלנו
                 errorMsg = "";
                 showToast = true;
                 StateHasChanged();
+                
+                // סוגרים את הפופ-אפ מייד אחרי ההצלחה - לפני ההשהיה של הטוסט!
+                showQuestionDeletePopup = false;
+                
+                // מדווחים לעמוד המארח על שמירה מוצלחת
+                await OnChangesSaved.InvokeAsync();
 
                 await Task.Delay(10000);
 
@@ -526,14 +482,14 @@ else
                 }
             }
 
-            // מדווחים לעמוד המארח על שמירה מוצלחת
-            await OnChangesSaved.InvokeAsync();
-
             //עדכון הטוסט (גילינו בחקירה עצמית)
             errorMsg = "";
             showToast = true; // מדליקים את הטוסט
             StateHasChanged(); //פונקציית רענון שגילינו בחקירה עצמית
 
+            // מדווחים לעמוד המארח על שמירה מוצלחת
+            await OnChangesSaved.InvokeAsync();
+            
             await Task.Delay(10000); // השהייה של 10 שניות 
 
             // אם אחרי 10 שניות הטוסט עדיין דלוק (כלומר, המשתמש לא סגר אותו מהאיקס), נכבה אותו
@@ -553,6 +509,13 @@ else
 // פונקציה לפתיחה ולסגירה של האקורדיון בטבלה
     void ToggleAccordion(int questionId)
     {
+        // הגנה נוספת: בזמן הוספת שאלה או עריכת הנחיה אין לפתוח/לסגור שורות אחרות
+        // (הקומפוננטה כבר חוסמת את הלחיצות, וזו שכבת הגנה שנייה)
+        if (isAddingQuestion == true || editingInstructionId != 0)
+        {
+            return;
+        }
+
         // אם לחצו על השאלה שכבר פתוחה, נסגור אותה (נאפס ל-0)
         if (openQuestionId == questionId)
         {
@@ -562,6 +525,23 @@ else
         {
             openQuestionId = questionId;
             //הוספנו כדי לאפס את התות בכל פעם כשפותחים שאלה חדשה
+            currentStrawberryItem = new SilkyItem();
+        }
+    }
+
+    // פונקציה שמקבלת את הפעמון של מצב עריכת ההנחיה מהקומפוננטה ומנהלת את החסימה
+    // אותו רעיון כמו בהוספת שאלה חדשה: בזמן הקלדת הנחיה רק השורה הזו פעילה
+    void InstructionEditToggled(bool isEditing, Question question)
+    {
+        // שומרים את מזהה השאלה שנמצאת בעריכה (0 = אף הנחיה לא בעריכה)
+        editingInstructionId = isEditing ? question.questionID : 0;
+
+        // בכניסה לעריכה אנחנו פותחים את השורה כדי שהתוכן המושבת יוצג מתחת להנחיה,
+        // בדיוק כמו תצוגת הדמה שמופיעה מתחת לתיבת ההזנה בהוספת שאלה חדשה
+        if (isEditing == true && openQuestionId != question.questionID)
+        {
+            openQuestionId = question.questionID;
+            // מאפסים את התות כמו בפתיחת אקורדיון רגילה
             currentStrawberryItem = new SilkyItem();
         }
     }
@@ -745,6 +725,12 @@ else
     {
         // אנחנו מחשבים את האינדקס הבא, כלומר אנחנו לוקחים את כמות הפריטים שכבר קיימת ברשימה של השאלה
         // למשל אם כבר יש 3 פריטים (ה-Count הוא 3), הפריט החדש יקבל אוטומטית את המספר 3 או 4 
+        // הגנה: לא מוסיפים פריט אם כבר הגענו ל-8 פריטים
+        if (currentQuestion.Items.Count >= 8)
+        {
+            return;
+        }
+
         int nextIndex = currentQuestion.Items.Count;
         // ניצור את ה-DTO ליצירת פריט חדש 
         SilkyItemToAdd newItemDto = new SilkyItemToAdd()
@@ -860,7 +846,7 @@ else
     }
 
 
-    // פונקציה שפתחנו לצור ביטול הוספה של שאלה חדשה
+    // פונקציה שמופעלת מהפעמון של הקומפוננטה לצורך ביטול הוספה של שאלה חדשה
     void CancelAddingQuestion()
     {
         isAddingQuestion = false; // מסתיר את שורת ההוספה 
@@ -893,5 +879,6 @@ else
         // מכיוון שהיא לוקחת את כל הנתונים מהשאלה הנוכחית, היא תעדכן את ההנחיה החדשה ותשמור על הקצוות הקיימים.
         await UpdateQuestionInServer(currentQuestion);
     }
-
+    
+    
 }

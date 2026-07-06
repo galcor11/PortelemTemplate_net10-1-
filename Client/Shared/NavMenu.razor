@@ -5,6 +5,9 @@
         <div class="navbar navbar-dark">
 
             <div class="container-fluid justify-content-start">
+                
+                @* --- הלוגו  שלנו *@
+                <img src="./png/SilkyLogo.png" alt="לוגו מְסַדְּרֵי המשי" class="navbar-logo" />
                 @if (user != null)
                 {
                     <div class="px-3">
@@ -37,6 +40,7 @@
     <NotAuthorized>
         <div class="navbar navbar-dark">
             <div class="container-fluid justify-content-start">
+                <img src="./png/SilkyLogo.png" alt="לוגו מְסַדְּרֵי המשי" class="navbar-logo" />
                 <div class="nav-item">
                     <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                         <span aria-hidden="true"></span> משחק
@@ -106,9 +110,40 @@
 
 @if (showAbout == true)
 {
-    <InfoPopup PopupTitle="אודות" OnClose="() => showAbout = false">
-        <p>תוצר זה פותח במסגרת הפרויקט המשולש</p>
-        <p>הפקולטה לטכנולוגיות למידה תשפ"ו</p>
+    <InfoPopup PopupTitle="מְסַדְּרֵי המשי" OnClose="() => showAbout = false">
+        <div class="about-container">
+            
+            <p class="about-creators">אפיון ופיתוח: גל גרוסמן, אורי שריקי ואילן קמנקר</p>
+            
+            <div class="about-courses-header">
+                <img src="./svg/sweetButterfly.svg" alt="פרפר" class="butterfly-icon" />
+                <span>עבודת גמר זו נוצרה במסגרת הקורסים:</span>
+            </div>
+
+            <ul class="courses-list">
+                <li>
+                    <img src="./svg/strawberry.svg" alt="תות" class="bullet-icon" />
+                    סביבות לימוד אינטראקטיביות 1+ 2
+                </li>
+                <li>
+                    <img src="./svg/strawberry.svg" alt="תות" class="bullet-icon" />
+                    תכנות 2
+                </li>
+                <li>
+                    <img src="./svg/strawberry.svg" alt="תות" class="bullet-icon" />
+                    תכנות אינטראקציה ואנימציה 1+ 2
+                </li>
+            </ul>
+
+            <div class="about-footer">
+                <p>תשפ״ו</p>
+                <a href="https://www.hit.ac.il/academic/instructional-technologies/" target="_blank" class="faculty-text">הפקולטה לטכנולוגיות למידה</a>
+            </div>
+
+            <!-- הלוגו שבפינה הימנית התחתונה -->
+            <img src="./svg/HitHolonLogo.svg" alt="לוגו המכון" class="hit-logo" />
+            
+        </div>
     </InfoPopup>
 }
 @code {
