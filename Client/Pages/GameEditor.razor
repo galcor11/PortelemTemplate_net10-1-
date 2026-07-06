@@ -4,16 +4,17 @@
 @using AuthTemplate.Shared.Models
 @inject HttpClient Http
 
+
 @if (gameData != null && gameSettings != null)
 {
     <div class="editor-header">
         @* שני הטאבים של מסך העריכה - בפריסת RTL האלמנט הראשון יושב בצד ימין *@
         <div class="editor-tabs">
-            <button type="button" class="editor-tab @(activeTab == "settings" ? "active-tab" : "")"
+            <button type="button" class="editor-tab  @settingsClass"
                     @onclick="@(() => SwitchTab("settings"))">
                 ⚙️ הגדרות כלליות
             </button>
-            <button type="button" class="editor-tab @(activeTab == "questions" ? "active-tab" : "")"
+            <button type="button" class="editor-tab @questionsClass"
                     @onclick="@(() => SwitchTab("questions"))">
                 ✏️ עריכת השאלות
             </button>
@@ -21,6 +22,12 @@
 
         @* כפתור החזרה לטבלת המשחקים - יושב בפינה השמאלית *@
         <a class="back-pill" href="./GamesList">טבלת המשחקים <span class="back-arrow">←</span></a>
+    </div>
+    
+    <div class="publish-wrapper">
+        <CustomPublishCheckbox CanPublish="gameSettings.canPublish"
+                               IsPublish="gameSettings.isPublish"
+                               OnPublishToggled="@((newState) => ChangePublishStatus(newState))"/>
     </div>
 
     @* התוכן של הטאב הפעיל *@
@@ -45,7 +52,7 @@ else
     <p style="text-align:center; padding: 20px;">טוען נתונים...</p>
 }
 
-@code {
+@code{ 
     // הפרמטר שמתקבל מהנתיב (מזהה המשחק)
     [Parameter] public int gameID { get; set; }
 
@@ -55,10 +62,15 @@ else
 
     // הטאב הפעיל כרגע - ברירת המחדל היא עריכת השאלות
     string activeTab = "questions";
+    
+    // הגדרות טאב פעיל לCSS 
+    string settingsClass = "";
+    string questionsClass = "active-tab";
 
     GameEditDto gameData;
     GameToAddDto gameSettings;
     string errorMsg = "";
+    
 
     protected override async Task OnInitializedAsync()
     {
@@ -79,6 +91,7 @@ else
         if (qResponse.IsSuccessStatusCode)
         {
             gameData = await qResponse.Content.ReadFromJsonAsync<GameEditDto>();
+            
         }
         else
         {
@@ -88,6 +101,7 @@ else
         if (sResponse.IsSuccessStatusCode)
         {
             gameSettings = await sResponse.Content.ReadFromJsonAsync<GameToAddDto>();
+            
         }
         else
         {
@@ -99,6 +113,16 @@ else
     void SwitchTab(string tabName)
     {
         activeTab = tabName;
+        if (activeTab == "settings")
+        {
+            settingsClass = "active-tab";
+            questionsClass = "";
+        }
+        else
+        {
+            settingsClass = "";
+            questionsClass = "active-tab";
+        }
     }
 
     // כיתוב ברירת המחדל בתחתית המסך
@@ -108,6 +132,8 @@ else
     // מציג את הודעת ההצלחה אחרי שמירה מוצלחת, ומחזיר את כיתוב ברירת המחדל אחרי כמה שניות
     async Task ShowSavedMessage()
     {
+        var canPublishResponse = await Http.GetAsync("api/Questions/checkCanPublish/" + gameID);
+        gameSettings.canPublish = canPublishResponse.Content.ReadFromJsonAsync<bool>().Result;
         statusMessage = "השינויים נשמרו בהצלחה ✨";
         StateHasChanged();
 
@@ -126,5 +152,39 @@ else
         }
         activeTab = "questions";
         await ShowSavedMessage();
+    }
+        
+    async Task ChangePublishStatus(bool newState)
+    {
+        // בעת לחיצה על פרסום ניצור מופע של מחלקה עם מזהה המשחק ומצב הפרסום
+        PublishGame gameToSend = new PublishGame();
+        gameToSend.gameID = gameData.gameID;
+        // נגדיר שמצב הפרסום הוא לפי הערך הבוליאני שהתקבל מהקומפוננטה
+        gameToSend.isPublish = newState;
+        // נשלח את המידע לקונטרולר
+        var userRes = await Http.PostAsJsonAsync("api/Games/publishGame", gameToSend);
+        // אם הכל תקין - נציג את מצב הפרסום העדכני
+        //אם העדכון הצליח בבסיס הנתונים, שינוי מצב פרסום המשחק ברשימת המשחקים הקיימת בדף
+        if (userRes.IsSuccessStatusCode == true)
+        {
+            gameSettings.isPublish = newState;
+        }
+        else
+        {
+            string error = userRes.Content.ReadAsStringAsync().Result;
+        // אם נמצא בקונטרולר שמסיבה כלשהי טעינו ובעצם לא ניתן לפרסם את המשחק    
+            if (error == "This game cannot be published")
+            {
+                // נשנה את מצב הפרסום ולא נאפשר לפרסם
+                gameSettings.isPublish = false;
+                // נסביר למשתמש מה קרה
+                errorMsg = "המשחק אינו מאושר לפרסום";
+            }
+            else
+            {
+                // אחרת נקרא לפונקציית הודעות השגיאה אליה נוסיף את האופציות החדשות
+                errorMsg = "error";
+            }
+        } 
     }
 }

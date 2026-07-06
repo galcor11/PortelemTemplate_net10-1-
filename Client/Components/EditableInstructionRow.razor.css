@@ -1,8 +1,9 @@
 /* המכל שעוטף את השורה כולה */
 .instruction-row-container {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 15px; /* מרווח בין התיבה לכפתורים ובין הכפתורים לעצמם */
+    padding: 12px 0;
 }
 
 /* תיבת הטקסט של העריכה (::deep כי התיבה נמצאת בתוך קומפוננטת הבת CustomInputText) */

@@ -48,6 +48,14 @@
     transition: all 0.3s ease; /* אנימציה חלקה כשהמסגרת מופיעה ונעלמת */
 }
 
+/* במצב עריכת פריט - סגמנט שאינו הנערך: אפור ולא פעיל */
+.dimmed-segment {
+    opacity: 0.4;
+    filter: grayscale(70%);
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
 /* הקופסה שמכילה את התוכן של הפריט עצמו  */
 .item-box {
     position: relative;
@@ -61,7 +69,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    text-align: right; /* יישור הטקסט לימין בהתאם לכיוון העברית */
     overflow-wrap: anywhere;/* שובר מילים ארוכות רק כשהן חורגות מרוחב הגופיף, כדי שלא תהיה גלישה */
     white-space: normal;
     line-height: 1.1;

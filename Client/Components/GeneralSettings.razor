@@ -7,7 +7,7 @@
 @* המכל הראשי שמכיל את הדשא *@
 <div class="settings-page-wrapper">
 
-    <h1>⚙️הגדרות כלליות️</h1>
+    <h1 class="visually-hidden">️הגדרות כלליות️</h1>
 
     @* התנאי מופיע ומיד אחריו נפתחים הסוגריים המסולסלים *@
     @if (gameSettings != null)
@@ -36,22 +36,21 @@
             </div>
         
             <div class="input-row">
-                @* פקד מספר: מקושר לזמן, עם מינימום, מקסימום וקפיצות של 5. ננעל (disabled) אם סומן "ללא הגבלה" *@
-                @* התנאי שבודק: אם לא סומן ללא הגבלה, רק אז נציג את תיבת המספר והמילה שניות *@
-                @if (isUnlimitedTime == false)
-                {
-                    <input type="number" 
-                           @bind="gameSettings.time" 
-                           min="45" max="180" step="5" 
-                           class="time-input" />
-                    <span>שניות</span>
-                    <strong style="margin: 0 10px;">אוֹ</strong>
-                }
-
                 @* הצ'קבוקס תמיד מוצג. אנחנו רוצים לתפוס את הרגע המדויק שבו המשתמש התחרט וביטל את הסימון של ללא הגבלה *@
                 <div class="checkbox-wrapper">
                     <input type="checkbox" id="unlimited" checked="@isUnlimitedTime" @onchange="ToggleUnlimitedTime" />
                     <label for="unlimited">ללא הגבלה</label>
+                </div>
+                
+                @* פקד מספר: מקושר לזמן, עם מינימום, מקסימום וקפיצות של 5. ננעל (disabled) אם סומן "ללא הגבלה" *@
+                @* התנאי שבודק: אם לא סומן ללא הגבלה, רק אז נציג את תיבת המספר והמילה שניות *@
+                <div style="visibility: @timeVisibility">
+                <strong style="margin: 0 10px;">אוֹ</strong>
+                <input type="number" 
+                       @bind="gameSettings.time" 
+                       min="45" max="180" step="5" 
+                       class="time-input" />
+                <span>שניות</span>
                 </div>
             </div>
         </div>
@@ -140,6 +139,7 @@ else
     bool showNamePopup = false;
     //משתנה בוליאני שנועד לעזור לנו לאפשרות של בלי הגבלת זמן
     bool isUnlimitedTime = false;
+    string timeVisibility = "visible";
 
     // עם טעינת העמוד
     protected override async Task OnInitializedAsync()
@@ -191,6 +191,12 @@ else
            // משנים את הזמן ל- 60 שניות, כדי שהוא לא ייבהל מהמספר 1000 שיופיע לו בתיבה 
             gameSettings.time = 60; 
         }
+
+        if (isUnlimitedTime)
+            timeVisibility = "hidden";
+        else
+            timeVisibility = "visible";
+
     }
     // פונקציה שמחזירה את מחלקת העיצוב לסליידר
     string GetSliderClass()

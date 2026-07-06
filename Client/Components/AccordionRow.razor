@@ -84,41 +84,43 @@ else
     @* שורת הכותרת של האקורדיון (תמיד מוצגת) *@
     <tr class="accordion-main-row">
         <td>
-            @* סגירה ופתיחה של החיצים - מושבת בזמן עריכת ההנחיה או כשהשורה חסומה *@
-            <span class="toggle-icon @disabledClass" @onclick="Toggle">
-                @if (IsOpen)
-                {
-                    <span>▼</span>
-                }
-                else
-                {
-                    <span>◀</span>
-                }
-            </span>
+            <span>
+                @* סגירה ופתיחה של החיצים - מושבת בזמן עריכת ההנחיה או כשהשורה חסומה *@
+                <span class="toggle-icon @disabledClass" @onclick="Toggle">
+                    @if (IsOpen)
+                    {
+                        <span>▼</span>
+                    }
+                    else
+                    {
+                        <span>◀</span>
+                    }
+                </span>
 
-            @* הקומפוננטה לעריכת ההנחיה - נחסמת רק כששורה אחרת נמצאת בהוספה/עריכה *@
-            <span class="@blockedClass">
-                <EditableInstructionRow InstructionText="@Question.instruction"
-                                        OnInstructionSaved="SaveInstruction"
-                                        OnEditModeChanged="InstructionEditModeChanged" />
+                @* הקומפוננטה לעריכת ההנחיה - נחסמת רק כששורה אחרת נמצאת בהוספה/עריכה *@
+                <span class="@blockedClass">
+                    <EditableInstructionRow InstructionText="@Question.instruction"
+                                            OnInstructionSaved="SaveInstruction"
+                                            OnEditModeChanged="InstructionEditModeChanged"/>
+                </span>
             </span>
         </td>
         <td>
             @ItemsCount
             @if (ItemsCount >= 4 && ItemsCount <= 8)
             {
-                <span class="leaf-icon good-count"> 🌿 </span>
+                @* צבעוניות מלאה - 4 עד 8 פריטים *@
+                <img src="./svg/leafIcon.svg" alt="עלה" class="svg-leaf" /> 
             }
             else
             {
-                <span class="leaf-icon bad-count"> 🌿 </span>
+                @* עלה אפרפר ושקוף - פחות מ-4 פריטים *@
+                <img src="./svg/leafIcon.svg" alt="עלה" class="svg-leaf disabled-leaf" /> 
             }
         </td>
-        <td class="center-text">
-            @* כפתור מחיקה - מושבת בזמן עריכת ההנחיה או כשהשורה חסומה *@
-            <button type="button" class="delete-icon @disabledClass" @onclick="DeleteQuestion">
-                🗑️
-            </button>
+        <td class="center-text @disabledClass">
+            @* קוראים לקומפוננטת הפח שלנו, ומחברים את הפעמון לפונקציית המחיקה *@
+            <TrashIcon OnClick="DeleteQuestion" />
         </td>
     </tr>
 
@@ -127,7 +129,7 @@ else
     {
         <tr>
             @* בזמן עריכת ההנחיה התא מקבל סמן חסום (התוכן עצמו מושבת דרך העמוד הראשי) *@
-            <td colspan="3" class="accordion-cell @(isEditingInstruction ? "not-allowed-cursor" : "")">
+            <td colspan="3" class="accordion-cell @notAllowedClass">
                 @* לכאן נכניס את התוכן של התולעת *@
                 @ChildContent
             </td>
@@ -169,19 +171,68 @@ else
     // האם ההנחיה של השורה נמצאת כרגע בעריכה - בזמן עריכה שאר השורה מושבתת
     bool isEditingInstruction = false;
 
-    // מחלקת ההשבתה לאייקונים של השורה - בזמן עריכת ההנחיה של השורה עצמה או כשהשורה חסומה מבחוץ
-    string disabledClass => (isEditingInstruction || IsBlocked) ? "disabled-area" : "";
+    // משתני מחלקות עיצוב לCSS
+    string disabledClass = "";
+    string blockedClass = "";
+    string notAllowedClass = "";
 
-    // מחלקת השבתה נפרדת לקומפוננטת ההנחיה - רק כשהשורה חסומה מבחוץ
-    // (כשעורכים את ההנחיה של השורה עצמה היא כמובן חייבת להישאר פעילה)
-    string blockedClass => IsBlocked ? "disabled-area" : "";
+    protected override void OnParametersSet()
+    {
+        if (isEditingInstruction || IsBlocked)
+        {
+            disabledClass = "disabled-area";
+        }
+        else
+        {
+            disabledClass = "";
+        }
 
+        if (IsBlocked)
+        {
+            blockedClass = "disabled-area";
+        }
+        else
+        {
+            blockedClass = "";
+        }
+
+        if (isEditingInstruction)
+        {
+            notAllowedClass = "not-allowed-cursor";
+        }
+        else
+        {
+            notAllowedClass = "";
+        }
+    }
+
+    
     // הפונקציה מקבלת את מצב העריכה מהקומפוננטה של ההנחיה ומדווחת עליו הלאה לעמוד הראשי
     async Task InstructionEditModeChanged(bool isEditing)
     {
         isEditingInstruction = isEditing;
+        
+        if (isEditing)
+        {
+            disabledClass = "disabled-area";
+            notAllowedClass = "not-allowed-cursor";
+        }
+        else
+        {
+            if (IsBlocked)
+            {
+                disabledClass = "disabled-area";
+            }
+            else
+            {
+                disabledClass = "";
+            }
+            notAllowedClass = "";
+        }
+        
         await OnInstructionEditToggled.InvokeAsync(isEditing);
     }
+
 
     // הפונקציה מקבלת את הטקסט המעודכן של ההנחיה, ומפעילה את הפעמון כדע להעביר את הטקסט הֶחדש לעמוד
     async Task SaveInstruction(string newText)

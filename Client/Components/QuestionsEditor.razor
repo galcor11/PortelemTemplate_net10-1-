@@ -12,12 +12,6 @@
 {
     <h1>@gameData.gameName</h1>
     
-    @* <div class="publish-wrapper"> *@
-    @*     <CustomPublishCheckbox CanPublish="gameData.canPublish"  *@
-    @*                    IsPublish="gameData.isPublish"  *@
-    @*                    OnPublishToggled="ChangePublishStatus" /> *@
-    @* </div> *@
-    
     <div class="table-scroll-container">
         <table class="questions-table">
             <thead>
@@ -27,62 +21,64 @@
                 <th>מחיקה</th>
             </tr>
             </thead>
-        <tbody>
-        @* שורת ההוספה - עכשיו דרך אותה קומפוננטת אקורדיון במצב IsNew *@
-        @* הקומפוננטה מציגה את תיבת ההזנה ואת תצוגת הדמה, והפעמונים מחזירים אותנו לפונקציות כאן *@
-        @if (isAddingQuestion == true)
-        {
-            <AccordionRow IsNew="true"
-                          NewQuestion="questionToAdd"
-                          OnConfirmNew="ConfirmNewQuestion"
-                          OnCancelNew="CancelAddingQuestion"/>
-        }
+            <tbody>
+            @* שורת ההוספה - עכשיו דרך אותה קומפוננטת אקורדיון במצב IsNew *@
+            @* הקומפוננטה מציגה את תיבת ההזנה ואת תצוגת הדמה, והפעמונים מחזירים אותנו לפונקציות כאן *@
+            @if (isAddingQuestion == true)
+            {
+                <AccordionRow IsNew="true"
+                              NewQuestion="questionToAdd"
+                              OnConfirmNew="ConfirmNewQuestion"
+                              OnCancelNew="CancelAddingQuestion"/>
+            }
 
 
-        @* לולאת FOREACH שעוברת לנו על כל שאלה ברשימת השאלות במיון הפוך כך שהחדשה ביותר למעלה *@
-        @foreach (Question question in Enumerable.Reverse(gameData.Questions))
-        {
-            int itemsCount = question.Items.Count;
-            @*אנחנו משתמשים בקומפוננטה שיצרנו לאקורדיון*@
-            @* IsBlocked - השורה חסומה כשמוסיפים שאלה חדשה או כשעורכים הנחיה של שורה אחרת *@
-            @* כך רק שורה אחת יכולה להיות פעילה/פתוחה בכל רגע *@
-            <AccordionRow
-                Question="@question"
-                ItemsCount="@itemsCount"
-                IsOpen="@(openQuestionId == question.questionID)"
-                IsBlocked="@(isAddingQuestion || (editingInstructionId != 0 && editingInstructionId != question.questionID))"
-                OnToggle="ToggleAccordion"
-                OnDeleteClicked="DeleteQuestionClicked"
-                OnInstructionSaved="@((newText) => SaveInstructionRow(newText, question))"
-                OnInstructionEditToggled="@((isEditing) => InstructionEditToggled(isEditing, question))">
+            @* לולאת FOREACH שעוברת לנו על כל שאלה ברשימת השאלות במיון הפוך כך שהחדשה ביותר למעלה *@
+            @foreach (Question question in Enumerable.Reverse(gameData.Questions))
+            {
+                int itemsCount = question.Items.Count;
+                @*אנחנו משתמשים בקומפוננטה שיצרנו לאקורדיון*@
+                @* IsBlocked - השורה חסומה כשמוסיפים שאלה חדשה או כשעורכים הנחיה של שורה אחרת *@
+                @* כך רק שורה אחת יכולה להיות פעילה/פתוחה בכל רגע *@
+                <AccordionRow
+                    Question="@question"
+                    ItemsCount="@itemsCount"
+                    IsOpen="@(openQuestionId == question.questionID)"
+                    IsBlocked="@(isAddingQuestion || (editingInstructionId != 0 && editingInstructionId != question.questionID) || (isEditingItem && openQuestionId != question.questionID))"
+                    OnToggle="ToggleAccordion"
+                    OnDeleteClicked="DeleteQuestionClicked"
+                    OnInstructionSaved="@((newText) => SaveInstructionRow(newText, question))"
+                    OnInstructionEditToggled="@((isEditing) => InstructionEditToggled(isEditing, question))">
 
-                @* אזור ה-ChildContent - מקבל את מצב ההשבתה (כמו בהוספת שאלה חדשה) בזמן עריכת ההנחיה *@
-                <div class="items-container @(editingInstructionId == question.questionID ? "disabled-area" : "")">
-                    @* השתמשנו באירועים של בלייזור שגילינו בחקירה עצמית *@
-                    <div class="strawberry-container @(question.Items.Count >= 8 && currentStrawberryItem.answerID == 0 ? "disabled-area" : "")" @onmouseover="() => isHoveringAddItem = true"
-                         @onmouseout="() => isHoveringAddItem = false">
-                        @* אזור הכותרת עם הטולטיפ *@
-                        <div class="title-with-tooltip centered-tooltip-title">
-                            @* הקומפוננטה של הטולטיפ*@
-                            <TooltipIcon ExplanationText="יש למלא 8-4 תותים לשאלה תַּקינה לפרסום"/>
-                            @* אנחנו בודקים אם כמות הפריטים הגיעה לשמונה וגם אם אנחנו במצב הוספה *@
-                            @if (currentStrawberryItem.answerID == 0)
-                            {
-                                if (question.Items.Count < 8)
+                    @* אזור ה-ChildContent - מקבל את מצב ההשבתה (כמו בהוספת שאלה חדשה) בזמן עריכת ההנחיה *@
+                    <div class="items-container @(editingInstructionId == question.questionID ? "disabled-area" : "")">
+                        @* השתמשנו באירועים של בלייזור שגילינו בחקירה עצמית *@
+                        <div
+                            class="strawberry-container @(question.Items.Count >= 8 && currentStrawberryItem.answerID == 0 ? "disabled-area" : "")"
+                            @onmouseover="() => isHoveringAddItem = true"
+                            @onmouseout="() => isHoveringAddItem = false">
+                            @* אזור הכותרת עם הטולטיפ *@
+                            <div class="title-with-tooltip centered-tooltip-title">
+                                @* הקומפוננטה של הטולטיפ*@
+                                <TooltipIcon ExplanationText="יש למלא 8-4 תותים לשאלה תַּקינה לפרסום"/>
+                                @* אנחנו בודקים אם כמות הפריטים הגיעה לשמונה וגם אם אנחנו במצב הוספה *@
+                                @if (currentStrawberryItem.answerID == 0)
                                 {
-                                    <h3>הוספת פריט</h3>
+                                    if (question.Items.Count < 8)
+                                    {
+                                        <h3>הוספת פריט</h3>
+                                    }
+                                    else
+                                    {
+                                        <h3>הגעת למקסימום!</h3>
+                                    }
                                 }
                                 else
                                 {
-                                    <h3>הגעת למקסימום!</h3>
+                                    <h3>עריכת פריט</h3>
                                 }
-                            }
-                            else
-                            {
-                                <h3>עריכת פריט</h3>
-                            }
 
-                        </div>
+                            </div>
                             <!-- פתיחת הטופס והגדרת הפונקציה שתפעל בשליחה -->
                             <EditForm Model="currentStrawberryItem"
                                       OnValidSubmit="() => HandleStrawberrySubmit(question)">
@@ -96,7 +92,8 @@
                                     <div class="strawberry-input-wrapper">
                                         <CustomInputTextArea @bind-Value="currentStrawberryItem.content"
                                                              placeholder="הקלידו כאן..."
-                                                             class="inner-strawberry-input" maxLength="30" midLength="27" minLength="1"/>
+                                                             class="inner-strawberry-input" maxLength="30"
+                                                             midLength="27" minLength="1"/>
                                     </div>
                                     <ValidationMessage For="@(() => currentStrawberryItem.content)"/>
                                 }
@@ -108,10 +105,12 @@
                                         @* בודקים אם המשתנה שלנו קיבל שם של תמונה מהשרת *@
                                         @if (string.IsNullOrEmpty(currentStrawberryItem.content))
                                         {
-                                            @* אם אין עדיין תמונה, אנחנו מציגים את טקסט ברירת המחדל *@
-                                            <p class="inner-strawberry-input upload-text">להעלאת תמונה</p>
-                                            <img src="./svg/photoIcon.svg" class="upload-plus-icon" alt="הוספת תמונה" />
-
+                                            @* אם אין עדיין תמונה, מציגים כרטיס לבן אחד עם טקסט ואייקון יחד - כמו בפיגמה *@
+                                            <div class="upload-card">
+                                                <span class="upload-text">העלאת תמונה</span>
+                                                <img src="./svg/photoIcon.svg" class="upload-plus-icon"
+                                                     alt="הוספת תמונה"/>
+                                            </div>
                                         }
                                         else
                                         {
@@ -127,62 +126,105 @@
 
                                 <!-- אזור הטוגל המעוצב -->
                                 <div class="toggle-container">
+                                    @* אייקון טקסט - נצבע טורקיז כשמצב טקסט פעיל *@
+                                    <span
+                                        class="mode-icon @(currentStrawberryItem.isImage == false ? "mode-icon-text-active" : "")"
+                                        title="מצב טקסט">
+        <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M11.3407 0C12.1095 1.66644e-09 12.7726 3.79974e-05 13.3037 0.0711969C13.8721 0.147582 14.4181 0.320212 14.8598 0.762824C15.3024 1.20544 15.4751 1.75054 15.5514 2.31899C15.6226 2.85007 15.6226 3.51316 15.6226 4.28199V5.16432C15.6226 5.39445 15.5311 5.61524 15.3684 5.77797C15.2056 5.94068 14.9849 6.03224 14.7547 6.03224C14.5246 6.03224 14.3038 5.94068 14.1411 5.77797C13.9783 5.61524 13.8868 5.39445 13.8868 5.16432V4.33962C13.8868 3.4971 13.8846 2.95217 13.8309 2.55122C13.7796 2.17454 13.6985 2.05609 13.6325 1.99012C13.5666 1.92416 13.4481 1.843 13.0714 1.79179C12.6713 1.73802 12.1255 1.73585 11.283 1.73585H8.67924V15.6226H12.1509C12.6303 15.6226 13.0189 16.0112 13.0189 16.4906C13.0189 16.9699 12.6303 17.3585 12.1509 17.3585H3.4717C2.99236 17.3585 2.60377 16.9699 2.60377 16.4906C2.60377 16.0112 2.99236 15.6226 3.4717 15.6226H6.9434V1.73585H4.33962C3.4971 1.73585 2.95217 1.73802 2.55122 1.79179C2.17454 1.843 2.05609 1.92416 1.99012 1.99012C1.92416 2.05609 1.843 2.17454 1.79179 2.55122C1.73802 2.95131 1.73585 3.4971 1.73585 4.33962V5.16432C1.7358 5.39445 1.6443 5.61524 1.48157 5.77797C1.31881 5.94068 1.09807 6.03224 0.867925 6.03224C0.637777 6.03224 0.417034 5.94068 0.254275 5.77797C0.0915473 5.61524 4.49255e-05 5.39445 0 5.16432V4.28199C1.66644e-09 3.51316 3.79974e-05 2.85007 0.0711969 2.31899C0.147582 1.75053 0.320211 1.20457 0.762824 0.762824C1.20544 0.320211 1.75054 0.147582 2.31899 0.0711969C2.85007 3.79974e-05 3.51316 1.66644e-09 4.28199 0H11.3407Z"
+                fill="currentColor"/>
+        </svg>
+    </span>
+
                                     <label class="toggle-switch">
                                         <InputCheckbox @bind-Value="currentStrawberryItem.isImage"
                                                        @onclick="ClearContent" class="toggle-checkbox"/>
-
                                         <span class="toggle-slider"></span>
                                     </label>
-                                    <span class="toggle-label">תמונה</span>
+
+                                    @* אייקון תמונה - נצבע כתום כשמצב תמונה פעיל *@
+                                    <span
+                                        class="mode-icon @(currentStrawberryItem.isImage ? "mode-icon-image-active" : "")"
+                                        title="מצב תמונה">
+        <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M8.56815 9.05757C8.56815 8.66802 8.72289 8.29443 8.99835 8.01898C9.2738 7.74352 9.64739 7.58878 10.0369 7.58878C10.4265 7.58878 10.8001 7.74352 11.0755 8.01898C11.351 8.29443 11.5057 8.66802 11.5057 9.05757C11.5057 9.44712 11.351 9.82071 11.0755 10.0962C10.8001 10.3716 10.4265 10.5264 10.0369 10.5264C9.64739 10.5264 9.2738 10.3716 8.99835 10.0962C8.72289 9.82071 8.56815 9.44712 8.56815 9.05757ZM6.74292 10.6272C6.67691 10.5216 6.58511 10.4345 6.47617 10.3741C6.36722 10.3137 6.24471 10.2821 6.12015 10.2821C5.9956 10.2821 5.87308 10.3137 5.76414 10.3741C5.6552 10.4345 5.5634 10.5216 5.49739 10.6272L3.04939 14.544C2.98004 14.6552 2.94169 14.7829 2.93831 14.9138C2.93494 15.0448 2.96666 15.1743 3.0302 15.2889C3.09373 15.4035 3.18676 15.499 3.29964 15.5655C3.41252 15.632 3.54114 15.6671 3.67216 15.6671H11.5057C11.6421 15.6671 11.7758 15.6292 11.8918 15.5575C12.0079 15.4858 12.1016 15.3832 12.1626 15.2612C12.2236 15.1392 12.2494 15.0026 12.2372 14.8668C12.2249 14.731 12.1751 14.6012 12.0933 14.4921L10.6245 12.5337C10.5561 12.4425 10.4674 12.3685 10.3654 12.3175C10.2634 12.2665 10.151 12.24 10.0369 12.24C9.92293 12.24 9.81048 12.2665 9.70851 12.3175C9.60653 12.3685 9.51783 12.4425 9.44942 12.5337L8.62298 13.6353L6.74292 10.6272Z"
+                fill="currentColor"/>
+            <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M2.69279 0C1.97862 0 1.2937 0.283704 0.7887 0.7887C0.283704 1.2937 0 1.97862 0 2.69279V16.4015C0 17.1157 0.283704 17.8006 0.7887 18.3056C1.2937 18.8106 1.97862 19.0943 2.69279 19.0943H12.4848C13.1989 19.0943 13.8839 18.8106 14.3889 18.3056C14.8938 17.8006 15.1776 17.1157 15.1776 16.4015V5.59905C15.1776 5.22597 15.0561 4.86367 14.8309 4.566L11.8953 0.680542C11.7356 0.469149 11.529 0.297675 11.2918 0.179593C11.0546 0.0615099 10.7933 3.57344e-05 10.5283 0H2.69279ZM1.4688 2.69279C1.4688 2.01715 2.01715 1.4688 2.69279 1.4688H9.79197V5.77432C9.79197 6.17971 10.121 6.50872 10.5264 6.50872H13.7088V16.4015C13.7088 17.0772 13.1604 17.6255 12.4848 17.6255H2.69279C2.01715 17.6255 1.4688 17.0772 1.4688 16.4015V2.69279Z"
+                  fill="currentColor"/>
+        </svg>
+    </span>
                                 </div>
                                 <!-- כפתור ה-SUBMIT של התות שמשנה את הטקסט שלו -->
                                 <!-- הכפתור אפור וחסום כשאין תוכן תקין, וכתום כשאפשר לאשר -->
                                 @if (currentStrawberryItem.answerID > 0)
                                 {
-                                    <button type="submit" class="strawberry-submit"
-                                            disabled="@isStrawberryDisabled">שמירת שינויים</button>
+                                    <MyButton ButtonText="שמירת שינויים"
+                                              ButtonStyle="primary"
+                                              IsSubmit="true"
+                                              IsDisabled="@isStrawberryDisabled"/>
                                 }
                                 else
                                 {
-                                    <button type="submit" class="strawberry-submit"
-                                            disabled="@isStrawberryDisabled">אישור</button>
+                                    <MyButton ButtonText="אישור"
+                                              ButtonStyle="primary"
+                                              IsSubmit="true"
+                                              IsDisabled="@isStrawberryDisabled"/>
                                 }
 
                             </EditForm>
                         </div>
 
-                        @* אנחנו משתמשים בקומפוננטה שפתחנו והנקייה שלנו לתולעת *@
-                    <div class="worm-lane">
-                        <Silky CurrentQuestion="question"
-                               CurrentStrawberryItem="currentStrawberryItem"
-                               IsHoveringAddItem="isHoveringAddItem"
-                               OnEditItemClicked="EditItem"
-                               OnDeleteItemClicked="DeleteItemFromSilky"
-                               OnImagePreviewClicked="OpenImagePreview"
-                               OnStartLabelSaved="@((newText) => SaveStartLabel(newText, question))"
-                               OnEndLabelSaved="@((newText) => SaveEndLabel(newText, question))"
-                               OnMoveRightClicked="@((item) => MoveRight(item, question.Items))"
-                               OnMoveLeftClicked="@((item) => MoveLeft(item, question.Items))"/>
-                    </div>
+                        @* אנחנו עוטפים את התולעת יחד עם ההנחיה שמעליה *@
+                        <div class="worm-section">
+                            @* ההנחיה הממורכזת מעל התולעת - כמו בפיגמה *@
+                            <div class="worm-instruction">
+                                <span>לחצו על החיצים בכדי לשנות את סדר הפריטים</span>
+                                <span class="worm-instruction-icon">
+                                <svg width="25" height="25" viewBox="0 0 25 25" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M21.064 4.08077L17.0734 4.18793M21.064 4.08077C21.079 4.64057 19.6167 5.72722 19.1224 6.13363M21.064 4.08077C21.049 3.52098 19.5304 2.51438 19.015 2.13507M3.10648 4.56298L7.09504 4.45587M3.10648 4.56298C3.09145 4.00318 4.5548 2.91651 5.04807 2.51012M3.10648 4.56298C3.12151 5.12277 4.64108 6.12935 5.15544 6.50868M10.4022 22.3736L10.377 21.4339C10.3597 20.7859 10.133 20.161 9.73091 19.6526L5.77215 14.6481C5.44388 14.2327 5.19314 13.7243 5.3254 13.2105C5.65148 11.9423 7.04293 10.7856 8.68626 12.7131L10.3315 14.3776L10.0521 3.97032C10.1009 2.13835 13.1603 1.47899 13.5418 3.87662L13.7011 9.80748C15.1784 9.57774 22.1869 10.4309 21.2897 14.8706L21.1628 15.5102C20.9806 16.4335 20.4166 18.0832 19.7715 19.0569C19.0985 20.0703 19.4685 21.6659 19.401 22.1339"
+                                        stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                            </div>
+
+                            <div class="worm-lane">
+                                <Silky CurrentQuestion="question"
+                                       CurrentStrawberryItem="currentStrawberryItem"
+                                       IsHoveringAddItem="isHoveringAddItem"
+                                       OnEditItemClicked="EditItem"
+                                       OnDeleteItemClicked="DeleteItemFromSilky"
+                                       OnImagePreviewClicked="OpenImagePreview"
+                                       OnStartLabelSaved="@((newText) => SaveStartLabel(newText, question))"
+                                       OnEndLabelSaved="@((newText) => SaveEndLabel(newText, question))"
+                                       OnMoveRightClicked="@((item) => MoveRight(item, question.Items))"
+                                       OnMoveLeftClicked="@((item) => MoveLeft(item, question.Items))"/>
+                            </div>
+                        </div>
 
                     </div>
-        </AccordionRow>
-    } @* סגירת הלולאה של ה-foreach *@
+                </AccordionRow>
+            }
+            @* סגירת הלולאה של ה-foreach *@
 
-    </tbody>
-    </table>
+            </tbody>
+        </table>
     </div>
     @if (errorMsg != "")
     {
         <p style="color:red;">שגיאה: @errorMsg</p>
     }
-    
+
     @* הכפתור המשני שפותח את חלונית ההוספה - מושבת בזמן הוספת שאלה או עריכת הנחיה *@
     <div class="add-button-wrapper">
         @* קוראים לקומפוננטה ומעבירים לה את כל הפרמטרים *@
         <MyButton ButtonStyle="secondary"
                   ButtonText="+ ליצור שאלה"
-                  IsDisabled="@(isAddingQuestion || editingInstructionId != 0)"
+                  IsDisabled="@(isAddingQuestion || editingInstructionId != 0 || isEditingItem)"
                   OnClickAction="StartAddingQuestion"/>
     </div>
 
@@ -254,8 +296,10 @@ else
     [Parameter] public GameEditDto gameData { get; set; }
     string successMsg = "";
     string errorMsg = "";
+    
 
-// משתנה לשמירת ה-ID של השאלה הפתוחה כרגע. 0 אומר שהכול סגור.
+
+    // משתנה לשמירת ה-ID של השאלה הפתוחה כרגע. 0 אומר שהכול סגור.
     int openQuestionId = 0;
 
     // מזהה השאלה שההנחיה שלה נמצאת כרגע בעריכה. 0 אומר שאף הנחיה לא בעריכה.
@@ -391,10 +435,10 @@ else
                 errorMsg = "";
                 showToast = true;
                 StateHasChanged();
-                
+
                 // סוגרים את הפופ-אפ מייד אחרי ההצלחה - לפני ההשהיה של הטוסט!
                 showQuestionDeletePopup = false;
-                
+
                 // מדווחים לעמוד המארח על שמירה מוצלחת
                 await OnChangesSaved.InvokeAsync();
 
@@ -489,7 +533,7 @@ else
 
             // מדווחים לעמוד המארח על שמירה מוצלחת
             await OnChangesSaved.InvokeAsync();
-            
+
             await Task.Delay(10000); // השהייה של 10 שניות 
 
             // אם אחרי 10 שניות הטוסט עדיין דלוק (כלומר, המשתמש לא סגר אותו מהאיקס), נכבה אותו
@@ -534,7 +578,14 @@ else
     void InstructionEditToggled(bool isEditing, Question question)
     {
         // שומרים את מזהה השאלה שנמצאת בעריכה (0 = אף הנחיה לא בעריכה)
-        editingInstructionId = isEditing ? question.questionID : 0;
+        if (isEditing)
+        {
+            editingInstructionId = question.questionID;
+        }
+        else
+        {
+            editingInstructionId = 0;
+        }
 
         // בכניסה לעריכה אנחנו פותחים את השורה כדי שהתוכן המושבת יוצג מתחת להנחיה,
         // בדיוק כמו תצוגת הדמה שמופיעה מתחת לתיבת ההזנה בהוספת שאלה חדשה
@@ -582,11 +633,15 @@ else
         }
     }
 
-// מופע של התות לקליטת הנתונים
+    // מופע של התות לקליטת הנתונים
     SilkyItem currentStrawberryItem = new SilkyItem();
 
     // הכפתור של התות מושבת כשאין תוכן אמיתי - רווחים בלבד לא נחשבים (כמו באפליקציית הייחוס)
+
+    // האם אנחנו במצב עריכת פריט קיים - התות טעון בפריט מהתולעת
     bool isStrawberryDisabled => string.IsNullOrWhiteSpace(currentStrawberryItem.content);
+    bool isEditingItem => currentStrawberryItem.answerID > 0;
+
 
     // הפונקציה שמופעלת בלחיצה על התות ופותחת את סייר הקבצים
     async Task TriggerFileInput()
@@ -879,6 +934,5 @@ else
         // מכיוון שהיא לוקחת את כל הנתונים מהשאלה הנוכחית, היא תעדכן את ההנחיה החדשה ותשמור על הקצוות הקיימים.
         await UpdateQuestionInServer(currentQuestion);
     }
-    
-    
+
 }

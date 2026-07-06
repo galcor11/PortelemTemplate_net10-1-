@@ -2,7 +2,7 @@
 @* קומפוננטה שפתחנו בשביל התולעת, הפלייסהולדרים שלי והחיצים *@
 
 @*  גוף התולעת והפלייסהולדרים  *@
-<div class="segment-wrapper">
+<div class="segment-wrapper @(isEditingItem ? "dimmed-segment" : "")">
     <div class="label-container"></div>
     <div class="silky-head"></div>
 </div>
@@ -19,7 +19,10 @@
         editStrokeClass = "active-edit-stroke";
     }
 
-    <div class="segment-wrapper">
+    // במצב עריכה - כל פריט שאינו הנערך מואפר ולא פעיל
+    string dimClass = (isEditingItem && editStrokeClass == "") ? "dimmed-segment" : "";
+
+    <div class="segment-wrapper @dimClass">
         @* עוטפים את הקופסה והחיצים בעמודה כדי שישבו זה מתחת לזה *@
         <div class="label-container">
             @* מופיע מעל הפריט האמיתי הראשון *@
@@ -59,7 +62,7 @@
 
             @if (CurrentQuestion.Items[i].isImage == false)
             {
-                @CurrentQuestion.Items[i].content
+                <div dir="auto">@CurrentQuestion.Items[i].content</div>
             }
             else
             {
@@ -104,7 +107,7 @@
         nextSlotClass = "next-slot-highlight";
     }
 
-    <div class="segment-wrapper">
+    <div class="segment-wrapper @(isEditingItem ? "dimmed-segment" : "")">
         <div class="label-container">
             @* מופיע מעל הפלייסהולדר הראשון רק אם אין בכלל פריטים אמיתיים *@
             @if (CurrentQuestion.Items.Count == 0 && p == 0)
@@ -130,7 +133,7 @@
 @* הוא מופיע רק כשהעורך ב-HOVER וגם כאשר שני הפלייסהולדרים כבר התמלאו *@
 @if (IsHoveringAddItem == true && CurrentQuestion.Items.Count >= 2 && CurrentQuestion.Items.Count < 8)
 {
-    <div class="segment-wrapper">
+    <div class="segment-wrapper @(isEditingItem ? "dimmed-segment" : "")">
         <div class="label-container"></div>
         <img src="SVG/strokeBody.svg" class="placeholder-segment floating-preview" alt=""/>
     </div>
@@ -151,6 +154,10 @@
     [Parameter] public EventCallback<string> OnEndLabelSaved { get; set; }
     [Parameter] public EventCallback<SilkyItem> OnMoveRightClicked { get; set; }
     [Parameter] public EventCallback<SilkyItem> OnMoveLeftClicked { get; set; }
+
+    
+    // האם התות במצב עריכת פריט קיים - אם כן, מאפירים את שאר הפריטים בתולעת
+    bool isEditingItem => CurrentStrawberryItem != null && CurrentStrawberryItem.answerID > 0;
 
     // פונקציות פנימיות שמפעילות את הפעמונים במקרה של עריכה ומחיקה
     async Task EditClicked(SilkyItem item) => await OnEditItemClicked.InvokeAsync(item);

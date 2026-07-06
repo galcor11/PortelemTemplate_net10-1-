@@ -2,7 +2,7 @@
 .settings-page-wrapper {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* מוודא שהעמוד תופס את כל הגובה והדשא לא ייחתך באמצע */
+    min-height: calc(100vh - 140px); /* מוודא שהעמוד תופס את כל הגובה הפנוי והדשא לא ייחתך באמצע */
     background-image: url('SVG/grass.svg');
     background-position: bottom center;
     background-repeat: repeat-x;
