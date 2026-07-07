@@ -94,6 +94,8 @@ yarn-error.log*
 # ---- Never ignore served content (guards against broad rules above) ----
 !Client/wwwroot/Game/
 !Client/wwwroot/Game/**
+# ...but never the Unity Burst debug symbols (marked DoNotShip)
+Client/wwwroot/Game/**/*_BurstDebugInformation_DoNotShip/
 !Server/wwwroot/uploadedFiles/
 !Server/wwwroot/uploadedFiles/**
 
