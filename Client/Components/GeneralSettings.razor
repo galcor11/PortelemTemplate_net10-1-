@@ -17,10 +17,12 @@
         
             <label><span class="required-asterisk">*</span> שם המשחק:</label>
         
+            
+             @* טקסט השם וכפתור עיפרון שפותח את הפופ-אפ של שם המשחק *@
             <div>
-                @* טקסט השם וכפתור עיפרון שפותח את הפופ-אפ של שם המשחק *@
                 <span>@gameSettings.gameName</span>
-                <input type="button" value="✏️" @onclick="() => showNamePopup = true" style="background: none; border: none; cursor: pointer;" />
+                @* אנחנו קוראים לקומפוננטת העיפרון *@
+                <EditIcon OnClick="() => showNamePopup = true" />
             </div>
         
         </div>
@@ -36,10 +38,11 @@
             </div>
         
             <div class="input-row">
-                @* הצ'קבוקס תמיד מוצג. אנחנו רוצים לתפוס את הרגע המדויק שבו המשתמש התחרט וביטל את הסימון של ללא הגבלה *@
+                @* הצ'קבוקס תמיד מוצג *@
                 <div class="checkbox-wrapper">
-                    <input type="checkbox" id="unlimited" checked="@isUnlimitedTime" @onchange="ToggleUnlimitedTime" />
-                    <label for="unlimited">ללא הגבלה</label>
+                    @* אנחנו קוראים לקומפוננטה שלנו *@
+                    <CustomCheckbox IsChecked="@isUnlimitedTime" OnToggled="ToggleUnlimitedTime" />
+                    <label>ללא הגבלה</label>
                 </div>
                 
                 @* פקד מספר: מקושר לזמן, עם מינימום, מקסימום וקפיצות של 5. ננעל (disabled) אם סומן "ללא הגבלה" *@
@@ -111,7 +114,7 @@ else
     @* הוספנו את התולעת והסתרנו מקוראי מסך לטובת נגישות *@
         <img src="SVG/SilkyForSettings.svg" class="worm-character" alt="" aria-hidden="true" />
     </div>
-</div> <!-- סגירת העוטף הראשי של העמוד -->
+</div> 
 @* פופ-אפ עריכת שם המשחק - נפתח בלחיצה על העיפרון, עם השם הנוכחי מוכן לעריכה *@
 
 @if (showNamePopup)
@@ -179,23 +182,26 @@ else
     }
     
     // פונקציה שמופעלת כשהמשתמש לוחץ על הצ'קבוקס של "ללא הגבלה"
-    void ToggleUnlimitedTime()
+    // היא מקבלת את המצב החדש מהקומפוננטה
+    void ToggleUnlimitedTime(bool newState)
     {
-        // תחילה, אנחנו הופכים את המצב של המשתנה הבוליאני (אם היה true הופך ל-false ולהפך)
-        isUnlimitedTime = !isUnlimitedTime; 
-        
-        // אם המשתמש הרגע הוריד את ה-V (כלומר עכשיו יש הגבלת זמן), והזמן ששמור כרגע הוא 1000
+        // מעדכנים את המשתנה הבוליאני
+        isUnlimitedTime = newState;
+
         if (isUnlimitedTime == false && gameSettings.time == 1000)
         {
-           // משנים את הזמן ל- 60 שניות, כדי שהוא לא ייבהל מהמספר 1000 שיופיע לו בתיבה 
-            gameSettings.time = 60; 
+            gameSettings.time = 60;
         }
 
-        if (isUnlimitedTime)
+        // בודקים אם אנחנו במצב פעיל או מוסתר
+        if (isUnlimitedTime == true)
+        {
             timeVisibility = "hidden";
+        }
         else
+        {
             timeVisibility = "visible";
-
+        }
     }
     // פונקציה שמחזירה את מחלקת העיצוב לסליידר
     string GetSliderClass()
@@ -231,7 +237,7 @@ else
     //פונקציה שפונה לקונטרולר שמעדכן את הפרטים שקשורים להגדרות הכלליות: שם המשחק, זמן, שיקוי
     async Task SaveSettings()
     {
-        // בדיקה  אם המשתמש סימן ללא הגבלה, אנחנו מעדכנים ל-1000
+        // בדיקה אם המשתמש סימן ללא הגבלה, אנחנו מעדכנים ל-1000
         if (isUnlimitedTime == true)
         {
             gameSettings.time = 1000;

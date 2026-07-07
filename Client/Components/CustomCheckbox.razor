@@ -1,0 +1,55 @@
+@* קומפוננטה שפתחנו בשביל צ'קבוקס גנרי *@
+<div class="custom-checkbox-wrapper @blockedClass" @onclick="ToggleCheckbox">
+    @if (IsDisabled == true)
+    {
+        @* מצב חסום *@
+        <img src="./svg/greyCheckbox.svg" alt="חסום" class="checkbox-icon opacity-half" />
+    }
+    else if (IsChecked == true)
+    {
+        @* מצב מסומן *@
+        <img src="./svg/greenCheckbox.svg" alt="מסומן" class="checkbox-icon" />
+    }
+    else
+    {
+        @* מצב לא מסומן *@
+        <img src="./svg/unMarkedCheckbox.svg" alt="לא מסומן" class="checkbox-icon" />
+    }
+</div>
+
+@code {
+    // פרמטר למצב הצ'קבוקס (מסומן או לא) 
+    [Parameter] public bool IsChecked { get; set; }
+    
+    // פרמטר למצב חסימה
+    [Parameter] public bool IsDisabled { get; set; }
+    
+    // הפעמון שידווח לעמוד הראשי שלחצו על הצ'קבוקס 
+    [Parameter] public EventCallback<bool> OnToggled { get; set; }
+
+    // משתנה שיחזיק את המחלקה במקרה של חסימה 
+    string blockedClass = "";
+
+    // פונקציה מובנית שרצה כשמשתנים מגיעים מבחוץ
+    protected override void OnParametersSet()
+    {
+        if (IsDisabled == true)
+        {
+            blockedClass = "cursor-blocked";
+        }
+        else
+        {
+            blockedClass = "cursor-pointer";
+        }
+    }
+
+    // הפונקציה שמופעלת בלחיצה על הצ'קבוקס
+    private async Task ToggleCheckbox()
+    {
+        // נאפשר לחיצה וצלצול בפעמון רק אם הוא לא חסום
+        if (IsDisabled == false)
+        {
+            await OnToggled.InvokeAsync(!IsChecked);
+        }
+    }
+}

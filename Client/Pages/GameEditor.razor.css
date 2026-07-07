@@ -6,6 +6,18 @@
     padding: 0 20px 15px 20px; /* ביטול הריפוד העליון */
     margin-top: -1.1rem; /* משיכה למעלה כדי להתחבר ל-navbar */
 }
+/* עיצוב להודעת שגיאה */
+.error-message {
+    color: red;
+    text-align: center;
+    padding: 20px;
+}
+
+/* עיצוב לטקסט הטעינה */
+.loading-text {
+    text-align: center;
+    padding: 20px;
+}
 
 /* כפתור החזרה לטבלת המשחקים בעיצוב גלולה לבנה */
 .back-pill {

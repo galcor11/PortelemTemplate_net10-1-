@@ -149,6 +149,14 @@ else{
     <p>@msg</p>
 }
 
+@* טוסט הצלחה למחיקת משחק - נעלם לבד אחרי הזמן המוגדר *@
+@if (showDeleteToast)
+{
+    <Toast OnCloseToast="HideDeleteToast">
+        המשחק נמחק בהצלחה
+    </Toast>
+}
+
 @code {
  
    
@@ -159,6 +167,9 @@ else{
     //משתנים בשביל המחיקה
     bool showDeletePopup = false; 
     GameToTableDto gameToDelete=null; 
+
+    // משתנה בוליאני לטוסט ההצלחה של מחיקת משחק
+    bool showDeleteToast = false;
         
     [CascadingParameter]
     private User user { get; set; }
@@ -195,7 +206,7 @@ else{
     private void GoToGame(int codeToPlay)
     {
         // מעביר לכתובת ה-URL החדשה יחד עם קוד המשחק
-        Nav.NavigateTo("/" + codeToPlay.ToString());
+        Nav.NavigateTo("./" + codeToPlay.ToString());
     }
     // הפונקציה שמקבלת את המשחק החדש מהפופ-אפ
     async Task SaveGame(GameToAddDto gameFromPopup)
@@ -270,7 +281,19 @@ else{
             if (deleteResponse.IsSuccessStatusCode == true)
             {
                 MyGamesList.Remove(game); //אנחנו מוחקים המשחק מרשימת המשחקים
-                msg = "המשחק נמחק בהצלחה"; 
+
+                // מציגים את ההודעה בטוסט צף שנעלם לבד, במקום טקסט קבוע מתחת לכפתור
+                showDeleteToast = true;
+                StateHasChanged();
+
+                await Task.Delay(10000);
+
+                // אם הטוסט עדיין דלוק אחרי הזמן המוגדר, נכבה אותו
+                if (showDeleteToast == true)
+                {
+                    showDeleteToast = false;
+                    StateHasChanged();
+                }
             }
             else
             {
@@ -278,6 +301,13 @@ else{
                 msg = deleteResponse.Content.ReadAsStringAsync().Result; 
             }
         }
+    }
+
+    // סוגר את טוסט מחיקת המשחק בלחיצה על האיקס
+    void HideDeleteToast(bool isClosed)
+    {
+        showDeleteToast = false;
+        StateHasChanged();
     }
     
     //שליחת בקשה לקונטרולר שמטפל בפרסום
@@ -315,7 +345,7 @@ else{
     void EditGame(GameToTableDto game)
     {
         // מעבר לעמוד החדש ושרשור ה-ID של המשחק לנתיב
-        Nav.NavigateTo("/GameEditor/" + game.gameID);
+        Nav.NavigateTo("./GameEditor/" + game.gameID);
     }
    //ניצור פונקציה שתקבל שגיאה ותציג הודעה בהתאם 
     void ShowError(string error)

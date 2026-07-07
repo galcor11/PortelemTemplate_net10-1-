@@ -226,7 +226,7 @@
     </div>
     @if (errorMsg != "")
     {
-        <p style="color:red;">שגיאה: @errorMsg</p>
+        <p class="error-message">שגיאה: @errorMsg</p>
     }
 
     @* הכפתור המשני שפותח את חלונית ההוספה - מושבת בזמן הוספת שאלה או עריכת הנחיה *@
@@ -263,8 +263,7 @@ else
 {
     <GenericDeletePopup OnUserConfirm="ConfirmDelete">
         <p>בטוח שברצונך למחוק את התמונה הזו מהתולעת?</p>
-        <img src="uploadedFiles/@itemToDelete.content" width="100" style="border-radius: 8px; margin: 10px 0;"/>
-
+        <img src="uploadedFiles/@itemToDelete.content" width="100" style="border-radius: 8px; margin: 10px 0;" alt="מחיקת תמונה"/>
     </GenericDeletePopup>
 }
 @if (showToast)
@@ -286,7 +285,7 @@ else
     long maxFileSize = 4194304;
 
     //הפרמטר שמתקבל מהעמוד המארח (מזהה המשחק)
-    [Parameter] public int gameID { get; set; }
+    [Parameter] public int GameIdParam { get; set; }
 
     // פעמון שמדווח לעמוד המארח על שמירה מוצלחת, כדי שיציג "השינויים נשמרו בהצלחה"
     [Parameter] public EventCallback OnChangesSaved { get; set; }
@@ -376,8 +375,7 @@ else
         questionToAdd = new QuestionToAdd
         {
             instruction = "",
-            //הוספנו את המילה this מכיוון שגם לתכונה במודל קוראים gameID. נעזרנו בחקירה עצמית
-            gameID = this.gameID,
+            gameID = GameIdParam,
             startLabel = "ראשון",
             endLabel = "אחרון",
             Items = new List<SilkyItemToAdd>()
@@ -507,6 +505,12 @@ else
 //  הפונקציה שמפעילה את פופ-אפ המחיקה כשלוחצים על הפח בתולעת
     void DeleteItemFromSilky(SilkyItem itemClicked)
     {
+        // הגנה: בזמן עריכת פריט אין למחוק פריטים מהתולעת
+        if (isEditingItem)
+        {
+            return;
+        }
+
         if (itemClicked.isImage == true)
         {
             // מצב תמונה: שומרים את הפריט במשתנה העזר, ופותחים את הפופ-אפ
@@ -553,6 +557,12 @@ else
                     question.Items.Remove(item);
                     break;
                 }
+            }
+
+            // אם הפריט שנמחק הוא זה שנמצא כרגע בעריכה בתות - מאפסים את התות כדי לא להיתקע
+            if (currentStrawberryItem.answerID == item.answerID)
+            {
+                currentStrawberryItem = new SilkyItem();
             }
 
             //עדכון הטוסט (גילינו בחקירה עצמית)
@@ -623,8 +633,8 @@ else
         if (gameData == null)
         {
             // אנחנו מאתחלים את אובייקט השאלה החדשה עם ה-ID של המשחק מהנתיב
-            //אנחנו קוראים לשיטה בקונטולר של עריכת השאלות ומשרשרים את gameID בנתיב
-            var response = await Http.GetAsync("api/Questions/getQuestions/" + gameID);
+            //אנחנו קוראים לשיטה בקונטולר של עריכת השאלות ומשרשרים את ה-ID של המשחק בנתיב
+            var response = await Http.GetAsync("api/Questions/getQuestions/" + GameIdParam);
             //בדיקה אם סטטוס התשובה תקין
             if (response.IsSuccessStatusCode == true)
             {
@@ -736,8 +746,13 @@ else
         //בדיקת תקינוּת
         if (updateResponse.IsSuccessStatusCode == true)
         {
-            // אנחנו מחפשים את הפריט המקורי בתולעת (התות מחזיק בעותק) ומעדכנים אותו כדי שהשינוי יופיע מייד ללא רענון
-            question.Items[currentItem.orderIndex] = currentItem;
+            // מוצאים את הפריט המקורי לפי המזהה שלו ומעדכנים אותו
+            // לפי answerID ולא לפי orderIndex, כי orderIndex עלול לא להיות מסונכרן אחרי מחיקה או סידור מחדש
+            int idx = question.Items.FindIndex(x => x.answerID == currentItem.answerID);
+            if (idx >= 0)
+            {
+                question.Items[idx] = currentItem;
+            }
 
             //אנחנו מאתחלים את המופע
             currentStrawberryItem = new SilkyItem();
@@ -944,7 +959,7 @@ else
         questionToAdd = new QuestionToAdd
         {
             instruction = "",
-            gameID = this.gameID,
+            gameID = GameIdParam,
             startLabel = "ראשון",
             endLabel = "אחרון",
             Items = new List<SilkyItemToAdd>()

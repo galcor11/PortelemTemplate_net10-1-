@@ -1,0 +1,26 @@
+.custom-checkbox-wrapper {
+    display: inline-block;
+    transition: transform 0.2s ease-in-out;
+}
+
+/* אפקט גדילה קטן במעבר עכבר (רק אם הוא לא חסום) */
+.custom-checkbox-wrapper.cursor-pointer:hover {
+    transform: scale(1.1);
+}
+
+.checkbox-icon {
+    width: 26px;
+    height: 26px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-blocked {
+    cursor: not-allowed;
+}
+
+.opacity-half {
+    opacity: 0.5;
+}

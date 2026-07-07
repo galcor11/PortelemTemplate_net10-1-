@@ -1,63 +1,53 @@
 @* קומפוננטה שפתחנו בשביל האייקונים שבמצבי פרסום *@
-@* עטפנו את הקומפוננטה במחלקת הטולטיפ שיצרת בעבר *@
+<div class="tooltip-container @cursorClass">
+    <span class="tooltip-text">@tooltipText</span>
 
-<div class="custom-checkbox tooltip-container @GetCursorClass()" @onclick="ToggleCheckbox">
-    @* הבועה של הטולטיפ - הטקסט שלה משתנה דינמית לפי המצב *@
-    <span class="tooltip-text">@GetTooltipText()</span>  
-    @if (CanPublish == false)
-    {
-        @* מצב 1: חסום לפרסום *@
-        <img src="./svg/greyCheckbox.svg" alt="חסום" class="checkbox-icon opacity-half" />
-    }
-    else if (IsPublish == true)
-    {
-        @* מצב 2: מותר לפרסום ומסומן "וי" *@
-        <img src="./svg/greenCheckbox.svg" alt="מפורסם" class="checkbox-icon" />
-    }
-    else
-    {
-        @* מצב 3: מותר לפרסום אבל ריק *@
-        <img src="./svg/unMarkedCheckbox.svg" alt="לא מפורסם" class="checkbox-icon" />
-    }
-
+    @* אנחנו קוראים לקומפוננטה הגנרית שלנו  *@
+    <CustomCheckbox 
+        IsChecked="IsPublish" 
+        IsDisabled="!CanPublish" 
+        OnToggled="HandleCheckboxToggled" />
 </div>
 
 @code {
-    // מקבלים את מצב החסימה והפרסום מהעמוד הראשי
     [Parameter] public bool CanPublish { get; set; }
     [Parameter] public bool IsPublish { get; set; }
-    
-    // "הפעמון" שיצלצל לעמוד הראשי כשלוחצים על הצ'קבוקס
     [Parameter] public EventCallback<bool> OnPublishToggled { get; set; }
 
-    // הפונקציה שמופעלת בלחיצה על הקומפוננטה
-    private async Task ToggleCheckbox()
+    string cursorClass = "";
+    string tooltipText = "";
+
+    // פונקציה מובנית שרצה בכל פעם שהנתונים מהעמוד משתנים 
+    protected override void OnParametersSet()
     {
-        // אנחנו מאפשרים לחיצה רק אם המשחק לא חסום!
-        if (CanPublish == true)
+        // 1. קביעת מחלקת סמן העכבר 
+        if (CanPublish == false)
         {
-            // אנחנו שולחים לעמוד הראשי את המצב ההפוך (מדליקים אם כבוי, מכבים אם דלוק)
-            await OnPublishToggled.InvokeAsync(!IsPublish);
+            cursorClass = "cursor-blocked";
+        }
+        else
+        {
+            cursorClass = "cursor-pointer";
+        }
+
+        // קביעת הטקסט של הטולטיפ
+        if (CanPublish == false)
+        {
+            tooltipText = "המשחק אינו עומד בתנאי הפרסום. יש ליצור לפחות 3 שאלות תַּקינות";
+        }
+        else if (IsPublish == true)
+        {
+            tooltipText = "לחיצה על המשבצת תוריד את המשחק מפרסום";
+        }
+        else
+        {
+            tooltipText = "לחיצה על המשבצת תפרסם את המשחק";
         }
     }
 
-    // פונקציית עזר קטנה כדי לשנות את סמן העכבר אם הכפתור חסום
-    private string GetCursorClass()
+    // הפונקציה שמקבלת את הלחיצה מהצ'קבוקס הגנרי ומעבירה אותה לעמוד הראשי
+    private async Task HandleCheckboxToggled(bool newState)
     {
-        if (CanPublish == false) return "cursor-blocked";
-        return "cursor-pointer";
+        await OnPublishToggled.InvokeAsync(newState);
     }
-    
-    // פונקציה שמחליטה מה יהיה כתוב בטולטיפ 
-    private string GetTooltipText()
-    {
-        if (CanPublish == false) 
-            return "המשחק אינו עומד בתנאי הפרסום. יש ליצור לפחות 3 שאלות תַּקינות";
-        
-        if (IsPublish == true) 
-            return "לחיצה על המשבצת תוריד את המשחק מפרסום";
-        
-        return "לחיצה על המשבצת תפרסם את המשחק";
-    }
-   
 }

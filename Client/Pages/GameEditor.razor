@@ -1,4 +1,4 @@
-@page "/GameEditor/{gameID:int}"
+@page "/GameEditor/{GameIdFromRoute:int}"
 @* עמוד מארח שמאגד את עריכת השאלות ואת ההגדרות הכלליות תחת כתובת אחת עם טאבים *@
 @attribute [Authorize]
 @using AuthTemplate.Shared.Models
@@ -38,14 +38,14 @@
     @* התוכן של הטאב הפעיל *@
     @if (activeTab == "questions")
     {
-        <QuestionsEditor gameID="gameID" OnChangesSaved="ShowSavedMessage" gameData="gameData" />
+    <QuestionsEditor GameIdParam="GameIdFromRoute" OnChangesSaved="ShowSavedMessage" gameData="gameData" />
     }
     else
     {
-        <GeneralSettings gameID="gameID" OnSettingsSaved="SettingsSaved" gameSettings="gameSettings" />
+        <GeneralSettings gameID="GameIdFromRoute" OnSettingsSaved="SettingsSaved" gameSettings="gameSettings" />
     }
 
-    @* כיתוב הסטטוס בתחתית המסך - רק בטאב עריכת השאלות *@
+    @* כיתוב הסטטוס שבתחתית המסך - רק בטאב עריכת השאלות *@
     @if (activeTab == "questions")
     {
         <p class="status-caption">@statusMessage</p>
@@ -53,17 +53,16 @@
 }
 else if (!string.IsNullOrEmpty(errorMsg))
 {
-    <p style="color:red; text-align:center; padding: 20px;">שגיאה: @errorMsg</p>
+    <p class="error-message">שגיאה: @errorMsg</p>
 }
 else
 {
-    <p style="text-align:center; padding: 20px;">טוען נתונים...</p>
+    <p class="loading-text">טוען נתונים...</p>
 }
 
 @code{ 
     // הפרמטר שמתקבל מהנתיב (מזהה המשחק)
-    [Parameter] public int gameID { get; set; }
-
+    [Parameter] public int GameIdFromRoute { get; set; }
     // טאב פתיחה אופציונלי מכתובת ה-URL, למשל ?tab=settings אחרי יצירת משחק חדש
     [Parameter, SupplyParameterFromQuery(Name = "tab")]
     public string startTab { get; set; }
@@ -79,43 +78,50 @@ else
     GameToAddDto gameSettings;
     string errorMsg = "";
     
-
+        //עם טעינת העמוד
     protected override async Task OnInitializedAsync()
     {
-        // רק בכניסה לעמוד - בחירת הטאב לפי הכתובת (החלפות טאב בהמשך הן מקומיות בלבד)
+        // ניהול הטאבים בכניסה לעמוד
+        // אם המשתמש הגיע מכתובת שמכילה הוראה לפתוח את טאב ההגדרות (startTab == "settings")
+        // אנחנו מפעילים את הפונקציה המקומית שמחליפה את התצוגה לטאב ההגדרות הכלליות
         if (startTab == "settings")
         {
             SwitchTab("settings");
         }
 
-        var qResponseTask = Http.GetAsync("api/Questions/getQuestions/" + gameID);
-        var sResponseTask = Http.GetAsync("api/Games/byId/" + gameID);
+        // קריאות לקונטרולר 
+        // שולחים בקשת GET לשרת כדי לקבל את רשימת השאלות של המשחק הנוכחי 
+        var qResponse = await Http.GetAsync("api/Questions/getQuestions/" + GameIdFromRoute);
+    
+        // שולחים בקשת GET נוספת כדי לקבל את ההגדרות הכלליות של המשחק הנוכחי 
+        var sResponse = await Http.GetAsync("api/Games/byId/" + GameIdFromRoute);
 
-        await Task.WhenAll(qResponseTask, sResponseTask);
-
-        var qResponse = await qResponseTask;
-        var sResponse = await sResponseTask;
-
-        if (qResponse.IsSuccessStatusCode)
+        //  עיבוד התשובה של נתוני השאלות
+        // בודקים אם הסטטוס תקין
+        if (qResponse.IsSuccessStatusCode == true)
         {
+            // ממירים את קובץ ה-JSON שחזר לתוך מודל ה-DTO שלנו (GameEditDto)
             gameData = await qResponse.Content.ReadFromJsonAsync<GameEditDto>();
-            
         }
         else
         {
+            // אם הייתה שגיאה, קוראים את הודעת השגיאה כמחרוזת ושומרים במשתנה 
             errorMsg = await qResponse.Content.ReadAsStringAsync();
         }
 
-        if (sResponse.IsSuccessStatusCode)
+        // בודקים אם קריאת השרת השנייה (הגדרות המשחק) חזרה בהצלחה 
+        if (sResponse.IsSuccessStatusCode == true)
         {
+            // ממירים את המידע שחזר למודל ה-DTO של ההגדרות (GameToAddDto) 
             gameSettings = await sResponse.Content.ReadFromJsonAsync<GameToAddDto>();
-            
         }
         else
         {
+            // שמירת הודעת השגיאה למקרה של כישלון 
             errorMsg = await sResponse.Content.ReadAsStringAsync();
         }
     }
+    
 
     // החלפת טאב מקומית - הכתובת בדפדפן לא משתנה, כמו באפליקציית הייחוס
     void SwitchTab(string tabName)
@@ -133,7 +139,7 @@ else
         }
     }
 
-    // כיתוב ברירת המחדל בתחתית המסך
+    // כיתוב ברירת המחדל שבתחתית המסך
     const string autoSaveText = "השינויים נשמרים אוטומטית 💡";
     string statusMessage = "השינויים נשמרים אוטומטית 💡";
 
@@ -141,7 +147,7 @@ else
     async Task ShowSavedMessage()
     {
         //נעדכן את canPublish בכל שינוי שקורה
-        var canPublishResponse = await Http.GetAsync("api/Games/checkCanPublish/" + gameID);
+        var canPublishResponse = await Http.GetAsync("api/Games/checkCanPublish/" + GameIdFromRoute);
         gameSettings.canPublish = canPublishResponse.Content.ReadFromJsonAsync<bool>().Result;
         // נוודא שאם משחק היה מפורסם ואז המשחק כבר לא תקין, אז הisPublish המקומי צריך להתעדכן בהתאם, מונע בעיה שהצ'קבוקס "זוכרת" את המצב הישן של המשחק כמפורסם
         if (!gameSettings.canPublish && gameSettings.isPublish) 

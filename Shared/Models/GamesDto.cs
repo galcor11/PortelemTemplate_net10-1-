@@ -1,8 +1,8 @@
 namespace AuthTemplate.Shared.Models;
+// מחלקת משחקים שפתחנו כדי שיהיה אפשר לשלוף את נתוני המשחק
 
 public class GamesDto
 {
-    // מחלקת משחקים
     // public bool canPublish { get; set; }
     public string gameName { get; set; }
     // public int gameCode { get; set; }

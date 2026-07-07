@@ -1,8 +1,16 @@
 @using AuthTemplate.Shared.Models
 @* קומפוננטה שפתחנו בשביל התולעת, הפלייסהולדרים שלי והחיצים *@
 
-@*  גוף התולעת והפלייסהולדרים  *@
-<div class="segment-wrapper @(isEditingItem ? "dimmed-segment" : "")">
+@* גוף התולעת והפלייסהולדרים *@
+@{
+    // משתנה מקומי שיחזיק את המחלקה במקרה של מצב עריכה
+    string headDimClass = "";
+    if (isEditingItem == true)
+    {
+        headDimClass = "dimmed-segment";
+    }
+}
+<div class="segment-wrapper @headDimClass">
     <div class="label-container"></div>
     <div class="silky-head"></div>
 </div>
@@ -45,7 +53,7 @@
         </div>
         
         <div class="item-box @editStrokeClass">
-            <div class="action-icons-overlay">
+            <div class="action-icons-overlay @(isEditingItem ? "icons-disabled" : "")">
                 @* עוטפים את זכוכית המגדלת בתנאי - תופיע רק אם הפריט הוא תמונה *@
                 @if (CurrentQuestion.Items[i].isImage == true)
                 {

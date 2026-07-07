@@ -47,7 +47,8 @@
     align-items: center;
     flex: 0 1 auto;        /* לא גדל מעבר לתוכן, אבל יכול להתכווץ ולגלול */
     min-width: 0;          /* מאפשר לגלילה האופקית לעבוד */
-    overflow-x: auto;      /* הגלילה של התולעת עברה לכאן */
+    overflow-x: auto;      /* הגלילה האופקית של התולעת */
+    overflow-y: hidden;    /* בלי בר אנכי - חוסם את זה שקופץ בריחוף על החיצים */
 }
 
 
@@ -201,7 +202,7 @@
     border-radius: 15px;
     padding: 20px;
     margin-left: 30px;
-    width: 200px;
+    width: 240px;
     flex-shrink: 0;   /* התיבה שומרת על רוחבה ולא מתכווצת כשהתולעת ארוכה */
     background-color: rgba(255, 255, 255, 0.4);
     /*  התכונה מאפשרת לטולטיפ לצאת מגבולות התיבה בלי להיחתך */
@@ -414,8 +415,8 @@
     /* המכל שעוטף את הטבלה - משמש רק כמסגרת, הגלילה עצמה נמצאת בתוך גוף הטבלה */
 
     .table-scroll-container {
-        width: 95%; /* רספונסיביות - תופס כמעט את כל רוחב העמוד  */
-        max-width: 1200px; /* מונע מהטבלה להימתח מדי במסכּים רחבים */
+        width: 100%; /* רספונסיביות - תופס את כל רוחב העמוד  */
+        max-width: 1600px; /* מרחיב את החלק הירוק, נשאר ממורכז בזכות margin auto */
         margin: 0 auto; /* ממרכז את הקונטיינר באמצע העמוד */
         scrollbar-gutter: stable;
     }
@@ -424,11 +425,9 @@
 
     .questions-table tbody {
         display: block; /* מאפשר לתת לגוף הטבלה גובה משלו בנפרד מהכותרת */
-        max-height: 48vh; /* גובה יחסי רספונסיבי למניעת גלילת העמוד */
-        overflow-y: auto; /* מוסיף פס גלילה אנכי רק כשהתוכן חורג מהגובה */
-        direction: ltr; /* מעביר את פס הגלילה לצד ימין */
-        background-color: #E9FDD9; /* ממלא את אזור הפס בירוק של השורות גם כשאין גלילה */
-        scrollbar-gutter: stable;
+        overflow-y: auto; /* אין גובה מקסימלי אז אין גלילה פנימית - העמוד יגלול אם צריך */
+        direction: ltr; /* משאיר כיוון בסיס LTR, השורות מוחזרות ל-RTL בנפרד */
+        background-color: #E9FDD9;
     }
 
     /* הכותרת וכל שורה בגוף מתנהגות כטבלה עצמאית ברוחב מלא, כדי שהעמודות יישארו מיושרות */
@@ -468,10 +467,9 @@
 
     /* ריווח בכותרת שמפצה על הרוחב שפס הגלילה תופס בגוף, כדי שהעמודות יתיישרו */
 
-    .questions-table thead {
-        padding-right: 10px;
-        background-color: #C5ECA5; /* צבע הכותרת גם באזור הריווח, כדי שלא יישאר פס לבן */
-    }
+.questions-table thead {
+    background-color: #C5ECA5; /* צבע הכותרת */
+}
 
     /*  עיצוב פס הגלילה עצמו */
     /* העובי של פס הגלילה */
@@ -512,7 +510,7 @@
     .title-with-tooltip h3 {
         margin: 0;
         width: auto;
-        white-space: normal;
+        white-space: nowrap;
     }
 
     /* כפתור האישור של התות - עיצוב אחיד לשני המצבים עם מעבר חלק */
@@ -552,3 +550,6 @@
         box-shadow: 0px 4px 0px #96928E;
         cursor: not-allowed;
     }
+.error-message {
+    color: red;
+}

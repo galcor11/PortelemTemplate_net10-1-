@@ -1,37 +1,49 @@
 @* קומפוננטה שפתחנו לכפתורים *@
-@if (IsSubmit)
+@if (IsSubmit == true)
 {
     @* כפתור טופס מסוג Submit - מפעיל את הוולידציות של הטופס לפני הפעלת הפונקציה *@
-    <button type="submit" class="my-btn @(IsDisabled ? "disabled" : ButtonStyle)" disabled="@IsDisabled">
+    <button type="submit" class="my-btn @currentClass" disabled="@IsDisabled">
         @ButtonText
     </button>
 }
 else
 {
     @* כפתור רגיל מסוג Button - מפעיל את פונקציית הלחיצה שהעברנו לו *@
-    <button type="button" class="my-btn @(IsDisabled ? "disabled" : ButtonStyle)" disabled="@IsDisabled" @onclick="OnClickAction">
+    <button type="button" class="my-btn @currentClass" disabled="@IsDisabled" @onclick="OnClickAction">
         @ButtonText
     </button>
 }
-
 @code {
     // הטקסט שמופיע על הכפתור
-    [Parameter]
-    public string ButtonText { get; set; }
-
-    // סגנון הכפתור: מקבל את הערך "primary" או "secondary" או "disabled"
-    [Parameter]
-    public string ButtonStyle { get; set; } = "primary"; // primary ברירת המחדל
-
-    // הפעמון שמפעיל את הפונקציה בעמוד הראשי כשלוחצים עליו
-    [Parameter]
-    public EventCallback OnClickAction { get; set; }
+    [Parameter] public string ButtonText { get; set; }
     
-    // פרמטר שקובע אם הכפתור הוא כפתור שליחה של טופס.
-    [Parameter]
-    public bool IsSubmit { get; set; } = false;
+    // סגנון הכפתור: מקבל את הערך "primary" או "secondary" או "disabled"
+    [Parameter] public string ButtonStyle { get; set; } = "primary"; 
+    
+    // הפעמון שמפעיל את הפונקציה בעמוד הראשי כשלוחצים עליו
+    [Parameter] public EventCallback OnClickAction { get; set; }
+    
+    // פרמטר שקובע אם הכפתור הוא כפתור שליחה של טופס
+    [Parameter] public bool IsSubmit { get; set; } = false;
+    
+    // פרמטר שקובע אם הכפתור מושבת
+    [Parameter] public bool IsDisabled { get; set; } = false;
 
-    // פרמטר שקובע אם הכפתור מושבת (לא לחיץ ובעיצוב אפור)
-    [Parameter]
-    public bool IsDisabled { get; set; } = false;
+    // משתנה שיחזיק את המחלקה שניישם על הכפתור
+    string currentClass = "";
+
+    // פונקציה מובנית שרצה בכל פעם שהפרמטרים משתנים
+    protected override void OnParametersSet()
+    {
+       //אנחנו בודקים אם הכפתור מושבת
+        if (IsDisabled == true)
+        {
+            currentClass = "disabled";
+        }
+        else
+        {
+            // אם הוא איננו מושבת, הוא יקבל את העיצוב שהועבר אליו
+            currentClass = ButtonStyle;
+        }
+    }
 }

@@ -19,11 +19,11 @@
     flex-direction: column;
     align-items: center;
     align-self: flex-start;
-    overflow: hidden;
 }
 
 .label-container {
     height: 50px;            /* גובה קבוע במקום min-height - כל הסגמנטים מתחילים באותו קו */
+    width: 98px;             /* רוחב קבוע כמו גוף התולעת, שהתווית לא תרחיב את הסגמנט */
     margin-bottom: 5px;
     display: flex;
     align-items: flex-end;   /* התווית יושבת בתחתית ולא נמתחת - ממש מעל הפריט */
@@ -32,6 +32,7 @@
 
 .label-container ::deep .glass-edge-container {
     margin-bottom: 0;
+    flex-shrink: 0;          /* התווית לא מתכווצת - גולשת מעל בלי לדחוף את הפריט */
 }
 
 .arrows-wrapper {
@@ -47,6 +48,8 @@
     border-radius: 15px; /* מעגל את הפינות  */
     box-shadow: 0 0 10px rgba(255, 140, 0, 0.4); /* אפקט זוהר (Glow) עדין מסביב */
     transition: all 0.3s ease; /* אנימציה חלקה כשהמסגרת מופיעה ונעלמת */
+    position: relative;
+    z-index: 10; /* מעלה את הפריט הנערך מעל השכנים כדי שהמסגרת תהיה שלמה */
 }
 
 /* במצב עריכת פריט - סגמנט שאינו הנערך: אפור ולא פעיל */
@@ -55,6 +58,11 @@
     filter: grayscale(70%);
     pointer-events: none;
     transition: all 0.3s ease;
+}
+
+/* במצב עריכה - אין ללחוץ על אייקוני הפעולה של הפריט הנערך */
+.icons-disabled {
+    display: none;
 }
 
 /* במצב עריכה - החיצים של הפריט הנערך מואפרים ולא פעילים כמו שאר התולעת */
