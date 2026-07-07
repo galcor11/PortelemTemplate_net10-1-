@@ -4,6 +4,7 @@
     transition: background-color 0.2s ease; /* מעבר צבע חלק */
     cursor: pointer; /* סמן של "יד לחיצה" לשורת הכותרת (נגישות/שימושיות) */
     scrollbar-gutter: stable;
+    overflow-x: hidden;
 }
 
 /*  צבע משתנה בHOVER  */
@@ -18,6 +19,7 @@
     background-color: #C5ECA5;
     border-bottom: 1px solid #E2E8F0;
     box-shadow: inset 0 4px 8px rgba(0,0,0,0.03);
+    overflow-x: hidden;
 }
 
 .worm-lane {

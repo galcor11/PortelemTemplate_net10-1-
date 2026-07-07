@@ -282,14 +282,6 @@ namespace AuthTemplate.Server.Controllers
             }
             return Unauthorized("user is not authenticated");
         }
-        
-        //בדיקה ועדכון של המשתנה canPublish
-        [HttpGet("checkCanPublish/{gameID}")]
-
-        public async Task<bool> checkCanPublish(int gameID)
-        {
-            return await CanPublishFunc(gameID);
-        }
 
         // שיטה שמיועדת למחוק שאלה שלמה
         [HttpDelete("deleteQuestion/{questionID}")]

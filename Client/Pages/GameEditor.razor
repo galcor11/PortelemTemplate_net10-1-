@@ -141,7 +141,7 @@ else
     async Task ShowSavedMessage()
     {
         //נעדכן את canPublish בכל שינוי שקורה
-        var canPublishResponse = await Http.GetAsync("api/Questions/checkCanPublish/" + gameID);
+        var canPublishResponse = await Http.GetAsync("api/Games/checkCanPublish/" + gameID);
         gameSettings.canPublish = canPublishResponse.Content.ReadFromJsonAsync<bool>().Result;
         // נוודא שאם משחק היה מפורסם ואז המשחק כבר לא תקין, אז הisPublish המקומי צריך להתעדכן בהתאם, מונע בעיה שהצ'קבוקס "זוכרת" את המצב הישן של המשחק כמפורסם
         if (!gameSettings.canPublish && gameSettings.isPublish) 
@@ -166,7 +166,6 @@ else
         }
         // מעבר דרך SwitchTab כדי שגם מחלקות העיצוב של הטאבים יתעדכנו ולא רק התוכן
         SwitchTab("questions");
-        await ShowSavedMessage();
     }
         
     async Task ChangePublishStatus(bool newState)

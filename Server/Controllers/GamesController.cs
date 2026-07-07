@@ -150,6 +150,17 @@ namespace AuthTemplate.Server.Controllers
                 return Unauthorized("user is not authenticated");  
             }
         }
+        
+        //שיטה המחזירה את המשתנה canPublish - מעדכנת את השינויים בצ'קבוקס פרסום בעמוד עריכת משחק/עריכת שאלות
+        [HttpGet("checkCanPublish/{gameID}")]
+        public async Task<bool> checkCanPublish(int gameID)
+        {
+            string query = "SELECT canPublish FROM GAMES WHERE gameID=@gameID";
+            object param = new { gameID = gameID };
+            var canPublishRecords =  await _db.GetRecordsAsync<bool>(query, param);
+            bool canPublish = canPublishRecords.FirstOrDefault();
+            return canPublish;
+        }
 
         //שיטה למחיקת רשומה חדשה של משחק
         [HttpDelete("deleteGame/{idToDelete}")]
