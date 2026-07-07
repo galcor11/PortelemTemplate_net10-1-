@@ -165,11 +165,11 @@ else
     }
     
     // נקרא כשהעורך מאשר בפופ-אפ: מעדכן רק את שם המשחק וסוגר את הפופ-אפ
-    void SaveNewName(GameToAddDto edited)
+    async void SaveNewName(GameToAddDto edited)
     {
         gameSettings.gameName = edited.gameName;
-        SaveSettings();
         showNamePopup = false;
+        await SaveSettings();
     }
 
     // נקרא כשסוגרים/מבטלים את הפופ-אפ
@@ -228,7 +228,7 @@ else
     }
     
     string msg = "";
-//פונקציה שפונה לקונטרולר שמעדכן את הפרטים שקשורים להגדרות הכלליות: שם המשחק, זמן, שיקוי
+    //פונקציה שפונה לקונטרולר שמעדכן את הפרטים שקשורים להגדרות הכלליות: שם המשחק, זמן, שיקוי
     async Task SaveSettings()
     {
         // בדיקה  אם המשתמש סימן ללא הגבלה, אנחנו מעדכנים ל-1000

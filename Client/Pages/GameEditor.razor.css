@@ -71,6 +71,18 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+/* שורת הפרסום - התווית והצ'קבוקס יושבים יחד */
+.publish-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* תווית הפרסום שליד הצ'קבוקס */
+.publish-label {
+    font-weight: bold;
+}
+
 /* כיתוב הסטטוס בתחתית המסך */
 .status-caption {
     text-align: center;

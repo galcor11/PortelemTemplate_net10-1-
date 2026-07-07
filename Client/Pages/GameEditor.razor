@@ -24,11 +24,16 @@
         <a class="back-pill" href="./GamesList">טבלת המשחקים <span class="back-arrow">←</span></a>
     </div>
     
-    <div class="publish-wrapper">
-        <CustomPublishCheckbox CanPublish="gameSettings.canPublish"
-                               IsPublish="gameSettings.isPublish"
-                               OnPublishToggled="@((newState) => ChangePublishStatus(newState))"/>
-    </div>
+    @* אזור הפרסום מוצג רק בטאב עריכת השאלות - בהגדרות הכלליות אין פרסום או סטטוס שמירה *@
+    @if (activeTab == "questions")
+    {
+        <div class="publish-wrapper">
+            <span class="publish-label">פרסום</span>
+            <CustomPublishCheckbox CanPublish="gameSettings.canPublish"
+                                   IsPublish="gameSettings.isPublish"
+                                   OnPublishToggled="@((newState) => ChangePublishStatus(newState))"/>
+        </div>
+    }
 
     @* התוכן של הטאב הפעיל *@
     @if (activeTab == "questions")
@@ -40,8 +45,11 @@
         <GeneralSettings gameID="gameID" OnSettingsSaved="SettingsSaved" gameSettings="gameSettings" />
     }
 
-    @* כיתוב הסטטוס בתחתית המסך *@
-    <p class="status-caption">@statusMessage</p>
+    @* כיתוב הסטטוס בתחתית המסך - רק בטאב עריכת השאלות *@
+    @if (activeTab == "questions")
+    {
+        <p class="status-caption">@statusMessage</p>
+    }
 }
 else if (!string.IsNullOrEmpty(errorMsg))
 {
@@ -156,7 +164,8 @@ else
         {
             gameData.gameName = gameSettings.gameName;
         }
-        activeTab = "questions";
+        // מעבר דרך SwitchTab כדי שגם מחלקות העיצוב של הטאבים יתעדכנו ולא רק התוכן
+        SwitchTab("questions");
         await ShowSavedMessage();
     }
         

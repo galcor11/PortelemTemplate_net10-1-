@@ -415,7 +415,7 @@
 
     .table-scroll-container {
         width: 95%; /* רספונסיביות - תופס כמעט את כל רוחב העמוד  */
-        max-width: 1500px; /* מונע מהטבלה להימתח מדי במסכּים רחבים */
+        max-width: 1200px; /* מונע מהטבלה להימתח מדי במסכּים רחבים */
         margin: 0 auto; /* ממרכז את הקונטיינר באמצע העמוד */
         scrollbar-gutter: stable;
     }
@@ -424,7 +424,7 @@
 
     .questions-table tbody {
         display: block; /* מאפשר לתת לגוף הטבלה גובה משלו בנפרד מהכותרת */
-        max-height: 72vh; /* גובה יחסי רספונסיבי למניעת גלילת העמוד */
+        max-height: 48vh; /* גובה יחסי רספונסיבי למניעת גלילת העמוד */
         overflow-y: auto; /* מוסיף פס גלילה אנכי רק כשהתוכן חורג מהגובה */
         direction: ltr; /* מעביר את פס הגלילה לצד ימין */
         background-color: #E9FDD9; /* ממלא את אזור הפס בירוק של השורות גם כשאין גלילה */
@@ -445,6 +445,25 @@
 
     .questions-table tbody ::deep tr {
         direction: rtl;
+    }
+
+    /* חלוקת רוחב מפורשת לעמודות: עמודת השאלה רחבה כדי שכפתורי האישור/ביטול
+       בעריכת ההנחיה לא יגלשו על עמודת מספר הפריטים והעלים */
+    /* :not([colspan]) מחריג את התאים שמתפרסים על כל השורה (אקורדיון והוספת שאלה) */
+
+    .questions-table th:first-child,
+    .questions-table tbody ::deep td:first-child:not([colspan]) {
+        width: 60%;
+    }
+
+    .questions-table th:nth-child(2),
+    .questions-table tbody ::deep td:nth-child(2) {
+        width: 22%;
+    }
+
+    .questions-table th:last-child,
+    .questions-table tbody ::deep td:last-child:not([colspan]) {
+        width: 18%;
     }
 
     /* ריווח בכותרת שמפצה על הרוחב שפס הגלילה תופס בגוף, כדי שהעמודות יתיישרו */
