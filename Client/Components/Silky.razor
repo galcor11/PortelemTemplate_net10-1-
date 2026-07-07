@@ -32,7 +32,7 @@
 
     <div class="segment-wrapper @dimClass">
         @* עוטפים את הקופסה והחיצים בעמודה כדי שישבו זה מתחת לזה *@
-        <div class="label-container">
+        <div class="label-container @(editStrokeClass != "" ? "labels-disabled" : "")">
             @* מופיע מעל הפריט האמיתי הראשון *@
             @if (i == 0)
             {
@@ -53,19 +53,23 @@
         </div>
         
         <div class="item-box @editStrokeClass">
-            <div class="action-icons-overlay @(isEditingItem ? "icons-disabled" : "")">
-                @* עוטפים את זכוכית המגדלת בתנאי - תופיע רק אם הפריט הוא תמונה *@
+            <div class="action-icons-overlay">
+                @* זכוכית המגדלת - מוצגת רק אם הפריט הוא תמונה, גם בזמן עריכה *@
                 @if (CurrentQuestion.Items[i].isImage == true)
                 {
                     <img src="./svg/zoomIcon.svg" class="action-icon zoom-icon" alt="הגדלה"
                          @onclick="() => OnImagePreviewClicked.InvokeAsync(currentItemForAction.content)"/>
                 }
 
-                <img src="./svg/editIcon.svg" class="action-icon edit-icon" alt="עריכה"
-                     @onclick="() => EditClicked(currentItemForAction)"/>
-                     
-                <img src="./svg/deleteIcon.svg" class="action-icon delete-icon" alt="מחיקה"
-                     @onclick="() => DeleteClicked(currentItemForAction)"/>
+                @* העיפרון והפח - מוסתרים לגמרי בזמן עריכת פריט *@
+                @if (!isEditingItem)
+                {
+                    <img src="./svg/editIcon.svg" class="action-icon edit-icon" alt="עריכה"
+                         @onclick="() => EditClicked(currentItemForAction)"/>
+
+                    <img src="./svg/deleteIcon.svg" class="action-icon delete-icon" alt="מחיקה"
+                         @onclick="() => DeleteClicked(currentItemForAction)"/>
+                }
             </div>
 
             @if (CurrentQuestion.Items[i].isImage == false)

@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace AuthTemplate.Shared.Models;
-// מחלקה שאנחנו מעבירים בה את הפרטים של המשחק לצורך יצירת משחק חדש
-public class GameToAddDto
+// מחלקה שפתחנו לצורך לשליפה ועדכון של הגדרות משחק קיים (כולל סטטוס פרסום)
+public class GameSettingsDto
 {
     [Required(ErrorMessage = "שדה חובה")]
     [MinLength(1, ErrorMessage = "יש להזין לפחות תו אחד")]
@@ -14,4 +14,6 @@ public class GameToAddDto
     
     public bool hasPotion { get; set; }
     
+    public bool isPublish { get; set; }
+    public bool canPublish { get; set; }
 }

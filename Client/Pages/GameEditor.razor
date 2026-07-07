@@ -75,7 +75,7 @@ else
     string questionsClass = "active-tab";
 
     GameEditDto gameData;
-    GameToAddDto gameSettings;
+    GameSettingsDto gameSettings;
     string errorMsg = "";
     
         //עם טעינת העמוד
@@ -113,7 +113,7 @@ else
         if (sResponse.IsSuccessStatusCode == true)
         {
             // ממירים את המידע שחזר למודל ה-DTO של ההגדרות (GameToAddDto) 
-            gameSettings = await sResponse.Content.ReadFromJsonAsync<GameToAddDto>();
+            gameSettings = await sResponse.Content.ReadFromJsonAsync<GameSettingsDto>();
         }
         else
         {

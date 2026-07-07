@@ -406,9 +406,23 @@
 
     /* עיצוב המרווח לכפתור המשני מתחת לטבלה */
 
-    .add-button-wrapper {
-        margin-top: 15px;
-    }
+.add-button-wrapper {
+    margin-top: 15px;
+}
+
+/* עוטף את הכפתור ואת הטולטיפ, כדי למקם את הסימן על הפינה */
+.create-btn-box {
+    position: relative;
+    display: inline-block;
+}
+
+/* מיקום סימן השאלה על הפינה השמאלית העליונה של הכפתור */
+.create-btn-tooltip {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    z-index: 5;
+}
 
     /* מחלקה עוטפת שיוצרת את סמן העכבר חסום */
 

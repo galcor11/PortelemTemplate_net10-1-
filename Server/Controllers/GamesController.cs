@@ -48,59 +48,64 @@ namespace AuthTemplate.Server.Controllers
         
         }
         //שיטת פוסט שתקבל מידע מסוג הDTO שיצרנו GameToAddDto. הוספנו לה כבר את בדיקת ההתחברות
-        [HttpPost("addGame")]
-        public async Task<IActionResult> AddGames(int authUserId, GameToAddDto gameToAdd)
+       [HttpPost("addGame")]
+public async Task<IActionResult> AddGames(int authUserId, [FromBody] GameToAddDto gameToAdd)
+{
+    if (authUserId > 0)
+    {
+        // ניצור משחק חדש בבסיס הנתונים
+        object newGameParam = new
         {
-            if (authUserId > 0)
+            GameName = gameToAdd.gameName,
+            GameCode = 0,
+            IsPublish = false,
+            // אנו משתמשים בנתונים שהגיעו מה-DTO ולא בערכים קבועים 
+            TimePerItem = gameToAdd.time, 
+            UserId = authUserId,
+            CanPublish = false,
+            HasPotion = gameToAdd.hasPotion 
+        };
+        
+        string insertGameQuery = "INSERT INTO Games (time, gameName, userID, canPublish, isPublish, hasPotion, gameCode) " +
+                                 "VALUES (@TimePerItem, @GameName, @UserId, @CanPublish, @IsPublish, @HasPotion, @GameCode)";
+        
+        // לא השתמשנו כאן בפונקציית העזר SAVECHANGES מכיוון שאין צורך לבדוק CANPUBLISH במקרה של הוספת משחק חדש
+        int newGameId = await _db.InsertReturnIdAsync(insertGameQuery, newGameParam);
+        
+        if (newGameId != 0)
+        {
+            // אם המשחק נוצר בהצלחה, נחשב את הקוד עבורו
+            int gameCode = newGameId + 1000;
+            object updateParam = new
             {
-                //ניצור משחק חדש בבסיס הנתונים
-                object newGameParam = new
+                ID = newGameId,
+                GameCode = gameCode
+            };
+            
+            string updateCodeQuery = "UPDATE Games SET gameCode = @GameCode WHERE gameID=@ID";
+            int isUpdate = await SaveChanges(newGameId, updateCodeQuery, updateParam);
+            
+            if (isUpdate > 0)
+            {
+                // אם המשחק עודכן בהצלחה - נחזיר את הפרטים שלו לעורך
+                object param2 = new
                 {
-                    GameName = gameToAdd.gameName,
-                    GameCode = 0,
-                    IsPublish = false,
-                    TimePerItem = 60,
-                    UserId = authUserId,
-                    CanPublish = false,
-                    HasPotion = true
+                    ID = newGameId
                 };
-                string insertGameQuery = "INSERT INTO Games (time, gameName, userID, canPublish, isPublish, hasPotion, gameCode) " +
-                                         "VALUES (@TimePerItem, @GameName, @UserId, @CanPublish, @IsPublish, @HasPotion, @GameCode)";
-                //לא השתמשנו כאן בפונקציית העזר SAVECHANGES מכיוון שאין צורך לבדוק CANPUBLISH במקרה של הוספת משחק חדש
-                int newGameId = await _db.InsertReturnIdAsync(insertGameQuery, newGameParam);
-                
-                if (newGameId != 0)
-                {
-                    //אם המשחק נוצר בהצלחה, נחשב את הקוד עבורו
-                    int gameCode = newGameId + 1000;
-                    object updateParam = new
-                    {
-                        ID = newGameId,
-                        GameCode = gameCode
-                    };
-                    string updateCodeQuery = "UPDATE Games SET gameCode = @GameCode WHERE gameID=@ID";
-                    int isUpdate = await SaveChanges(newGameId,updateCodeQuery, updateParam);
-                    if (isUpdate > 0)
-                    {
-                        //אם המשחק עודכן בהצלחה - נחזיר את הפרטים שלו לעורך
-                        object param2 = new
-                        {
-                            ID = newGameId
-                        };
-                        string gameQuery = "SELECT gameID, gameName, gameCode, isPublish, canPublish FROM Games WHERE gameID = @ID";
-                        var gameRecord = await _db.GetRecordsAsync<GameToTableDto>(gameQuery, param2);
-                        GameToTableDto newGame = gameRecord.FirstOrDefault();
-                        return Ok(newGame);
-                    }
-                    return BadRequest("Game code not created");
-                }
-                return BadRequest("Game not created");
+                string gameQuery = "SELECT gameID, gameName, gameCode, isPublish, canPublish FROM Games WHERE gameID = @ID";
+                var gameRecord = await _db.GetRecordsAsync<GameToTableDto>(gameQuery, param2);
+                GameToTableDto newGame = gameRecord.FirstOrDefault();
+                return Ok(newGame);
             }
-            else
-            {
-                return Unauthorized("user is not authenticated");
-            }
+            return BadRequest("Game code not created");
         }
+        return BadRequest("Game not created");
+    }
+    // כדאי להוסיף גם כאן טיפול במקרה של חוסר התחברות ליתר ביטחון
+    return Unauthorized("user is not authenticated");
+}
+          
+       
         //שיטת קונטרולר שנועה לטפל בפרסום המשחק
         [HttpPost("publishGame")]
         public async Task<IActionResult> publishGame(int authUserId, PublishGame game){
@@ -212,8 +217,8 @@ namespace AuthTemplate.Server.Controllers
             string query = "SELECT gameName, hasPotion, time, isPublish, canPublish FROM Games WHERE gameID = @gameID AND userID = @userId";
 
             // אנחנו שולפים מבסיס הנתונים
-            var records = await _db.GetRecordsAsync<GameToAddDto>(query, param);
-            GameToAddDto game = records.FirstOrDefault();
+            var records = await _db.GetRecordsAsync<GameSettingsDto>(query, param);
+            GameSettingsDto game = records.FirstOrDefault();
 
             // אם המשחק נמצא והוא אכן של המשתמש, נחזיר אותו
             if(game != null) 
@@ -225,7 +230,7 @@ namespace AuthTemplate.Server.Controllers
         }
         //שיטה שנועדה לעדכן בבסיס הנתונים את הפרטים שמשנים בעמוד הגדרות כלליות: שם המשחק, זמן לשאלה, שיקויים
         [HttpPost("updateGame/{id}")]
-        public async Task<IActionResult> UpdateGame(int id, int authUserId, GameToAddDto gameToUpdate)
+        public async Task<IActionResult> UpdateGame(int id, int authUserId, GameSettingsDto gameToUpdate)
         {
             // בדיקת תקינות של מזהה המשחק, המשתמש המחובר, ושהאובייקט עצמו לא ריק
             if (id <= 0 || authUserId <= 0 || gameToUpdate == null)

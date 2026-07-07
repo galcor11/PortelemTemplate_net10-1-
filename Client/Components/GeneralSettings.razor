@@ -136,7 +136,7 @@ else
     [Parameter] public EventCallback OnSettingsSaved { get; set; }
     
     // מופע של ה-DTO שמכיל את נתוני המשחק 
-    [Parameter] public GameToAddDto gameSettings { get; set; }
+    [Parameter] public GameSettingsDto gameSettings { get; set; }
     
     // משתנה בוליאני שעוזר לנו לבדוק אם אנחנו במצב עריכה או בתצוגה רגילה
     bool showNamePopup = false;
@@ -153,7 +153,7 @@ else
             var response = await Http.GetAsync("api/Games/byId/" + gameID.ToString());
             if (response.IsSuccessStatusCode == true)
             {
-                gameSettings = response.Content.ReadFromJsonAsync<GameToAddDto>().Result;
+                gameSettings = response.Content.ReadFromJsonAsync<GameSettingsDto>().Result;
             }
         }
         if (gameSettings != null)

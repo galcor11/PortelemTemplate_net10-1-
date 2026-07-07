@@ -231,11 +231,21 @@
 
     @* הכפתור המשני שפותח את חלונית ההוספה - מושבת בזמן הוספת שאלה או עריכת הנחיה *@
     <div class="add-button-wrapper">
-        @* קוראים לקומפוננטה ומעבירים לה את כל הפרמטרים *@
-        <MyButton ButtonStyle="secondary"
-                  ButtonText="+ ליצור שאלה"
-                  IsDisabled="@(isAddingQuestion || editingInstructionId != 0 || isEditingItem)"
-                  OnClickAction="StartAddingQuestion"/>
+        @* עוטפים את הכפתור ואת הטולטיפ יחד כדי למקם את הסימן על פינת הכפתור *@
+        <div class="create-btn-box">
+            @* קוראים לקומפוננטה ומעבירים לה את כל הפרמטרים *@
+            <MyButton ButtonStyle="secondary"
+                      ButtonText="+ ליצור שאלה"
+                      IsDisabled="@isCreateQuestionDisabled"
+                      OnClickAction="StartAddingQuestion"/>
+
+            @* טולטיפ עם טקסט שונה לפי מצב הכפתור, מושבת או רגיל *@
+            <span class="create-btn-tooltip">
+                <TooltipIcon ExplanationText="@(isCreateQuestionDisabled
+                                                  ? "אי אפשר ליצור שאלה חדשה לפני כתיבה של הנחיה"
+                                                  : "בלחיצה ליצור שאלה חדשה, כל הפריטים שנוספו לתולעת ישמרו!")" />
+            </span>
+        </div>
     </div>
 
     @if (showQuestionDeletePopup)
@@ -671,6 +681,9 @@ else
     // האם אנחנו במצב עריכת פריט קיים - התות טעון בפריט מהתולעת
     bool isStrawberryDisabled => string.IsNullOrWhiteSpace(currentStrawberryItem.content);
     bool isEditingItem => currentStrawberryItem.answerID > 0;
+
+    // האם כפתור יצירת השאלה מושבת - בזמן הוספת שאלה, עריכת הנחיה, או עריכת פריט
+    bool isCreateQuestionDisabled => isAddingQuestion || editingInstructionId != 0 || isEditingItem;
 
 
     // הפונקציה שמופעלת בלחיצה על התות ופותחת את סייר הקבצים

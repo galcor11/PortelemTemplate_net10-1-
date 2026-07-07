@@ -60,6 +60,12 @@
     transition: all 0.3s ease;
 }
 
+.labels-disabled {
+    pointer-events: none;
+    opacity: 0.4;
+    filter: grayscale(70%);
+}
+
 /* במצב עריכה - אין ללחוץ על אייקוני הפעולה של הפריט הנערך */
 .icons-disabled {
     display: none;
