@@ -38,6 +38,7 @@
     flex-direction: row;
     align-items: flex-start;   /* הסגמנטים נשארים מיושרים למעלה זה מול זה */
     flex-shrink: 0;
+    padding: 0 30px;
 }
 
 /* אזור התולעת: ההנחיה מעל, התולעת מתחת, שניהם ממורכזים */
@@ -48,9 +49,13 @@
     flex: 0 1 auto;        /* לא גדל מעבר לתוכן, אבל יכול להתכווץ ולגלול */
     min-width: 0;          /* מאפשר לגלילה האופקית לעבוד */
     overflow-x: auto;      /* הגלילה האופקית של התולעת */
-    overflow-y: hidden;    /* בלי בר אנכי - חוסם את זה שקופץ בריחוף על החיצים */
+    overflow-y: hidden;
+    scrollbar-width: none;
 }
 
+.worm-section::-webkit-scrollbar {
+    display: none;
+}
 
 /* ההנחיה הממורכזת מעל התולעת */
 .worm-instruction {
@@ -500,10 +505,12 @@
 
     /* ממקם את הטולטיפ והכותרת במרכז אזור הוספת הפריט ודוחף מעט כלפי מטה */
 
-    .centered-tooltip-title {
-        justify-content: center;
-        margin-bottom: 15px;
-    }
+.centered-tooltip-title {
+    display: flex;        /* שם את הטולטיפ והכותרת באותה שורה */
+    align-items: center;  /* מיישר את הטולטיפ לגובה הכותרת */
+    justify-content: center;
+    margin-bottom: 15px;
+}
 
     /* מונע מכותרות h3 בתוך אזור הטולטיפ לשבור שורה */
 
